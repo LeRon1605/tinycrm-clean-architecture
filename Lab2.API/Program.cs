@@ -2,7 +2,8 @@ using Lab2.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddServices();
+builder.Services.AddServices()
+                .AddDatabase(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

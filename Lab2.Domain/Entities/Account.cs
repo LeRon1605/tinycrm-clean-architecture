@@ -8,5 +8,8 @@ public class Account : IEntity<int>
     public string Phone { get; set; }
     public string Address { get; set; }
     public int TotalSales { get; set; }
+
+    public ICollection<Lead> Leads { get; set; }
+    public ICollection<Deal> Deals { get; set; }
     public ICollection<Contact> Contacts { get; set; }
 }

@@ -13,5 +13,6 @@ public class Lead : IEntity<int>
 
     public int CustomerId { get; set; }
     public Account Customer { get; set; }
-    public ICollection<Deal> Deals { get; set; }
+
+    public Deal? Deal { get; set; }
 }
