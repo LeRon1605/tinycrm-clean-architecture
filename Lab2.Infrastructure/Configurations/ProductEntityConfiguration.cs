@@ -9,7 +9,5 @@ public class ProductEntityConfiguration : IEntityTypeConfiguration<Product>
     public void Configure(EntityTypeBuilder<Product> builder)
     {
         builder.ToTable("Products");
-
-        builder.HasKey(x => x.Id);
     }
 }

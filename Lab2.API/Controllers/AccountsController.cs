@@ -25,6 +25,10 @@ public class AccountsController : BaseController
     public async Task<IActionResult> GetDetail(int id)
     {
         AccountDto accountDto = await _accountService.GetAsync(id);
+        if (accountDto == null)
+        {
+            return NotFound();
+        }
         return Ok(accountDto);
     }
 

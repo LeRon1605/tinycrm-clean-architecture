@@ -1,6 +1,10 @@
 ﻿using Lab2.API.Middlewares;
 using Lab2.API.Services;
+using Lab2.Domain.Base;
+using Lab2.Domain.Repositories;
 using Lab2.Infrastructure;
+using Lab2.Infrastructure.Base;
+using Lab2.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.API.Extensions;
@@ -13,12 +17,26 @@ public static class IServiceCollectionExtensions
         {
             options.UseSqlServer(configuration.GetConnectionString("Default"));
         });
+
+        services.AddScoped<Func<AppDbContext>>((provider) => () => provider.GetRequiredService<AppDbContext>());
         return services;
     }
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<ExceptionHandlingMiddleware>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
+                .AddScoped<IProductRepository, ProductRepository>()
+                .AddScoped<IAccountRepository, AccountRepository>()
+                .AddScoped<IContactRepository, ContactRepository>()
+                .AddScoped<ILeadRepository, LeadRepository>()
+                .AddScoped<IDealRepository, DealRepository>();
 
         return services;
     }

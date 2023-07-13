@@ -1,8 +1,9 @@
-﻿namespace Lab2.Domain.Entities;
+﻿using Lab2.Domain.Base;
 
-public class DealLine : IEntity<int>
+namespace Lab2.Domain.Entities;
+
+public class DealLine : Entity<int>
 {
-    public int Id { get; set; }
     public int PricePerUnit { get; set; }
     public int Quantity { get; set; }
     

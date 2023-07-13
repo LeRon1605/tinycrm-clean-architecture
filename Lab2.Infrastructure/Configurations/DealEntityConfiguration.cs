@@ -10,8 +10,6 @@ public class DealEntityConfiguration : IEntityTypeConfiguration<Deal>
     {
         builder.ToTable("Deals");
 
-        builder.HasKey(x => x.Id);
-
         builder.Property(x => x.Title)
                .HasMaxLength(256)
                .IsRequired();

@@ -1,5 +1,4 @@
-﻿using Lab2.Domain.Entities;
-using Lab2.Domain.Shared.Enums;
+﻿using Lab2.Domain.Shared.Enums;
 
 namespace Lab2.API.Dtos;
 

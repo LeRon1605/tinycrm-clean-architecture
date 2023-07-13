@@ -10,8 +10,6 @@ public class LeadEntityConfiguration : IEntityTypeConfiguration<Lead>
     {
         builder.ToTable("Leads");
 
-        builder.HasKey(x => x.Id);
-
         builder.HasOne(x => x.Customer)
                .WithMany(x => x.Leads)
                .HasForeignKey(x => x.CustomerId);

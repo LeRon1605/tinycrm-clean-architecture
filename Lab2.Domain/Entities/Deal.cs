@@ -1,10 +1,10 @@
-﻿using Lab2.Domain.Shared.Enums;
+﻿using Lab2.Domain.Base;
+using Lab2.Domain.Shared.Enums;
 
 namespace Lab2.Domain.Entities;
 
-public class Deal : IEntity<int>
+public class Deal : Entity<int>
 {
-    public int Id { get; set; }
     public string Title { get; set; }
     public string Description { get; set; }
     public int EstimatedRevenue { get; set; }

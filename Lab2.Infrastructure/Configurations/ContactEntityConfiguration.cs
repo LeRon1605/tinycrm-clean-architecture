@@ -10,8 +10,6 @@ public class ContactEntityConfiguration : IEntityTypeConfiguration<Contact>
     {
         builder.ToTable("Contacts");
 
-        builder.HasKey(x => x.Id);
-
         builder.Property(x => x.Name)
                .HasMaxLength(256)
                .IsRequired();

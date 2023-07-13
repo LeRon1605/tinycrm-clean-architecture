@@ -1,8 +1,9 @@
+using Lab2.Domain.Base;
+
 namespace Lab2.Domain.Entities;
 
-public class Contact : IEntity<int>
+public class Contact : Entity<int>
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }

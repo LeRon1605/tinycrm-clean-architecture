@@ -1,4 +1,4 @@
-namespace Lab2.Domain.Entities;
+namespace Lab2.Domain.Base;
 
 public interface IEntity<T>
 {

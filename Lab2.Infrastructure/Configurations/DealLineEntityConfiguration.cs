@@ -10,8 +10,6 @@ public class DealLineEntityConfiguration : IEntityTypeConfiguration<DealLine>
     {
         builder.ToTable("DealLines");
 
-        builder.HasKey(x => x.Id);
-
         builder.HasOne(x => x.Product)
                .WithMany(x => x.Lines)
                .HasForeignKey(x => x.ProductId);

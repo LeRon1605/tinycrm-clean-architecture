@@ -10,9 +10,4 @@
     <ProjectReference Include="..\Lab2.Domain.Shared\Lab2.Domain.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Entities\Base\" />
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
 </Project>

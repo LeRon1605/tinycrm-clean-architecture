@@ -9,6 +9,11 @@ public class AppDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Contact> Contacts { get; set; }
+    public DbSet<Deal> Deals { get; set; }
+    public DbSet<DealLine> DealLines { get; set; }
+    public DbSet<DisqualifiedLead> DisqualifiedLeads { get; set; }
+    public DbSet<Lead> Lead { get; set; }
+    public DbSet<QualifiedLead> QualifiedLeads { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

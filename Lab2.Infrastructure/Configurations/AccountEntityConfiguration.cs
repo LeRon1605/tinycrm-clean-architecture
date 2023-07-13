@@ -10,8 +10,6 @@ public class AccountEntityConfiguration : IEntityTypeConfiguration<Account>
     {
         builder.ToTable("Accounts");
 
-        builder.HasKey(x => x.Id);
-
         builder.Property(x => x.Name)
                .HasMaxLength(256)
                .IsRequired();
