@@ -11,6 +11,5 @@ public class Account : Entity<int>
     public int TotalSales { get; set; }
 
     public ICollection<Lead> Leads { get; set; }
-    public ICollection<Deal> Deals { get; set; }
     public ICollection<Contact> Contacts { get; set; }
 }

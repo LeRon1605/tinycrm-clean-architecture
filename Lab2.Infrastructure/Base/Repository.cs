@@ -53,7 +53,11 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
 
     public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
     {
-        return DbSet.AnyAsync(expression);
+        if (expression != null)
+        {
+            return DbSet.AnyAsync(expression);
+        }
+        return DbSet.AnyAsync();
     }
 
     public Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
@@ -68,5 +72,10 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
     public Task<List<TEntity>> GetListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression)
     {
         return DbSet.Skip(skip).Take(take).ToListAsync();
+    }
+
+    public Task InsertRangeAsync(IEnumerable<TEntity> entities)
+    {
+        return DbSet.AddRangeAsync(entities);
     }
 }

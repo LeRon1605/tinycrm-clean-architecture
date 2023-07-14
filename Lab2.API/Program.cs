@@ -28,4 +28,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.SeedDataAsync();
+
 app.Run();

@@ -10,9 +10,6 @@ public class Deal : Entity<int>
     public int EstimatedRevenue { get; set; }
     public DealStatus Status { get; set; }
 
-    public int CustomerId { get; set; }
-    public Account Customer { get; set; }
-
     public int? LeadId { get; set; }
     public Lead? Lead { get; set; }
 

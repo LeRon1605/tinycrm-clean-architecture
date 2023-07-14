@@ -14,10 +14,6 @@ public class DealEntityConfiguration : IEntityTypeConfiguration<Deal>
                .HasMaxLength(256)
                .IsRequired();
 
-        builder.HasOne(x => x.Customer)
-               .WithMany(x => x.Deals)
-               .HasForeignKey(x => x.CustomerId);
-
         builder.HasOne(x => x.Lead)
                .WithOne(x => x.Deal)
                .HasForeignKey("Deal", "LeadId");

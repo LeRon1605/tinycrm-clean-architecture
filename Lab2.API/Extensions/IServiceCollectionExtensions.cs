@@ -1,5 +1,6 @@
 ﻿using Lab2.API.Middlewares;
 using Lab2.API.Services;
+using Lab2.Domain;
 using Lab2.Domain.Base;
 using Lab2.Domain.Repositories;
 using Lab2.Infrastructure;
@@ -15,10 +16,14 @@ public static class IServiceCollectionExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
         {
+            options.EnableSensitiveDataLogging(true);
             options.UseSqlServer(configuration.GetConnectionString("Default"));
         });
 
         services.AddScoped<Func<AppDbContext>>((provider) => () => provider.GetRequiredService<AppDbContext>());
+        services.AddScoped<DbContextFactory>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
         return services;
     }
 
@@ -26,11 +31,15 @@ public static class IServiceCollectionExtensions
     {
         services.AddTransient<ExceptionHandlingMiddleware>();
 
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<IContactService, ContactService>();
         return services;
     }
 
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<DataContributor>();
+
         services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
                 .AddScoped<IProductRepository, ProductRepository>()
                 .AddScoped<IAccountRepository, AccountRepository>()

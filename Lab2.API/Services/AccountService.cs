@@ -39,12 +39,15 @@ public class AccountService : IAccountService
 
     public async Task DeleteAsync(int id)
     {
+        // Find account by Id
         Account account = await _accountRepository.FindAsync(x => x.Id == id);
         if (account == null)
         {
+            // Throw exception if does not exist
             throw new NotFoundException($"Account with id '{id}' does not exist.");
         }
 
+        // Delete account
         _accountRepository.Delete(account);
         await _unitOfWork.CommitAsync();
     }
