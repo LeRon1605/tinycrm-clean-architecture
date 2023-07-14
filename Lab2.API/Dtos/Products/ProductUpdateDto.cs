@@ -4,6 +4,7 @@ namespace Lab2.API.Dtos;
 
 public class ProductUpdateDto
 {
+    public string Code { get; set; }
     public string Name { get; set; }
     public ProductType Type { get; set; }
     public int Price { get; set; }

@@ -1,8 +1,10 @@
-﻿namespace Lab2.API.Dtos;
+﻿using Lab2.API.Dtos.Shared;
+using Lab2.Domain.Shared.Enums;
 
-public class LeadFilterAndPagingRequestDto
+namespace Lab2.API.Dtos;
+
+public class LeadFilterAndPagingRequestDto : PagingRequestDto
 {
-    public int Page { get; set; } = 1;
-    public int Size { get; set; } = 10;
     public string Title { get; set; } = string.Empty;
+    public LeadStatus? Status { get; set; }
 }

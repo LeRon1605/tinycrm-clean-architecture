@@ -32,7 +32,9 @@ namespace Lab2.Infrastructure.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
@@ -76,7 +78,10 @@ namespace Lab2.Infrastructure.Migrations
                     Source = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EstimatedRevenue = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReasonDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EndedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -99,57 +104,14 @@ namespace Lab2.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     EstimatedRevenue = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    LeadId = table.Column<int>(type: "int", nullable: true)
+                    LeadId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Deals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Deals_Accounts_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Deals_Leads_LeadId",
                         column: x => x.LeadId,
-                        principalTable: "Leads",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DisqualifiedLeads",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DisqualifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DisqualifiedLeads", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_DisqualifiedLeads_Leads_Id",
-                        column: x => x.Id,
-                        principalTable: "Leads",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QualifiedLeads",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    QualifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QualifiedLeads", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_QualifiedLeads_Leads_Id",
-                        column: x => x.Id,
                         principalTable: "Leads",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -163,7 +125,7 @@ namespace Lab2.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PricePerUnit = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
                     DealId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -199,21 +161,21 @@ namespace Lab2.Infrastructure.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Deals_CustomerId",
-                table: "Deals",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Deals_LeadId",
                 table: "Deals",
                 column: "LeadId",
-                unique: true,
-                filter: "[LeadId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Leads_CustomerId",
                 table: "Leads",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_Code",
+                table: "Products",
+                column: "Code",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -224,12 +186,6 @@ namespace Lab2.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "DealLines");
-
-            migrationBuilder.DropTable(
-                name: "DisqualifiedLeads");
-
-            migrationBuilder.DropTable(
-                name: "QualifiedLeads");
 
             migrationBuilder.DropTable(
                 name: "Deals");

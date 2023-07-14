@@ -10,6 +10,7 @@ public interface IRepository<TEntity, TKey> where TEntity : IEntity<TKey>
     void Insert(TEntity entity);
     void Delete(TEntity entity);
     void Update(TEntity entity);
+    Task<TEntity> FindByIdAsync(object id);
     Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> expression);
     Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression = null);
     Task<int> CountAsync(Expression<Func<TEntity, bool>> expression = null);

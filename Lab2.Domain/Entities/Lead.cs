@@ -15,4 +15,8 @@ public class Lead : Entity<int>
     public Account Customer { get; set; }
 
     public Deal? Deal { get; set; }
+
+    public string? Reason { get; set; }
+    public string? ReasonDescription { get; set; }
+    public DateTime? EndedDate { get; set; }
 }

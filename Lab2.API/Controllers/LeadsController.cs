@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class LeadsController : BaseController
+public class LeadsController : ApiController
 {
     private readonly ILeadService _leadService;
     public LeadsController(ILeadService leadService)
@@ -45,5 +45,19 @@ public class LeadsController : BaseController
     {
         await _leadService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpPost("{id}/qualify")]
+    public async Task<IActionResult> QualifyLead(int id)
+    {
+        DealDto deal = await _leadService.QualifyAsync(id);
+        return Ok(deal);
+    }
+
+    [HttpPost("{id}/disqualify")]
+    public async Task<IActionResult> DisqualifyLead(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
+    {
+        LeadDto lead = await _leadService.DisqualifyAsync(id, disqualifiedLeadCreateDto);
+        return Ok(lead);
     }
 }

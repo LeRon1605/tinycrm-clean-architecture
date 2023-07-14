@@ -4,6 +4,7 @@ using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
+using System.Drawing;
 
 namespace Lab2.API.Services;
 
@@ -27,6 +28,13 @@ public class AccountService : IAccountService
 
     public async Task<AccountDto> CreateAsync(AccountCreateDto accountCreateDto)
     {
+        // Check if email exist
+        if (await _accountRepository.AnyAsync(x => x.Email == accountCreateDto.Email))
+        {
+            // Throw exception if email existed
+            throw new ConflictException($"Account with email '{accountCreateDto.Email}' has already existed.");
+        }    
+
         // Create account from dto
         Account account = _mapper.Map<Account>(accountCreateDto);
 
@@ -54,10 +62,12 @@ public class AccountService : IAccountService
 
     public async Task<AccountDto> GetAccountOfContactAsync(int contactId)
     {
+        // Load contact with account
         Contact contact = await _contactRepository.FindDetailAsync(x => x.Id == contactId);
         if (contact == null)
         {
-            throw new NotFoundException($"Account with id '{contactId}' does not exist.");
+            // Throw exception if contact does not exist
+            throw new NotFoundException($"Contact with id '{contactId}' does not exist.");
         }
 
         return _mapper.Map<AccountDto>(contact.Account);
@@ -71,15 +81,17 @@ public class AccountService : IAccountService
         return new PagedResultDto<AccountDto>()
         {
             Data = _mapper.Map<List<AccountDto>>(data),
-            Total = total
+            Total = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
         };
     }
 
     public async Task<AccountDto> GetAsync(int id)
     {
+        // Fetch account by id
         Account account = await _accountRepository.FindAsync(x => x.Id == id);
         if (account == null)
         {
+            // Throw exception if account does not exist
             throw new NotFoundException($"Account with id '{id}' does not exist.");
         }
 
@@ -88,12 +100,22 @@ public class AccountService : IAccountService
 
     public async Task<AccountDto> UpdateAsync(int id, AccountUpdateDto accountUpdateDto)
     {
+        // Check if email exist
+        if (await _accountRepository.AnyAsync(x => x.Email == accountUpdateDto.Email && x.Id != id))
+        {
+            // Throw exception if email existed
+            throw new ConflictException($"Account with email '{accountUpdateDto.Email}' has already existed.");
+        }
+
+        // Fetch account by id
         Account account = await _accountRepository.FindAsync(x => x.Id == id);
         if (account == null)
         {
+            // Throw exception if account does not exist
             throw new NotFoundException($"Account with id '{id}' does not exist.");
         }
 
+        // Update account
         account.Name = accountUpdateDto.Name;
         account.Address = accountUpdateDto.Address;
         account.Phone = accountUpdateDto.Phone;

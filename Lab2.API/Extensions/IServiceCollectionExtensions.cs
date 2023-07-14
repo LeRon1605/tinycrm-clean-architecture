@@ -1,4 +1,5 @@
-﻿using Lab2.API.Middlewares;
+﻿using EntityFramework.Exceptions.SqlServer;
+using Lab2.API.Middlewares;
 using Lab2.API.Services;
 using Lab2.Domain;
 using Lab2.Domain.Base;
@@ -16,6 +17,7 @@ public static class IServiceCollectionExtensions
     {
         services.AddDbContext<AppDbContext>(options =>
         {
+            options.UseExceptionProcessor();
             options.EnableSensitiveDataLogging(true);
             options.UseSqlServer(configuration.GetConnectionString("Default"));
         });
@@ -33,6 +35,9 @@ public static class IServiceCollectionExtensions
 
         services.AddScoped<IAccountService, AccountService>();
         services.AddScoped<IContactService, ContactService>();
+        services.AddScoped<ILeadService, LeadService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IDealService, DealService>();
         return services;
     }
 

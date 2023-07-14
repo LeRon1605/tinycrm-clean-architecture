@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class DealsController : BaseController
+public class DealsController : ApiController
 {
     private readonly IDealService _dealService;
     private readonly IProductService _productService;
@@ -28,13 +28,6 @@ public class DealsController : BaseController
         return Ok(dealDto);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateDeal(DealCreateDto dealCreateDto)
-    {
-        DealDto dealDto = await _dealService.CreateAsync(dealCreateDto);
-        return CreatedAtAction(nameof(GetDetail), new { id = dealDto.Id }, dealDto);
-    }
-
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateDeal(int id, DealUpdateDto dealUpdateDto)
     {
@@ -52,28 +45,14 @@ public class DealsController : BaseController
     [HttpGet("{id}/products")]
     public async Task<IActionResult> GetProductsInDeal(int id)
     {
-        IEnumerable<DealLineDto> productDealDtos = await _productService.GetAllInDealAsync(id);
+        IEnumerable<DealLineDto> productDealDtos = await _dealService.GetProductsInDealAsync(id);
         return Ok(productDealDtos);
     }
 
     [HttpPost("{id}/products")]
     public async Task<IActionResult> AddLineToDeal(int id, DealLineCreateDto productDealCreateDto)
     {
-        DealLineDto productDealDto = await _productService.AddToDealAsync(id, productDealCreateDto);
+        DealLineDto productDealDto = await _dealService.AddLineAsync(id, productDealCreateDto);
         return Ok(productDealDto);
-    }
-
-    [HttpPut("{id}/products/{lineId}")]
-    public async Task<IActionResult> UpdateLineInDeal(int id, int lineId, DealLineUpdateDto productDealUpdateDto)
-    {
-        DealLineDto productDealDto = await _dealService.UpdateLineAsync(id, lineId, productDealUpdateDto);
-        return Ok(productDealDto);
-    }
-
-    [HttpDelete("{id}/products/{lineId}")]
-    public async Task<IActionResult> RemoveLineInDeal(int id, int lineId)
-    {
-        await _dealService.RemoveLineAsync(id, lineId);
-        return NoContent();
     }
 }

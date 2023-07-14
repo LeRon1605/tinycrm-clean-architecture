@@ -4,14 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class AccountsController : BaseController
+public class AccountsController : ApiController
 {
     private readonly IAccountService _accountService;
     private readonly IContactService _contactService;
-    public AccountsController(IAccountService accountService, IContactService contactService)
+    private readonly ILeadService _leadService;
+    public AccountsController(
+        IAccountService accountService, 
+        IContactService contactService,
+        ILeadService leadService)
     {
         _accountService = accountService;
         _contactService = contactService;
+        _leadService = leadService;
     }
 
     [HttpGet]
@@ -54,5 +59,12 @@ public class AccountsController : BaseController
     {
         IEnumerable<ContactDto> contacts = await _contactService.GetContactsOfAccountAsync(id);
         return Ok(contacts);
+    }
+
+    [HttpGet("{id}/leads")]
+    public async Task<IActionResult> GetLeadsOfAccount(int id)
+    {
+        IEnumerable<LeadDto> leads = await _leadService.GetLeadsOfAccountAsync(id);
+        return Ok(leads);
     }
 }

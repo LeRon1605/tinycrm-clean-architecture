@@ -105,12 +105,12 @@ public class DataContributor
         {
             products.Add(new Product()
             {
-                Id = $"P-{i}",
+                Code = $"P-{i}",
                 Name = $"Product {i}",
                 Price = random.Next(2000),
-                IsAvailable = random.Next(1) == 1,
-                Type = random.Next(1) == 1 ? ProductType.Service : ProductType.Physical
-            }); ;
+                IsAvailable = random.Next(2) == 1,
+                Type = random.Next(2) == 1 ? ProductType.Service : ProductType.Physical
+            });
         }
 
         await _productRepository.InsertRangeAsync(products);
@@ -138,27 +138,27 @@ public class DataContributor
                     });
                     break;
                 case 1:
-                    leads.Add(new QualifiedLead()
+                    leads.Add(new Lead()
                     {
                         Title = $"Lead {i}",
                         Description = $"Lead {i}",
                         Source = "Email",
-                        Status = LeadStatus.Open,
+                        Status = LeadStatus.Qualified,
                         Customer = _accounts.ElementAt(random.Next(0, 9)),
                         EstimatedRevenue = random.Next(5000),
-                        QualifiedDate = DateTime.Now
+                        EndedDate = DateTime.Now
                     });
                     break;
                 case 2:
-                    leads.Add(new DisqualifiedLead()
+                    leads.Add(new Lead()
                     {
                         Title = $"Lead {i}",
                         Description = $"Lead {i}",
                         Source = "Email",
-                        Status = LeadStatus.Open,
+                        Status = LeadStatus.Disqualified,
                         Customer = _accounts.ElementAt(random.Next(0, 9)),
                         EstimatedRevenue = random.Next(5000),
-                        DisqualifiedDate = DateTime.Now,
+                        EndedDate = DateTime.Now,
                         Reason = "Reason",
                         ReasonDescription = "Reason description"
                     });
@@ -184,7 +184,7 @@ public class DataContributor
                 dealLines.Add(new DealLine()
                 {
                     PricePerUnit = random.Next(1, 10),
-                    ProductId = $"P-{random.Next(1, 10)}",
+                    Product = _products.ElementAt(random.Next(0, 9)),
                     Quantity = random.Next(1, 10),
                 });
             }
@@ -192,7 +192,7 @@ public class DataContributor
             {
                 Title = $"Deal {i}",
                 Description = $"Deal {i}",
-                Status = DealStatus.Open,
+                Status = random.Next(2) == 1 ? DealStatus.Open : DealStatus.Won,
                 Lead = _leads.ElementAt(random.Next(0, 9)),
                 EstimatedRevenue = random.Next(5000),
                 Lines = dealLines

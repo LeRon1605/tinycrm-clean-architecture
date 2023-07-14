@@ -4,7 +4,7 @@ namespace Lab2.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public abstract class BaseController : ControllerBase
+public abstract class ApiController : ControllerBase
 {
     
 }

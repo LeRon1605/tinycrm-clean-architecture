@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class ContactsController : BaseController
+public class ContactsController : ApiController
 {
     private readonly IContactService _contactService;
     private readonly IAccountService _accountService;

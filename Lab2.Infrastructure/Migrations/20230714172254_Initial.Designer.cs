@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lab2.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230714022821_AddReasonDescription")]
-    partial class AddReasonDescription
+    [Migration("20230714172254_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,7 +107,7 @@ namespace Lab2.Infrastructure.Migrations
                     b.Property<int>("EstimatedRevenue")
                         .HasColumnType("int");
 
-                    b.Property<int?>("LeadId")
+                    b.Property<int>("LeadId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -121,8 +121,7 @@ namespace Lab2.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LeadId")
-                        .IsUnique()
-                        .HasFilter("[LeadId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Deals", (string)null);
                 });
@@ -141,9 +140,8 @@ namespace Lab2.Infrastructure.Migrations
                     b.Property<int>("PricePerUnit")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -172,8 +170,17 @@ namespace Lab2.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("EndedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EstimatedRevenue")
                         .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReasonDescription")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Source")
                         .IsRequired()
@@ -191,14 +198,18 @@ namespace Lab2.Infrastructure.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Leads", (string)null);
-
-                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Lab2.Domain.Entities.Product", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsAvailable")
@@ -216,35 +227,10 @@ namespace Lab2.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.ToTable("Products", (string)null);
-                });
-
-            modelBuilder.Entity("Lab2.Domain.Entities.DisqualifiedLead", b =>
-                {
-                    b.HasBaseType("Lab2.Domain.Entities.Lead");
-
-                    b.Property<DateTime>("DisqualifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("DisqualifiedLeads", (string)null);
-                });
-
-            modelBuilder.Entity("Lab2.Domain.Entities.QualifiedLead", b =>
-                {
-                    b.HasBaseType("Lab2.Domain.Entities.Lead");
-
-                    b.Property<DateTime>("QualifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.ToTable("QualifiedLeads", (string)null);
                 });
 
             modelBuilder.Entity("Lab2.Domain.Entities.Contact", b =>
@@ -261,7 +247,9 @@ namespace Lab2.Infrastructure.Migrations
                 {
                     b.HasOne("Lab2.Domain.Entities.Lead", "Lead")
                         .WithOne("Deal")
-                        .HasForeignKey("Lab2.Domain.Entities.Deal", "LeadId");
+                        .HasForeignKey("Lab2.Domain.Entities.Deal", "LeadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Lead");
                 });
@@ -294,24 +282,6 @@ namespace Lab2.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("Lab2.Domain.Entities.DisqualifiedLead", b =>
-                {
-                    b.HasOne("Lab2.Domain.Entities.Lead", null)
-                        .WithOne()
-                        .HasForeignKey("Lab2.Domain.Entities.DisqualifiedLead", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Lab2.Domain.Entities.QualifiedLead", b =>
-                {
-                    b.HasOne("Lab2.Domain.Entities.Lead", null)
-                        .WithOne()
-                        .HasForeignKey("Lab2.Domain.Entities.QualifiedLead", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Lab2.Domain.Entities.Account", b =>

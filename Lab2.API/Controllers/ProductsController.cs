@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class ProductsController : BaseController
+public class ProductsController : ApiController
 {
     private readonly IProductService _productService;
     public ProductsController(IProductService productService)

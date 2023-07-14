@@ -9,5 +9,7 @@ public interface ILeadService
     Task<LeadDto> CreateAsync(LeadCreateDto leadCreateDto);
     Task<LeadDto> UpdateAsync(int id, LeadUpdateDto leadUpdateDto);
     Task DeleteAsync(int id);
-    Task<LeadDto> GetLeadOfContactAsync(int contactId);
+    Task<IEnumerable<LeadDto>> GetLeadsOfAccountAsync(int accountId);
+    Task<DealDto> QualifyAsync(int id);
+    Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto);
 }

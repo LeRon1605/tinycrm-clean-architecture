@@ -9,6 +9,4 @@ public interface IProductService
     Task<ProductDto> CreateAsync(ProductCreateDto productCreateDto);
     Task<ProductDto> UpdateAsync(int id, ProductUpdateDto productUpdateDto);
     Task DeleteAsync(int id);
-    Task<IEnumerable<DealLineDto>> GetAllInDealAsync(int dealId);
-    Task<DealLineDto> AddToDealAsync(int dealId, DealLineCreateDto productDealCreateDto);
 }

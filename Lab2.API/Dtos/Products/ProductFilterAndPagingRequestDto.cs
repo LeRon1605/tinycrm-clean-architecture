@@ -1,8 +1,10 @@
-﻿namespace Lab2.API.Dtos;
+﻿using Lab2.API.Dtos.Shared;
+using Lab2.Domain.Shared.Enums;
 
-public class ProductFilterAndPagingRequestDto
+namespace Lab2.API.Dtos;
+
+public class ProductFilterAndPagingRequestDto : PagingRequestDto
 {
-    public int Page { get; set; } = 1;
-    public int Size { get; set; } = 10;
-    public string Title { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public ProductType? Type { get; set; }
 }

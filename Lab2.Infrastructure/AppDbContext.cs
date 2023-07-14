@@ -11,9 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Deal> Deals { get; set; }
     public DbSet<DealLine> DealLines { get; set; }
-    public DbSet<DisqualifiedLead> DisqualifiedLeads { get; set; }
     public DbSet<Lead> Lead { get; set; }
-    public DbSet<QualifiedLead> QualifiedLeads { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -28,8 +26,6 @@ public class AppDbContext : DbContext
         new ContactEntityConfiguration().Configure(modelBuilder.Entity<Contact>());
         new ProductEntityConfiguration().Configure(modelBuilder.Entity<Product>());
         new LeadEntityConfiguration().Configure(modelBuilder.Entity<Lead>());
-        new QualifiedLeadEntityConfiguration().Configure(modelBuilder.Entity<QualifiedLead>());
-        new DisqualifiedLeadEntityConfiguration().Configure(modelBuilder.Entity<DisqualifiedLead>());
         new DealEntityConfiguration().Configure(modelBuilder.Entity<Deal>());
         new DealLineEntityConfiguration().Configure(modelBuilder.Entity<DealLine>());
     }

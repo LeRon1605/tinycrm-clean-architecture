@@ -10,8 +10,8 @@ public class Deal : Entity<int>
     public int EstimatedRevenue { get; set; }
     public DealStatus Status { get; set; }
 
-    public int? LeadId { get; set; }
-    public Lead? Lead { get; set; }
+    public int LeadId { get; set; }
+    public Lead Lead { get; set; }
 
     public ICollection<DealLine> Lines { get; set; }
 }

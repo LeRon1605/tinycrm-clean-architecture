@@ -26,32 +26,32 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
         DbSet.Remove(entity);
     }
 
-    public Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression)
     {
         return DbSet.Where(expression).ToListAsync();
     }
 
-    public async Task InsertAsync(TEntity entity)
+    public virtual async Task InsertAsync(TEntity entity)
     {
         await DbSet.AddAsync(entity);
     }
 
-    public void Update(TEntity entity)
+    public virtual void Update(TEntity entity)
     {
         DbSet.Update(entity);
     }
 
-    public void Insert(TEntity entity)
+    public virtual void Insert(TEntity entity)
     {
         DbSet.Add(entity);
     }
 
-    public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> expression)
     {
         return DbSet.FirstOrDefaultAsync(expression);
     }
 
-    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression)
     {
         if (expression != null)
         {
@@ -60,7 +60,7 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
         return DbSet.AnyAsync();
     }
 
-    public Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual Task<int> CountAsync(Expression<Func<TEntity, bool>> expression)
     {
         if (expression != null)
         {
@@ -69,13 +69,18 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
         return DbSet.CountAsync();
     }
 
-    public Task<List<TEntity>> GetListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression)
+    public virtual Task<List<TEntity>> GetListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression)
     {
-        return DbSet.Skip(skip).Take(take).ToListAsync();
+        return DbSet.Skip(skip).Take(take).Where(expression).ToListAsync();
     }
 
-    public Task InsertRangeAsync(IEnumerable<TEntity> entities)
+    public virtual Task InsertRangeAsync(IEnumerable<TEntity> entities)
     {
         return DbSet.AddRangeAsync(entities);
+    }
+
+    public async Task<TEntity> FindByIdAsync(object id)
+    {
+        return await DbSet.FindAsync(id);
     }
 }
