@@ -45,8 +45,10 @@ public class LineService : ILineService
             throw new NotFoundException($"Line with id '{id}' does not exist.");
         }
 
+        // Update product if product id has changed
         if (dealLineUpdateDto.ProductId != line.ProductId)
         {
+            // Check if product is exist
             Product product = await _productRepository.FindByIdAsync(line.ProductId);
             if (product == null)
             {
@@ -56,9 +58,11 @@ public class LineService : ILineService
             line.Product = product;
         }
 
+        // Update line
         line.PricePerUnit = dealLineUpdateDto.PricePerUnit;
         line.Quantity = dealLineUpdateDto.Quantity;
 
+        // Commit to db
         _dealLineRepository.Update(line);
         await _unitOfWork.CommitAsync();
 

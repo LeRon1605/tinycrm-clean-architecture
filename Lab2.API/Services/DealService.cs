@@ -11,24 +11,18 @@ namespace Lab2.API.Services;
 public class DealService : IDealService
 {
     private readonly IDealRepository _dealRepository;
-    private readonly IAccountRepository _accountRepository;
-    private readonly ILeadRepository _leadRepository;
     private readonly IProductRepository _productRepository;
     private readonly IRepository<DealLine, int> _dealLineRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     public DealService(
         IDealRepository dealRepository,
-        IAccountRepository accountRepository,
         IProductRepository productRepository,
         IRepository<DealLine, int> dealLineRepository,
-        ILeadRepository leadRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper)
     {
         _dealRepository = dealRepository;   
-        _accountRepository = accountRepository;
-        _leadRepository = leadRepository;
         _productRepository = productRepository;
         _dealLineRepository = dealLineRepository;
         _unitOfWork = unitOfWork;
@@ -94,13 +88,14 @@ public class DealService : IDealService
             throw new NotFoundException($"Deal with id '{id}' does not exist.");
         }
 
-        // Allow update description and source only for disqualified and qualified
+        // Allow update description and source only for open and lost
         deal.Description = dealUpdateDto.Description;
 
         if (deal.Status == DealStatus.Open)
         {
             deal.Title = dealUpdateDto.Title;
             deal.EstimatedRevenue = dealUpdateDto.EstimatedRevenue;
+            deal.Status = dealUpdateDto.Status;
         }
 
         // Update lead from db
