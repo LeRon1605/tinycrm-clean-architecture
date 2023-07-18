@@ -8,6 +8,8 @@ public class AccountMapper : Profile
 {
     public AccountMapper()
     {
+        CreateMap<Account, BasicAccountDto>();
+
         CreateMap<Account, AccountDto>();
         CreateMap<AccountCreateDto, Account>();
         CreateMap<AccountUpdateDto, Account>();

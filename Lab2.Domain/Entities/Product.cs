@@ -3,7 +3,7 @@ using Lab2.Domain.Shared.Enums;
 
 namespace Lab2.Domain.Entities;
 
-public class Product : Entity<int>
+public class Product : Entity
 {
     public string Code { get; set; }
     public string Name { get; set; }

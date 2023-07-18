@@ -2,7 +2,7 @@
 
 namespace Lab2.API.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/[controller]s")]
 [ApiController]
 public abstract class ApiController : ControllerBase
 {

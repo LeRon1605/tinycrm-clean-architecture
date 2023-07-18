@@ -2,6 +2,6 @@
 
 public class PagedResultDto<T>
 {
-    public int Total { get; set; }
+    public int TotalPages { get; set; }
     public IEnumerable<T> Data { get; set; }
 }

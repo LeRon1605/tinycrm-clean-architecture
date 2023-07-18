@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using EntityFramework.Exceptions.Common;
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
+using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
@@ -9,205 +9,154 @@ using Lab2.Domain.Shared.Enums;
 
 namespace Lab2.API.Services;
 
-public class LeadService : ILeadService
+public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateDto>, ILeadService
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly ILeadRepository _leadRepository;
     private readonly IDealRepository _dealRepository;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+
     public LeadService(
         IAccountRepository accountRepository,
         ILeadRepository leadRepository,
         IDealRepository dealRepository,
         IUnitOfWork unitOfWork,
-        IMapper mapper)
+        IMapper mapper) : base(mapper, leadRepository, unitOfWork)
     {
-        _accountRepository = accountRepository; 
-        _leadRepository = leadRepository;
+        _accountRepository = accountRepository;
         _dealRepository = dealRepository;
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
+
+        IncludePropsOnGet = nameof(Lead.Customer);
     }
 
-    public async Task<LeadDto> CreateAsync(LeadCreateDto leadCreateDto)
+    protected override async Task<bool> IsValidOnInsertAsync(LeadCreateDto leadCreateDto)
     {
-        // Create lead entity from dto
-        Lead lead = _mapper.Map<Lead>(leadCreateDto);
-
-        try
-        {
-            // Insert to db
-            await _leadRepository.InsertAsync(lead);
-            await _unitOfWork.CommitAsync();
-        } 
-        catch (ReferenceConstraintException) 
-        {
-            // Catch reference constaint error on account id column and throw exception
-            throw new NotFoundException($"Account with id '{leadCreateDto.CustomerId}' does not exist.");
-        }
-
-        return _mapper.Map<LeadDto>(lead);
+        return await CheckValidAccountAsync(leadCreateDto.CustomerId);
     }
 
-    public async Task DeleteAsync(int id)
+    protected override async Task<bool> IsValidOnUpdateAsync(Lead lead, LeadUpdateDto leadUpdateDto)
     {
-        // Get lead from db
-        Lead lead = await _leadRepository.FindAsync(x => x.Id == id);
-        if (lead == null)
+        if (lead.Status != LeadStatus.Qualified || lead.Status != LeadStatus.Disqualified && lead.CustomerId != leadUpdateDto.CustomerId)
         {
-            // Throw exception if lead does not exist
-            throw new NotFoundException($"Lead with Id '{id}' does not exist.");
+            return await CheckValidAccountAsync(leadUpdateDto.CustomerId);
         }
 
-        // Throw exception if lead is on qualified or disqualified status
-        if (lead.Status == LeadStatus.Disqualified || lead.Status == LeadStatus.Qualified)
-        {
-            throw new BadRequestException($"Can not delete lead which is on qualified or disqualified status.");
-        }
-
-        // Delete lead from db
-        _leadRepository.Delete(lead);
-        await _unitOfWork.CommitAsync();
+        return true;
     }
 
-    public async Task<PagedResultDto<LeadDto>> GetAllAsync(LeadFilterAndPagingRequestDto filterParam)
+    protected override Lead UpdateEntity(Lead lead, LeadUpdateDto leadUpdateDto)
     {
-        var data = await _leadRepository.GetListAsync(
-                                                skip: (filterParam.Page - 1) * filterParam.Size, 
-                                                take: filterParam.Size, 
-                                                x => x.Title.Contains(filterParam.Title) &&
-                                                     (filterParam.Status == null || x.Status == filterParam.Status)
-                                           );
-        var total = await _leadRepository.CountAsync(x => x.Title.Contains(filterParam.Title) && (filterParam.Status == null || x.Status == filterParam.Status));
-
-        return new PagedResultDto<LeadDto>()
-        {
-            Data = _mapper.Map<List<LeadDto>>(data),
-            Total = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
-        };
-    }
-
-    public async Task<LeadDto> GetAsync(int id)
-    {
-        // Get lead from db
-        Lead lead = await _leadRepository.FindAsync(x => x.Id == id);
-        if (lead == null)
-        {
-            // Throw exception if lead does not exist
-            throw new NotFoundException($"Lead with id '{id}' does not exist.");
-        }
-
-        return _mapper.Map<LeadDto>(lead);
-    }
-
-    public async Task<LeadDto> UpdateAsync(int id, LeadUpdateDto leadUpdateDto)
-    {
-        // Get lead from db
-        Lead lead = await _leadRepository.FindAsync(x => x.Id == id);
-        if (lead == null)
-        {
-            throw new NotFoundException($"Lead with id '{id}' does not exist.");
-        }
-
         // Allow update description and source only for disqualified and qualified
-        lead.Title = leadUpdateDto.Title;
+        lead.Description = leadUpdateDto.Description;
         lead.Source = leadUpdateDto.Source;
 
-        if (lead.Status != LeadStatus.Qualified || lead.Status != LeadStatus.Disqualified)
+        if (lead.Status != LeadStatus.Qualified && lead.Status != LeadStatus.Disqualified)
         {
+            lead.Title = leadUpdateDto.Title;
             lead.Status = leadUpdateDto.Status;
             lead.CustomerId = leadUpdateDto.CustomerId;
-            lead.Description = leadUpdateDto.Description;
             lead.EstimatedRevenue = leadUpdateDto.EstimatedRevenue;
         }
 
-        try
-        {
-            // Update lead from db
-            _leadRepository.Update(lead);
-            await _unitOfWork.CommitAsync();
-        }
-        catch (ReferenceConstraintException)
-        {
-            // Catch reference constaint error on account id column and throw exception
-            throw new NotFoundException($"Account with id '{leadUpdateDto.CustomerId}' does not exist.");
-        }
-
-        return _mapper.Map<LeadDto>(lead);
+        return lead;
     }
 
-    public async Task<IEnumerable<LeadDto>> GetLeadsOfAccountAsync(int accountId)
+    protected override Task<bool> IsValidOnDeleteAsync(Lead lead)
     {
-        // Load account with lead
-        Account account = await _accountRepository.FindDetailAsync(x => x.Id == accountId);
-        if (account == null)
+        // Can not delete lead which is on qualified or disqualified status
+        if (lead.Status == LeadStatus.Disqualified || lead.Status == LeadStatus.Qualified)
         {
-            throw new NotFoundException($"Account with id '{accountId}' does not exist.");
+            throw new BadRequestException($"Can not delete lead which is on qualified or disqualified status!");
         }
 
-        return _mapper.Map<IEnumerable<LeadDto>>(account.Leads);
+        return Task.FromResult(true);
+    }
+
+    public async Task<PagedResultDto<LeadDto>> GetLeadsOfAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam)
+    {
+        await CheckValidAccountAsync(accountId);
+
+        return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
+                                   take: filterParam.Size,
+                                   expression: filterParam.ToExpression().JoinWith(x => x.CustomerId == accountId),
+                                   sorting: filterParam.BuildSortingParam());
+    }
+
+    public async Task<LeadStatisticDto> GetStatistic()
+    {
+        return new LeadStatisticDto()
+        {
+            OpenLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Open),
+            DisqualifiedLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Disqualified),
+            QualifiedLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Qualified),
+            AverageEstimatedRevenue = await Repository.GetAverageAsync(x => x.EstimatedRevenue)
+        };
     }
 
     public async Task<DealDto> QualifyAsync(int id)
     {
         // Check if we can permit to perform qualify lead
-        Lead lead = await CheckPerformQualifyOrDisqualifyAsync(id);
+        var lead = await CheckPerformQualifyOrDisqualifyAsync(id);
 
         // Update lead status to qualified
         lead.Status = LeadStatus.Qualified;
         lead.EndedDate = DateTime.Now;
-        _leadRepository.Update(lead);
+        Repository.Update(lead);
 
         // Create new deal from lead
-        var deal = new Deal()
-        {
-            Title = lead.Title,
-            EstimatedRevenue = lead.EstimatedRevenue,
-            Description = string.Empty,
-            Status = DealStatus.Open,
-            Lead = lead
-        };
+        var deal = new Deal(lead);
         await _dealRepository.InsertAsync(deal);
 
         // Commit to db
-        await _unitOfWork.CommitAsync();
-        return _mapper.Map<DealDto>(deal);
+        await UnitOfWork.CommitAsync();
+        return Mapper.Map<DealDto>(deal);
     }
 
     public async Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
     {
         // Check if we can permit to perform disqualify lead
-        Lead lead = await CheckPerformQualifyOrDisqualifyAsync(id);
+        var lead = await CheckPerformQualifyOrDisqualifyAsync(id);
 
         // Update lead to disqualified status
+        UpdateLeadToDisqualifed(lead, disqualifiedLeadCreateDto);
+
+        Repository.Update(lead);
+        await UnitOfWork.CommitAsync();
+        return Mapper.Map<LeadDto>(lead);
+    }
+
+    private void UpdateLeadToDisqualifed(Lead lead, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
+    {
         lead.Status = LeadStatus.Disqualified;
         lead.Reason = disqualifiedLeadCreateDto.Reason;
         lead.ReasonDescription = disqualifiedLeadCreateDto.ReasonDescription;
         lead.EndedDate = DateTime.Now;
-
-        // Commit to db
-        _leadRepository.Update(lead);
-        await _unitOfWork.CommitAsync();
-        return _mapper.Map<LeadDto>(lead);
     }
 
     private async Task<Lead> CheckPerformQualifyOrDisqualifyAsync(int id)
     {
         // Fetch lead from db
-        Lead lead = await _leadRepository.FindAsync(x => x.Id == id);
+        var lead = await Repository.FindAsync(x => x.Id == id);
         if (lead == null)
         {
-            // Throw exception if lead does not exist
-            throw new NotFoundException($"Lead with id '{id}' does not exist.");
+            throw new EntityNotFoundException("Lead", id);
         }
 
         // Check if lead has already qualified or disqualified yet
         if (lead.Status == LeadStatus.Qualified || lead.Status == LeadStatus.Disqualified)
         {
-            throw new BadRequestException($"Lead with id '{lead.Id}' has already {lead.Status}");
+            throw new BadRequestException($"Lead with id '{lead.Id}' has already been {lead.Status}!");
         }
 
         return lead;
+    }
+
+    private async Task<bool> CheckValidAccountAsync(int accountId)
+    {
+        var isCustomerExisting = await _accountRepository.AnyAsync(x => x.Id == accountId);
+        if (!isCustomerExisting)
+        {
+            throw new EntityNotFoundException("Account", accountId);
+        }
+
+        return true;
     }
 }

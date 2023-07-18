@@ -4,7 +4,7 @@ using Lab2.Infrastructure.Base;
 
 namespace Lab2.Infrastructure.Repositories;
 
-public class LeadRepository : Repository<Lead, int>, ILeadRepository
+public class LeadRepository : Repository<Lead>, ILeadRepository
 {
     public LeadRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {

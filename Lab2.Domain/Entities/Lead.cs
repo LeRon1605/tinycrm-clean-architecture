@@ -3,7 +3,7 @@ using Lab2.Domain.Shared.Enums;
 
 namespace Lab2.Domain.Entities;
 
-public class Lead : Entity<int>
+public class Lead : Entity
 {
     public string Title { get; set; }
     public string Description { get; set; }

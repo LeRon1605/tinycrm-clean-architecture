@@ -1,13 +1,10 @@
 ﻿using Lab2.API.Dtos;
+using Lab2.API.Dtos.Deals;
+using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface IDealService
+public interface IDealService : IService<Deal, DealDto, DealCreateDto, DealUpdateDto>
 {
-    Task<PagedResultDto<DealDto>> GetAllAsync(DealFilterAndPagingRequestDto dealFilterAndPagingRequestDto);
-    Task<DealDto> GetAsync(int id);
-    Task<DealDto> UpdateAsync(int id, DealUpdateDto dealUpdateDto);
-    Task DeleteAsync(int id);
-    Task<DealLineDto> AddLineAsync(int id, DealLineCreateDto productDealCreateDto);
-    Task<IEnumerable<DealLineDto>> GetProductsInDealAsync(int id);
+    Task<DealStatisticDto> GetStatistic();
 }

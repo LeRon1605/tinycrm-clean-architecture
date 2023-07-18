@@ -10,7 +10,7 @@ public class LeadDto
     public string Source { get; set; }
     public int EstimatedRevenue { get; set; }
     public LeadStatus Status { get; set; }
-    public int CustomerId { get; set; }
+    public BasicAccountDto Customer { get; set; }
     public string? Reason { get; set; }
     public string? ReasonDescription { get; set; }
     public DateTime? EndedDate { get; set; }

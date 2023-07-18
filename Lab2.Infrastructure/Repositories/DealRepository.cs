@@ -2,23 +2,22 @@
 using Lab2.Domain.Repositories;
 using Lab2.Infrastructure.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace Lab2.Infrastructure.Repositories;
 
-public class DealRepository : Repository<Deal, int>, IDealRepository
+public class DealRepository : Repository<Deal>, IDealRepository
 {
     public DealRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {
     }
 
-    public override Task<List<Deal>> GetListAsync(int skip, int take, Expression<Func<Deal, bool>> expression)
+    public Task<double> GetAverageRevenueAsync()
     {
-        return DbSet.Skip(skip).Take(take).Include(x => x.Lines).ThenInclude(x => x.Product).Where(expression).ToListAsync();
+        return DbSet.Include(x => x.Lines).SelectMany(x => x.Lines).AverageAsync(x => x.Quantity * x.PricePerUnit);
     }
 
-    public override Task<Deal> FindAsync(Expression<Func<Deal, bool>> expression)
+    public Task<int> GetTotalRevenueAsync()
     {
-        return DbSet.Include(x => x.Lines).ThenInclude(x => x.Product).FirstOrDefaultAsync(expression);
+        return DbSet.Include(x => x.Lines).SelectMany(x => x.Lines).SumAsync(x => x.Quantity * x.PricePerUnit);
     }
 }

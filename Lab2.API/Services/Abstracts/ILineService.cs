@@ -1,9 +1,9 @@
 ﻿using Lab2.API.Dtos;
+using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface ILineService
+public interface ILineService : IService<DealLine, DealLineDto, DealLineCreateDto, DealLineUpdateDto>
 {
-    Task DeleteAsync(int id);
-    Task<DealLineDto> UpdateAsync(int id, DealLineUpdateDto dealLineUpdateDto);
+    Task<PagedResultDto<DealLineDto>> GetProductsInDealAsync(int dealId, DealLineFilterAndPagingRequestDto filterParam);
 }

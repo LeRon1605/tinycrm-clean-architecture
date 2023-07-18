@@ -31,13 +31,15 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddTransient<ExceptionHandlingMiddleware>();
+        services.AddScoped<ExceptionHandlingMiddleware>();
 
-        services.AddScoped<IAccountService, AccountService>();
-        services.AddScoped<IContactService, ContactService>();
-        services.AddScoped<ILeadService, LeadService>();
-        services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<IDealService, DealService>();
+        services.AddScoped<IAccountService, AccountService>()
+                .AddScoped<IContactService, ContactService>()
+                .AddScoped<ILeadService, LeadService>()
+                .AddScoped<IProductService, ProductService>()
+                .AddScoped<IDealService, DealService>()
+                .AddScoped<ILineService, LineService>();
+
         return services;
     }
 
@@ -45,12 +47,13 @@ public static class IServiceCollectionExtensions
     {
         services.AddScoped<DataContributor>();
 
-        services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>))
                 .AddScoped<IProductRepository, ProductRepository>()
                 .AddScoped<IAccountRepository, AccountRepository>()
                 .AddScoped<IContactRepository, ContactRepository>()
                 .AddScoped<ILeadRepository, LeadRepository>()
-                .AddScoped<IDealRepository, DealRepository>();
+                .AddScoped<IDealRepository, DealRepository>()
+                .AddScoped<IDealLineRepository, DealLineRepository>();
 
         return services;
     }

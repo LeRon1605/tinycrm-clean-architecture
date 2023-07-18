@@ -2,6 +2,7 @@
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
 using Lab2.Domain.Shared.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace Lab2.Domain;
 
@@ -13,6 +14,7 @@ public class DataContributor
     private readonly ILeadRepository _leadRepository;
     private readonly IDealRepository _dealRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger _logger;
 
     private static IEnumerable<Account> _accounts;
     private static IEnumerable<Contact> _contacts;
@@ -21,12 +23,13 @@ public class DataContributor
     private static IEnumerable<Deal> _deals;
 
     public DataContributor(
-        IContactRepository contactRepository, 
-        IAccountRepository accountRepository, 
-        IProductRepository productRepository, 
-        ILeadRepository leadRepository, 
+        IContactRepository contactRepository,
+        IAccountRepository accountRepository,
+        IProductRepository productRepository,
+        ILeadRepository leadRepository,
         IDealRepository dealRepository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILogger<DataContributor> logger)
     {
         _contactRepository = contactRepository;
         _accountRepository = accountRepository;
@@ -34,6 +37,7 @@ public class DataContributor
         _leadRepository = leadRepository;
         _dealRepository = dealRepository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task SeedAsync()
@@ -41,11 +45,13 @@ public class DataContributor
         if (
             !(await _leadRepository.AnyAsync()) &&
             !(await _dealRepository.AnyAsync()) &&
-            !(await _accountRepository.AnyAsync()) && 
+            !(await _accountRepository.AnyAsync()) &&
             !(await _contactRepository.AnyAsync()) &&
             !(await _productRepository.AnyAsync())
         )
         {
+            _logger.LogInformation("Begin seeding data...");
+
             _accounts = await SeedAccountAsync();
             _contacts = await SeedContactAsync();
             _products = await SeedProductAsync();
@@ -53,6 +59,8 @@ public class DataContributor
             _deals = await SeedDealAsync();
 
             await _unitOfWork.CommitAsync();
+
+            _logger.LogInformation("Seed data successfully!");
         }
     }
 
@@ -60,7 +68,7 @@ public class DataContributor
     {
         var accounts = new List<Account>();
 
-        for (int i = 1;i <= 10;i++)
+        for (int i = 1; i <= 10; i++)
         {
             accounts.Add(new Account()
             {
@@ -137,6 +145,7 @@ public class DataContributor
                         EstimatedRevenue = random.Next(5000)
                     });
                     break;
+
                 case 1:
                     leads.Add(new Lead()
                     {
@@ -149,6 +158,7 @@ public class DataContributor
                         EndedDate = DateTime.Now
                     });
                     break;
+
                 case 2:
                     leads.Add(new Lead()
                     {
@@ -173,13 +183,14 @@ public class DataContributor
     private async Task<IEnumerable<Deal>> SeedDealAsync()
     {
         var deals = new List<Deal>();
+        var noneOpenLead = _leads.Where(x => x.Status != LeadStatus.Open);
         var random = new Random();
 
         for (int i = 1; i <= 10; i++)
         {
             var dealLines = new List<DealLine>();
 
-            for (int j = 1;j <= 5;j++)
+            for (int j = 1; j <= 5; j++)
             {
                 dealLines.Add(new DealLine()
                 {
@@ -193,7 +204,7 @@ public class DataContributor
                 Title = $"Deal {i}",
                 Description = $"Deal {i}",
                 Status = random.Next(2) == 1 ? DealStatus.Open : DealStatus.Won,
-                Lead = _leads.ElementAt(random.Next(0, 9)),
+                Lead = noneOpenLead.ElementAt(random.Next(0, noneOpenLead.Count() - 1)),
                 EstimatedRevenue = random.Next(5000),
                 Lines = dealLines
             });

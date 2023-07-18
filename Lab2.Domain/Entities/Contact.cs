@@ -2,7 +2,7 @@ using Lab2.Domain.Base;
 
 namespace Lab2.Domain.Entities;
 
-public class Contact : Entity<int>
+public class Contact : Entity
 {
     public string Name { get; set; }
     public string Email { get; set; }

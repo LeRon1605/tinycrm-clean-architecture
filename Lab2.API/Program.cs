@@ -10,6 +10,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+});
+
+
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
@@ -28,6 +34,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.SeedDataAsync();
+await app.SeedDataAsync();
 
 app.Run();

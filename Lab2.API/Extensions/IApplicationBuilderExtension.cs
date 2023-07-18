@@ -10,13 +10,11 @@ public static class IApplicationBuilderExtension
         applicationBuilder.UseMiddleware<ExceptionHandlingMiddleware>();
     }
 
-    public static async void SeedDataAsync(this IApplicationBuilder applicationBuilder)
+    public static async Task SeedDataAsync(this IApplicationBuilder applicationBuilder)
     {
-        using (var scope = applicationBuilder.ApplicationServices.CreateScope())
-        {
-            var dataContributor = scope.ServiceProvider.GetRequiredService<DataContributor>();
+        using var scope = applicationBuilder.ApplicationServices.CreateScope();
+        var dataContributor = scope.ServiceProvider.GetRequiredService<DataContributor>();
 
-            await dataContributor.SeedAsync();
-        }
+        await dataContributor.SeedAsync();
     }
 }

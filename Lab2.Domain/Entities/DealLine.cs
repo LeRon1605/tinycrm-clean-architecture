@@ -2,7 +2,7 @@
 
 namespace Lab2.Domain.Entities;
 
-public class DealLine : Entity<int>
+public class DealLine : Entity
 {
     public int PricePerUnit { get; set; }
     public int Quantity { get; set; }

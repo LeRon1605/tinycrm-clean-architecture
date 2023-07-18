@@ -1,12 +1,8 @@
 ﻿using Lab2.API.Dtos;
+using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface IProductService
+public interface IProductService : IService<Product, ProductDto, ProductCreateDto, ProductUpdateDto>
 {
-    Task<PagedResultDto<ProductDto>> GetAllAsync(ProductFilterAndPagingRequestDto productFilterAndPagingRequestDto);
-    Task<ProductDto> GetAsync(int id);
-    Task<ProductDto> CreateAsync(ProductCreateDto productCreateDto);
-    Task<ProductDto> UpdateAsync(int id, ProductUpdateDto productUpdateDto);
-    Task DeleteAsync(int id);
 }

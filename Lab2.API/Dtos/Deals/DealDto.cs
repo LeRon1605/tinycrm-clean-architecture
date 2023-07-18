@@ -12,6 +12,4 @@ public class DealDto
     public DealStatus Status { get; set; }
 
     public int? LeadId { get; set; }
-
-    public DealLineDto[] Lines { get; set; }
 }

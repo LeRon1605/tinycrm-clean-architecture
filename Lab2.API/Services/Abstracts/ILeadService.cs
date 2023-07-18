@@ -1,15 +1,12 @@
 ﻿using Lab2.API.Dtos;
+using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface ILeadService
+public interface ILeadService : IService<Lead, LeadDto, LeadCreateDto, LeadUpdateDto>
 {
-    Task<PagedResultDto<LeadDto>> GetAllAsync(LeadFilterAndPagingRequestDto leadFilterAndPagingRequestDto);
-    Task<LeadDto> GetAsync(int id);
-    Task<LeadDto> CreateAsync(LeadCreateDto leadCreateDto);
-    Task<LeadDto> UpdateAsync(int id, LeadUpdateDto leadUpdateDto);
-    Task DeleteAsync(int id);
-    Task<IEnumerable<LeadDto>> GetLeadsOfAccountAsync(int accountId);
+    Task<PagedResultDto<LeadDto>> GetLeadsOfAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam);
     Task<DealDto> QualifyAsync(int id);
     Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto);
+    Task<LeadStatisticDto> GetStatistic();
 }

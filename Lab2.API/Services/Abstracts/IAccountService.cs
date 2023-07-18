@@ -1,13 +1,9 @@
 ﻿using Lab2.API.Dtos;
+using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface IAccountService
+public interface IAccountService : IService<Account, AccountDto, AccountCreateDto, AccountUpdateDto>
 {
-    Task<PagedResultDto<AccountDto>> GetAllAsync(AccountFilterAndPagingRequestDto accountFilterAndPagingRequestDto);
-    Task<AccountDto> GetAsync(int id);
-    Task<AccountDto> CreateAsync(AccountCreateDto accountCreateDto);
-    Task<AccountDto> UpdateAsync(int id, AccountUpdateDto accountUpdateDto);
-    Task DeleteAsync(int id);
     Task<AccountDto> GetAccountOfContactAsync(int contactId);
 }
