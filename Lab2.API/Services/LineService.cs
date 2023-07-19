@@ -29,10 +29,10 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
     protected override async Task<bool> IsValidOnInsertAsync(DealLineCreateDto entityCreateDto)
     {
         // Check if deal exist
-        await CheckValidDealAsync(entityCreateDto.DealId);
+        await CheckDealExistingAsync(entityCreateDto.DealId);
 
         // Check if product exist
-        await CheckValidProductAsync(entityCreateDto.ProductId);
+        await CheckProductExistingAsync(entityCreateDto.ProductId);
 
         return true;
     }
@@ -42,7 +42,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
         if (dealLineUpdateDto.ProductId != line.ProductId)
         {
             // Check if product is exist
-            await CheckValidProductAsync(dealLineUpdateDto.ProductId);
+            await CheckProductExistingAsync(dealLineUpdateDto.ProductId);
         }
 
         return true;
@@ -60,7 +60,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
     public async Task<PagedResultDto<DealLineDto>> GetProductsInDealAsync(int dealId, DealLineFilterAndPagingRequestDto filterParam)
     {
         // Check if deal exist
-        await CheckValidDealAsync(dealId);
+        await CheckDealExistingAsync(dealId);
 
         return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
                                    take: filterParam.Size,
@@ -68,7 +68,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
                                    sorting: filterParam.BuildSortingParam());
     }
 
-    private async Task<bool> CheckValidDealAsync(int dealId)
+    private async Task<bool> CheckDealExistingAsync(int dealId)
     {
         var isDealExisting = await _dealRepository.AnyAsync(x => x.Id == dealId);
         if (!isDealExisting)
@@ -79,7 +79,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
         return true;
     }
 
-    private async Task<bool> CheckValidProductAsync(int productId)
+    private async Task<bool> CheckProductExistingAsync(int productId)
     {
         var isProductExisting = await _productRepository.AnyAsync(x => x.Id == productId);
         if (!isProductExisting)

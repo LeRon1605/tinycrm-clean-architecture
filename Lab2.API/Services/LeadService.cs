@@ -29,14 +29,14 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
 
     protected override async Task<bool> IsValidOnInsertAsync(LeadCreateDto leadCreateDto)
     {
-        return await CheckValidAccountAsync(leadCreateDto.CustomerId);
+        return await CheckAccountExistingAsync(leadCreateDto.CustomerId);
     }
 
     protected override async Task<bool> IsValidOnUpdateAsync(Lead lead, LeadUpdateDto leadUpdateDto)
     {
         if (lead.Status != LeadStatus.Qualified || lead.Status != LeadStatus.Disqualified && lead.CustomerId != leadUpdateDto.CustomerId)
         {
-            return await CheckValidAccountAsync(leadUpdateDto.CustomerId);
+            return await CheckAccountExistingAsync(leadUpdateDto.CustomerId);
         }
 
         return true;
@@ -72,7 +72,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
 
     public async Task<PagedResultDto<LeadDto>> GetLeadsOfAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam)
     {
-        await CheckValidAccountAsync(accountId);
+        await CheckAccountExistingAsync(accountId);
 
         return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
                                    take: filterParam.Size,
@@ -149,7 +149,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         return lead;
     }
 
-    private async Task<bool> CheckValidAccountAsync(int accountId)
+    private async Task<bool> CheckAccountExistingAsync(int accountId)
     {
         var isCustomerExisting = await _accountRepository.AnyAsync(x => x.Id == accountId);
         if (!isCustomerExisting)

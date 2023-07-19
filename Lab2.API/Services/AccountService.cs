@@ -22,14 +22,14 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
 
     protected override async Task<bool> IsValidOnInsertAsync(AccountCreateDto accountCreateDto)
     {
-        return await CheckDuplicateAccountEmailAsync(accountCreateDto.Email);
+        return await CheckValidAccountAsync(accountCreateDto.Email, accountCreateDto.Phone);
     }
 
     protected override async Task<bool> IsValidOnUpdateAsync(Account account, AccountUpdateDto accountUpdateDto)
     {
-        if (account.Email != accountUpdateDto.Email) 
+        if (account.Email != accountUpdateDto.Email || account.Phone != accountUpdateDto.Phone) 
         {
-            await CheckDuplicateAccountEmailAsync(accountUpdateDto.Email);
+            await CheckValidAccountAsync(accountUpdateDto.Email, accountUpdateDto.Phone, account.Id);
         }
 
         return true;
@@ -47,13 +47,21 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
         return Mapper.Map<AccountDto>(contact.Account);
     }
 
-    private async Task<bool> CheckDuplicateAccountEmailAsync(string email)
+    private async Task<bool> CheckValidAccountAsync(string email, string phone, int? id = null)
     {
-        var isEmailExisting = await Repository.AnyAsync(x => x.Email == email);
-        if (isEmailExisting)
+        var account = await Repository.FindAsync(x => (x.Email == email || x.Phone == phone) && (id == null || id.Value == x.Id));
+        if (account != null)
         {
-            throw new EntityConflictException("Account", "email", email);
-        }
+            if (account.Email == email)
+            {
+                throw new EntityConflictException("Account", "email", email);
+            }
+
+            if (account.Phone == phone)
+            {
+                throw new EntityConflictException("Account", "phone", phone);
+            }    
+        }       
 
         return true;
     }

@@ -23,14 +23,14 @@ public class ContactService : BaseService<Contact, ContactDto, ContactCreateDto,
 
     protected override async Task<bool> IsValidOnInsertAsync(ContactCreateDto contactCreateDto)
     {
-        return await CheckValidAccountAsync(contactCreateDto.AccountId);
+        return await CheckAccountExistingAsync(contactCreateDto.AccountId);
     }
 
     protected override async Task<bool> IsValidOnUpdateAsync(Contact contact, ContactUpdateDto contactUpdateDto)
     {
         if (contact.AccountId != contactUpdateDto.AccountId)
         {
-            return await CheckValidAccountAsync(contactUpdateDto.AccountId);
+            return await CheckAccountExistingAsync(contactUpdateDto.AccountId);
         }
 
         return true;
@@ -39,7 +39,7 @@ public class ContactService : BaseService<Contact, ContactDto, ContactCreateDto,
     public async Task<PagedResultDto<ContactDto>> GetContactsOfAccountAsync(int accountId, ContactFilterAndPagingRequestDto filterParam)
     {
         // Check if account exist
-        await CheckValidAccountAsync(accountId);
+        await CheckAccountExistingAsync(accountId);
         
         return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
                                    take: filterParam.Size,
@@ -47,7 +47,7 @@ public class ContactService : BaseService<Contact, ContactDto, ContactCreateDto,
                                    sorting: filterParam.BuildSortingParam());
     }
 
-    private async Task<bool> CheckValidAccountAsync(int? accountId)
+    private async Task<bool> CheckAccountExistingAsync(int? accountId)
     {
         if (accountId != null)
         {
