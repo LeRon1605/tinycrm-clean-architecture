@@ -1,5 +1,4 @@
 ﻿using Lab2.API.Dtos;
-using Lab2.API.Exceptions;
 using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;

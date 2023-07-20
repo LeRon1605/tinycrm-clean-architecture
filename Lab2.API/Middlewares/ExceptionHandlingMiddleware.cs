@@ -1,7 +1,7 @@
-﻿using System.Text;
-using System.Text.RegularExpressions;
-using Lab2.API.Dtos;
+﻿using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Lab2.API.Middlewares;
 
@@ -56,7 +56,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
             _ => StatusCodes.Status500InternalServerError
         };
         await context.Response.WriteAsJsonAsync(errorResponse);
-    }    
+    }
 
     private async Task<string> BuildLoggingMessage(HttpContext context, Exception exception)
     {
@@ -74,7 +74,7 @@ public class ExceptionHandlingMiddleware : IMiddleware
         context.Request.Body.Seek(0, SeekOrigin.Begin);
         using var reader = new StreamReader(context.Request.Body);
         var requestBody = await reader.ReadToEndAsync();
-        
+
         return "{" + new Regex(@"(\n |\r |\n|{|})+").Replace(requestBody, "") + " }";
     }
 }

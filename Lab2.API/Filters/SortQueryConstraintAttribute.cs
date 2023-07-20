@@ -25,14 +25,14 @@ public class SortQueryConstraintAttribute : ActionFilterAttribute
                     if (!allowedSortingFields.Contains(splitedValue[0]))
                     {
                         throw new BadRequestException($"Only sorting in '{Fields}' fields is allowed!");
-                    }    
-                    
+                    }
+
                     if (splitedValue.Length > 1 && splitedValue[1] != "asc" && splitedValue[1] != "desc")
                     {
                         throw new BadRequestException($"Orderby param only accepts 'asc' or 'desc'!");
-                    }    
-                }    
-            }    
-        }    
+                    }
+                }
+            }
+        }
     }
 }

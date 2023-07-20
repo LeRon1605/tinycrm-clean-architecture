@@ -6,5 +6,6 @@ namespace Lab2.Domain.Repositories;
 public interface IDealRepository : IRepository<Deal>
 {
     Task<double> GetAverageRevenueAsync();
+
     Task<int> GetTotalRevenueAsync();
 }

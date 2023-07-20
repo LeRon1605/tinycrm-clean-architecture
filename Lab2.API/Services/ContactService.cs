@@ -40,7 +40,7 @@ public class ContactService : BaseService<Contact, ContactDto, ContactCreateDto,
     {
         // Check if account exist
         await CheckAccountExistingAsync(accountId);
-        
+
         return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
                                    take: filterParam.Size,
                                    expression: filterParam.ToExpression().JoinWith(x => x.AccountId == accountId),

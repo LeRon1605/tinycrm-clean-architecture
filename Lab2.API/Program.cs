@@ -15,7 +15,6 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
 });
 
-
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();

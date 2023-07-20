@@ -27,9 +27,9 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
 
     public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity> filterParam)
     {
-        return GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size, 
-                             take: filterParam.Size, 
-                             expression: filterParam.ToExpression(), 
+        return GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
+                             take: filterParam.Size,
+                             expression: filterParam.ToExpression(),
                              sorting: filterParam.BuildSortingParam());
     }
 

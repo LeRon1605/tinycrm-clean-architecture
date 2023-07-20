@@ -6,5 +6,4 @@ namespace Lab2.API.Controllers;
 [ApiController]
 public abstract class ApiController : ControllerBase
 {
-    
 }

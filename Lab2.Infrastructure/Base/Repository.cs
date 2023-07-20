@@ -1,7 +1,7 @@
 ﻿using Lab2.Domain.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 
 namespace Lab2.Infrastructure.Base;
 
@@ -43,7 +43,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         if (!string.IsNullOrEmpty(sorting))
         {
             queryable = queryable.OrderBy(sorting);
-        }    
+        }
 
         return queryable.Where(expression).Skip(skip).Take(take).ToListAsync();
     }

@@ -17,7 +17,6 @@ public class Deal : Entity
 
     public Deal()
     {
-
     }
 
     public Deal(Lead lead)

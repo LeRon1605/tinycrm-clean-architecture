@@ -10,5 +10,6 @@ public interface IFilterDto<TEntity> where TEntity : Entity
     public string Sorting { get; set; }
 
     Expression<Func<TEntity, bool>> ToExpression();
+
     string BuildSortingParam();
 }

@@ -5,13 +5,14 @@ namespace Lab2.API.Services;
 
 public interface IService<TEntity> where TEntity : Entity
 {
-
 }
 
 public interface IService<TEntity, TEntityDto> : IService<TEntity> where TEntity : Entity
 {
     Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity> filterParam);
+
     Task<TEntityDto> GetAsync(int id);
+
     Task DeleteAsync(int id);
 }
 

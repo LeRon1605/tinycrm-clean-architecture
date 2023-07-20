@@ -27,7 +27,7 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
 
     protected override async Task<bool> IsValidOnUpdateAsync(Account account, AccountUpdateDto accountUpdateDto)
     {
-        if (account.Email != accountUpdateDto.Email || account.Phone != accountUpdateDto.Phone) 
+        if (account.Email != accountUpdateDto.Email || account.Phone != accountUpdateDto.Phone)
         {
             await CheckValidAccountAsync(accountUpdateDto.Email, accountUpdateDto.Phone, account.Id);
         }
@@ -60,8 +60,8 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
             if (account.Phone == phone)
             {
                 throw new EntityConflictException("Account", "phone", phone);
-            }    
-        }       
+            }
+        }
 
         return true;
     }

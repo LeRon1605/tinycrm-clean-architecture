@@ -11,5 +11,5 @@ public class Product : Entity
     public int Price { get; set; }
     public bool IsAvailable { get; set; }
 
-    public ICollection<DealLine> Lines { get; set; }  
+    public ICollection<DealLine> Lines { get; set; }
 }

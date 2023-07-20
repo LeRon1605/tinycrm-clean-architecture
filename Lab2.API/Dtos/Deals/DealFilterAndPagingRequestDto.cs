@@ -9,7 +9,6 @@ public class DealFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<Deal>
 {
     public string Title { get; set; } = string.Empty;
     public DealStatus? Status { get; set; }
-    
 
     public Expression<Func<Deal, bool>> ToExpression()
     {

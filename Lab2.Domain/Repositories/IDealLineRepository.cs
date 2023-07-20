@@ -5,5 +5,4 @@ namespace Lab2.Domain.Repositories;
 
 public interface IDealLineRepository : IRepository<DealLine>
 {
-    
 }
