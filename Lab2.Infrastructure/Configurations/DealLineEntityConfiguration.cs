@@ -8,7 +8,10 @@ public class DealLineEntityConfiguration : IEntityTypeConfiguration<DealLine>
 {
     public void Configure(EntityTypeBuilder<DealLine> builder)
     {
-        builder.ToTable("DealLines");
+        builder.ToTable(tb => 
+        {
+            tb.HasTrigger("UpdateTotalSale");
+        });
 
         builder.HasOne(x => x.Product)
                .WithMany(x => x.Lines)

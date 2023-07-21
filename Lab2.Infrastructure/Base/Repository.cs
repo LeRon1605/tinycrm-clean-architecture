@@ -40,7 +40,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
             }
         }
 
-        if (!string.IsNullOrEmpty(sorting))
+        if (!string.IsNullOrWhiteSpace(sorting))
         {
             queryable = queryable.OrderBy(sorting);
         }
