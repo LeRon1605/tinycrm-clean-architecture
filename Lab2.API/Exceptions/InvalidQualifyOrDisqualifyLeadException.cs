@@ -5,7 +5,7 @@ namespace Lab2.API.Exceptions;
 public class InvalidQualifyOrDisqualifyLeadException : BadRequestException
 {
     public InvalidQualifyOrDisqualifyLeadException(int id, LeadStatus currentStatus)
-        : base($"Lead with id '{id}' has already been {currentStatus}!", ErrorCodes.LEAD_INVALID_QUALIFY_OR_DISQUALIFY)
+        : base($"Lead with id '{id}' has already been {currentStatus}!", ErrorCodes.LeadInvalidQualifyOrDisqualify)
     {
     }
 }

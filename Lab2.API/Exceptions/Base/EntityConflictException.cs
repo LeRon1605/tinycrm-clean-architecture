@@ -2,7 +2,7 @@
 
 public class EntityConflictException : ConflictException
 {
-    public EntityConflictException(string entityName, string column, string value) : base($"{entityName} with {column} '{value}' has already existed!", ErrorCodes.ENTITY_CONFLICT)
+    public EntityConflictException(string entityName, string column, string value) : base($"{entityName} with {column} '{value}' has already existed!", ErrorCodes.EntityConflict)
     {
     }
 

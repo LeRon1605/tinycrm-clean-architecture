@@ -8,11 +8,11 @@ public class AccountAlreadyExistException : EntityConflictException
     {
         if (string.Equals(column, nameof(Account.Email), StringComparison.OrdinalIgnoreCase))
         {
-            ErrorCode = ErrorCodes.ACCOUNT_EMAIL_ALREADY_EXISTS;
+            ErrorCode = ErrorCodes.AccountEmailAlreadyExists;
         }
         else if (string.Equals(column, nameof(Account.Phone), StringComparison.OrdinalIgnoreCase))
         {
-            ErrorCode = ErrorCodes.ACCOUNT_PHONE_ALREADY_EXISTS;
+            ErrorCode = ErrorCodes.AccountPhoneAlreadyExists;
         }
     }
 }

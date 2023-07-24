@@ -61,7 +61,7 @@ public class ExceptionHandler : IExceptionHandler
             Code = exception switch
             {
                 HttpException => ((HttpException)exception).ErrorCode,
-                _ => ErrorCodes.INTERNAL_SERVER_ERROR
+                _ => ErrorCodes.InternalServerError
             },
             Message = exception switch
             {
