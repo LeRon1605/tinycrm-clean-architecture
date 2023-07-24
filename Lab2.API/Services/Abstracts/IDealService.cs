@@ -6,5 +6,5 @@ namespace Lab2.API.Services;
 
 public interface IDealService : IService<Deal, DealDto, DealCreateDto, DealUpdateDto>
 {
-    Task<DealStatisticDto> GetStatistic();
+    Task<DealStatisticDto> GetStatisticAsync();
 }

@@ -11,5 +11,5 @@ public interface ILeadService : IService<Lead, LeadDto, LeadCreateDto, LeadUpdat
 
     Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto);
 
-    Task<LeadStatisticDto> GetStatistic();
+    Task<LeadStatisticDto> GetStatisticAsync();
 }

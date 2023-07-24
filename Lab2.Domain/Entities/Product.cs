@@ -1,5 +1,5 @@
 using Lab2.Domain.Base;
-using Lab2.Domain.Shared.Enums;
+using Lab2.Domain.Enums;
 
 namespace Lab2.Domain.Entities;
 

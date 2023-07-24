@@ -1,6 +1,6 @@
 ﻿using Lab2.API.Dtos.Shared;
 using Lab2.Domain.Entities;
-using Lab2.Domain.Shared.Enums;
+using Lab2.Domain.Enums;
 using System.Linq.Expressions;
 
 namespace Lab2.API.Dtos;

@@ -1,7 +1,7 @@
 ﻿using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
-using Lab2.Domain.Shared.Enums;
+using Lab2.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace Lab2.Domain;

@@ -23,7 +23,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
         _dealRepository = dealRepository;
         _productRepository = productRepository;
 
-        IncludePropsOnGet = nameof(DealLine.Product);
+        _includePropsOnGet = nameof(DealLine.Product);
     }
 
     protected override async Task<bool> IsValidOnInsertAsync(DealLineCreateDto entityCreateDto)

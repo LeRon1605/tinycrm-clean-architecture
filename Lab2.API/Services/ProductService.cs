@@ -33,7 +33,7 @@ public class ProductService : BaseService<Product, ProductDto, ProductCreateDto,
 
     private async Task<bool> CheckDuplicateProductCode(string code)
     {
-        var isProductCodeExisting = await Repository.AnyAsync(x => x.Code == code);
+        var isProductCodeExisting = await _repository.AnyAsync(x => x.Code == code);
         if (isProductCodeExisting)
         {
             throw new EntityConflictException("Product", "code", code);

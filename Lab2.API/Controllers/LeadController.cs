@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class LeadController : ApiController
+[ApiController]
+[Route("api/leads")]
+public class LeadController : ControllerBase
 {
     private readonly ILeadService _leadService;
 
@@ -17,16 +19,17 @@ public class LeadController : ApiController
     [HttpGet]
     [SortQueryConstraint(Fields = "Title, Customer")]
     [ProducesResponseType(typeof(PagedResultDto<LeadDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllLeads([FromQuery] LeadFilterAndPagingRequestDto leadFilterAndPagingRequestDto)
+    public async Task<IActionResult> GetAllLeadsAsync([FromQuery] LeadFilterAndPagingRequestDto leadFilterAndPagingRequestDto)
     {
         var leadDtos = await _leadService.GetPagedAsync(leadFilterAndPagingRequestDto);
         return Ok(leadDtos);
     }
 
     [HttpGet("{id}")]
+    [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetDetail(int id)
+    public async Task<IActionResult> GetDetailAsync(int id)
     {
         var leadDto = await _leadService.GetAsync(id);
         return Ok(leadDto);
@@ -35,16 +38,16 @@ public class LeadController : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateLead(LeadCreateDto leadCreateDto)
+    public async Task<IActionResult> CreateLeadAsync(LeadCreateDto leadCreateDto)
     {
         var leadDto = await _leadService.CreateAsync(leadCreateDto);
-        return CreatedAtAction(nameof(GetDetail), new { id = leadDto.Id }, leadDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = leadDto.Id }, leadDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateLead(int id, LeadUpdateDto leadUpdateDto)
+    public async Task<IActionResult> UpdateLeadAsync(int id, LeadUpdateDto leadUpdateDto)
     {
         var leadDto = await _leadService.UpdateAsync(id, leadUpdateDto);
         return Ok(leadDto);
@@ -54,7 +57,7 @@ public class LeadController : ApiController
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeleteLead(int id)
+    public async Task<IActionResult> DeleteLeadAsync(int id)
     {
         await _leadService.DeleteAsync(id);
         return NoContent();
@@ -67,14 +70,14 @@ public class LeadController : ApiController
     public async Task<IActionResult> QualifyLead(int id)
     {
         var dealDto = await _leadService.QualifyAsync(id);
-        return CreatedAtAction(nameof(DealController.GetDetail), "Deal", new { id = dealDto.Id }, dealDto);
+        return CreatedAtAction(nameof(DealController.GetDetailAsync), "Deal", new { id = dealDto.Id }, dealDto);
     }
 
     [HttpPost("{id}/disqualify")]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DisqualifyLead(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
+    public async Task<IActionResult> DisqualifyLeadAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
     {
         var leadDto = await _leadService.DisqualifyAsync(id, disqualifiedLeadCreateDto);
         return Ok(leadDto);
@@ -82,9 +85,9 @@ public class LeadController : ApiController
 
     [HttpGet("statistic")]
     [ProducesResponseType(typeof(LeadStatisticDto), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetLeadStatistic()
+    public async Task<IActionResult> GetLeadStatisticAsync()
     {
-        var leadStatisticDto = await _leadService.GetStatistic();
+        var leadStatisticDto = await _leadService.GetStatisticAsync();
         return Ok(leadStatisticDto);
     }
 }

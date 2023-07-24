@@ -8,21 +8,20 @@ namespace Lab2.API.Services;
 
 public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> where TEntity : Entity
 {
-    protected IRepository<TEntity> Repository;
-    protected IMapper Mapper { get; set; }
-    protected IUnitOfWork UnitOfWork { get; set; }
-    protected string IncludePropsOnGet { get; set; }
+    protected IRepository<TEntity> _repository;
+    protected IMapper _mapper;
+    protected IUnitOfWork _unitOfWork;
+    protected string _includePropsOnGet;
 
     public BaseService(
         IMapper mapper,
         IRepository<TEntity> repository,
         IUnitOfWork unitOfWork)
     {
-        Mapper = mapper;
-        Repository = repository;
-        UnitOfWork = unitOfWork;
-
-        IncludePropsOnGet = string.Empty;
+        _mapper = mapper;
+        _repository = repository;
+        _unitOfWork = unitOfWork;
+        _includePropsOnGet = string.Empty;
     }
 
     public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity> filterParam)
@@ -35,37 +34,37 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
 
     protected async Task<PagedResultDto<TEntityDto>> GetPagedAsync(int skip, int take, Expression<Func<TEntity, bool>> expression, string sorting)
     {
-        var data = await Repository.GetPagedListAsync(
+        var data = await _repository.GetPagedListAsync(
                                                 skip: skip,
                                                 take: take,
                                                 expression,
                                                 sorting,
                                                 tracking: false,
-                                                includeProps: IncludePropsOnGet);
-        var total = await Repository.GetCountAsync(expression);
+                                                includeProps: _includePropsOnGet);
+        var total = await _repository.GetCountAsync(expression);
 
         return new PagedResultDto<TEntityDto>()
         {
-            Data = Mapper.Map<IEnumerable<TEntityDto>>(data),
+            Data = _mapper.Map<IEnumerable<TEntityDto>>(data),
             TotalPages = (int)Math.Ceiling(total * 1.0 / take)
         };
     }
 
     public virtual async Task<TEntityDto> GetAsync(int id)
     {
-        TEntity? entity = await Repository.FindAsync(x => x.Id == id, includeProps: IncludePropsOnGet, tracking: false);
+        TEntity? entity = await _repository.FindAsync(x => x.Id == id, includeProps: _includePropsOnGet, tracking: false);
         if (entity == null)
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id);
         }
 
-        return Mapper.Map<TEntityDto>(entity);
+        return _mapper.Map<TEntityDto>(entity);
     }
 
     public virtual async Task DeleteAsync(int id)
     {
         // Find entity by Id
-        TEntity? entity = await Repository.FindByIdAsync(id);
+        TEntity? entity = await _repository.FindByIdAsync(id);
         if (entity == null)
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id);
@@ -74,8 +73,8 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
         // Perform business check before delete
         if (await IsValidOnDeleteAsync(entity))
         {
-            Repository.Delete(entity);
-            await UnitOfWork.CommitAsync();
+            _repository.Delete(entity);
+            await _unitOfWork.CommitAsync();
         }
     }
 
@@ -103,13 +102,13 @@ public class BaseService<TEntity, TEntityDto, TEntityCreateDto> : BaseService<TE
         if (await IsValidOnInsertAsync(entityCreateDto))
         {
             // Create entity from dto
-            var entity = Mapper.Map<TEntity>(entityCreateDto);
+            var entity = _mapper.Map<TEntity>(entityCreateDto);
 
             // Insert entity to db
-            Repository.Insert(entity);
-            await UnitOfWork.CommitAsync();
+            _repository.Insert(entity);
+            await _unitOfWork.CommitAsync();
 
-            return Mapper.Map<TEntityDto>(entity);
+            return _mapper.Map<TEntityDto>(entity);
         }
 
         throw new BadRequestException($"Invalid operation, can not insert {typeof(TEntity).Name}!");
@@ -136,7 +135,7 @@ public class BaseService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto
     public virtual async Task<TEntityDto> UpdateAsync(int id, TEntityUpdateDto entityUpdateDto)
     {
         // Fetch entity from db
-        var entity = await Repository.FindByIdAsync(id);
+        var entity = await _repository.FindByIdAsync(id);
         if (entity == null)
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id);
@@ -149,10 +148,10 @@ public class BaseService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto
             entity = UpdateEntity(entity, entityUpdateDto);
 
             // Update to db
-            Repository.Update(entity);
-            await UnitOfWork.CommitAsync();
+            _repository.Update(entity);
+            await _unitOfWork.CommitAsync();
 
-            return Mapper.Map<TEntityDto>(entity);
+            return _mapper.Map<TEntityDto>(entity);
         }
 
         throw new BadRequestException($"Invalid operation, can not update {typeof(TEntity).Name}!");
@@ -163,7 +162,7 @@ public class BaseService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto
     /// </summary>
     protected virtual TEntity UpdateEntity(TEntity entity, TEntityUpdateDto entityUpdateDto)
     {
-        Mapper.Map(entityUpdateDto, entity);
+        _mapper.Map(entityUpdateDto, entity);
         return entity;
     }
 

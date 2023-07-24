@@ -44,12 +44,12 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
             throw new EntityNotFoundException("Contact", contactId);
         }
 
-        return Mapper.Map<AccountDto>(contact.Account);
+        return _mapper.Map<AccountDto>(contact.Account);
     }
 
     private async Task<bool> CheckValidAccountAsync(string email, string phone, int? id = null)
     {
-        var account = await Repository.FindAsync(x => (x.Email == email || x.Phone == phone) && (id == null || id.Value == x.Id));
+        var account = await _repository.FindAsync(x => (x.Email == email || x.Phone == phone) && (id == null || id.Value == x.Id));
         if (account != null)
         {
             if (account.Email == email)

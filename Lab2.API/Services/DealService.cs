@@ -5,7 +5,7 @@ using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
-using Lab2.Domain.Shared.Enums;
+using Lab2.Domain.Enums;
 
 namespace Lab2.API.Services;
 
@@ -47,7 +47,7 @@ public class DealService : BaseService<Deal, DealDto, DealCreateDto, DealUpdateD
         return deal;
     }
 
-    public async Task<DealStatisticDto> GetStatistic()
+    public async Task<DealStatisticDto> GetStatisticAsync()
     {
         return new DealStatisticDto()
         {

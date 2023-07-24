@@ -5,7 +5,7 @@ using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
-using Lab2.Domain.Shared.Enums;
+using Lab2.Domain.Enums;
 
 namespace Lab2.API.Services;
 
@@ -24,7 +24,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         _accountRepository = accountRepository;
         _dealRepository = dealRepository;
 
-        IncludePropsOnGet = nameof(Lead.Customer);
+        _includePropsOnGet = nameof(Lead.Customer);
     }
 
     protected override async Task<bool> IsValidOnInsertAsync(LeadCreateDto leadCreateDto)
@@ -80,14 +80,14 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
                                    sorting: filterParam.BuildSortingParam());
     }
 
-    public async Task<LeadStatisticDto> GetStatistic()
+    public async Task<LeadStatisticDto> GetStatisticAsync()
     {
         return new LeadStatisticDto()
         {
-            OpenLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Open),
-            DisqualifiedLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Disqualified),
-            QualifiedLead = await Repository.GetCountAsync(x => x.Status == LeadStatus.Qualified),
-            AverageEstimatedRevenue = await Repository.GetAverageAsync(x => x.EstimatedRevenue)
+            OpenLead = await _repository.GetCountAsync(x => x.Status == LeadStatus.Open),
+            DisqualifiedLead = await _repository.GetCountAsync(x => x.Status == LeadStatus.Disqualified),
+            QualifiedLead = await _repository.GetCountAsync(x => x.Status == LeadStatus.Qualified),
+            AverageEstimatedRevenue = await _repository.GetAverageAsync(x => x.EstimatedRevenue)
         };
     }
 
@@ -99,15 +99,15 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         // Update lead status to qualified
         lead.Status = LeadStatus.Qualified;
         lead.EndedDate = DateTime.Now;
-        Repository.Update(lead);
+        _repository.Update(lead);
 
         // Create new deal from lead
         var deal = new Deal(lead);
         await _dealRepository.InsertAsync(deal);
 
         // Commit to db
-        await UnitOfWork.CommitAsync();
-        return Mapper.Map<DealDto>(deal);
+        await _unitOfWork.CommitAsync();
+        return _mapper.Map<DealDto>(deal);
     }
 
     public async Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
@@ -118,9 +118,9 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         // Update lead to disqualified status
         UpdateLeadToDisqualifed(lead, disqualifiedLeadCreateDto);
 
-        Repository.Update(lead);
-        await UnitOfWork.CommitAsync();
-        return Mapper.Map<LeadDto>(lead);
+        _repository.Update(lead);
+        await _unitOfWork.CommitAsync();
+        return _mapper.Map<LeadDto>(lead);
     }
 
     private void UpdateLeadToDisqualifed(Lead lead, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto)
@@ -134,7 +134,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
     private async Task<Lead> CheckPerformQualifyOrDisqualifyAsync(int id)
     {
         // Fetch lead from db
-        var lead = await Repository.FindAsync(x => x.Id == id);
+        var lead = await _repository.FindAsync(x => x.Id == id);
         if (lead == null)
         {
             throw new EntityNotFoundException("Lead", id);

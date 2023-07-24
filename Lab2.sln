@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab2.API", "Lab2.API\Lab2.A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab2.Domain", "Lab2.Domain\Lab2.Domain.csproj", "{D9C077CE-4430-484D-A211-0F52C559D529}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab2.Domain.Shared", "Lab2.Domain.Shared\Lab2.Domain.Shared.csproj", "{A163016D-D6A4-4632-AF61-D94C85C65393}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab2.Infrastructure", "Lab2.Infrastructure\Lab2.Infrastructure.csproj", "{C0B9D0EB-866E-4470-B673-CE98FF858D16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lab2.Infrastructure", "Lab2.Infrastructure\Lab2.Infrastructure.csproj", "{C0B9D0EB-866E-4470-B673-CE98FF858D16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +23,6 @@ Global
 		{D9C077CE-4430-484D-A211-0F52C559D529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9C077CE-4430-484D-A211-0F52C559D529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9C077CE-4430-484D-A211-0F52C559D529}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A163016D-D6A4-4632-AF61-D94C85C65393}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A163016D-D6A4-4632-AF61-D94C85C65393}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A163016D-D6A4-4632-AF61-D94C85C65393}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A163016D-D6A4-4632-AF61-D94C85C65393}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0B9D0EB-866E-4470-B673-CE98FF858D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0B9D0EB-866E-4470-B673-CE98FF858D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0B9D0EB-866E-4470-B673-CE98FF858D16}.Release|Any CPU.ActiveCfg = Release|Any CPU

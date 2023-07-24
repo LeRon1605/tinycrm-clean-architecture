@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class LineController : ApiController
+[ApiController]
+[Route("api/lines")]
+public class LineController : ControllerBase
 {
     private readonly ILineService _lineService;
 
@@ -16,16 +18,17 @@ public class LineController : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> CreateLine(DealLineCreateDto dealLineCreateDto)
+    public async Task<IActionResult> CreateLineAsync(DealLineCreateDto dealLineCreateDto)
     {
         var lineDto = await _lineService.CreateAsync(dealLineCreateDto);
-        return CreatedAtAction(nameof(GetDetail), new { id = lineDto.Id }, lineDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = lineDto.Id }, lineDto);
     }
 
     [HttpGet("{id}")]
+    [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetDetail(int id)
+    public async Task<IActionResult> GetDetailAsync(int id)
     {
         var lineDto = await _lineService.GetAsync(id);
         return Ok(lineDto);
@@ -34,7 +37,7 @@ public class LineController : ApiController
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateLine(int id, DealLineUpdateDto dealLineUpdateDto)
+    public async Task<IActionResult> UpdateLineAsync(int id, DealLineUpdateDto dealLineUpdateDto)
     {
         var lineDto = await _lineService.UpdateAsync(id, dealLineUpdateDto);
         return Ok(lineDto);
@@ -43,7 +46,7 @@ public class LineController : ApiController
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteLine(int id)
+    public async Task<IActionResult> DeleteLineAsync(int id)
     {
         await _lineService.DeleteAsync(id);
         return Ok();

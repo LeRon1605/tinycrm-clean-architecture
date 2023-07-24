@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
 
-public class AccountController : ApiController
+[ApiController]
+[Route("api/accounts")]
+public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
     private readonly IContactService _contactService;
@@ -24,16 +26,17 @@ public class AccountController : ApiController
     [HttpGet]
     [SortQueryConstraint(Fields = "Name, Email")]
     [ProducesResponseType(typeof(PagedResultDto<AccountDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllAccounts([FromQuery] AccountFilterAndPagingRequestDto accountFilterAndPagingRequestDto)
+    public async Task<IActionResult> GetAllAccountsAsync([FromQuery] AccountFilterAndPagingRequestDto accountFilterAndPagingRequestDto)
     {
         var accountDtos = await _accountService.GetPagedAsync(accountFilterAndPagingRequestDto);
         return Ok(accountDtos);
     }
 
     [HttpGet("{id}")]
+    [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetDetail(int id)
+    public async Task<IActionResult> GetDetailAsync(int id)
     {
         var accountDto = await _accountService.GetAsync(id);
         return Ok(accountDto);
@@ -42,17 +45,17 @@ public class AccountController : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> CreateAccount(AccountCreateDto accountCreateDto)
+    public async Task<IActionResult> CreateAccountAsync(AccountCreateDto accountCreateDto)
     {
         var accountDto = await _accountService.CreateAsync(accountCreateDto);
-        return CreatedAtAction(nameof(GetDetail), new { id = accountDto.Id }, accountDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = accountDto.Id }, accountDto);
     }
 
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> UpdateAccount(int id, AccountUpdateDto accountUpdateDto)
+    public async Task<IActionResult> UpdateAccountAsync(int id, AccountUpdateDto accountUpdateDto)
     {
         var accountDto = await _accountService.UpdateAsync(id, accountUpdateDto);
         return Ok(accountDto);
@@ -61,7 +64,7 @@ public class AccountController : ApiController
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteAccount(int id)
+    public async Task<IActionResult> DeleteAccountAsync(int id)
     {
         await _accountService.DeleteAsync(id);
         return NoContent();
@@ -71,7 +74,7 @@ public class AccountController : ApiController
     [SortQueryConstraint(Fields = "Name, Email")]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetContactsOfAccount(int id, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
+    public async Task<IActionResult> GetContactsOfAccountAsync(int id, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {
         var contactDtos = await _contactService.GetContactsOfAccountAsync(id, contactFilterAndPagingRequestDto);
         return Ok(contactDtos);
@@ -81,7 +84,7 @@ public class AccountController : ApiController
     [SortQueryConstraint(Fields = "Title, EstimatedRevenue")]
     [ProducesResponseType(typeof(IEnumerable<LeadDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetLeadsOfAccount(int id, [FromQuery] LeadFilterAndPagingRequestDto filterParam)
+    public async Task<IActionResult> GetLeadsOfAccountAsync(int id, [FromQuery] LeadFilterAndPagingRequestDto filterParam)
     {
         var leadDtos = await _leadService.GetLeadsOfAccountAsync(id, filterParam);
         return Ok(leadDtos);
