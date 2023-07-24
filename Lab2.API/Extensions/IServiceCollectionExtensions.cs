@@ -7,6 +7,7 @@ using Lab2.Domain.Repositories;
 using Lab2.Infrastructure;
 using Lab2.Infrastructure.Base;
 using Lab2.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.API.Extensions;
@@ -54,6 +55,15 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ILeadRepository, LeadRepository>()
                 .AddScoped<IDealRepository, DealRepository>()
                 .AddScoped<IDealLineRepository, DealLineRepository>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddIdentity(this IServiceCollection services)
+    {
+        services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
         return services;
     }

@@ -1,10 +1,12 @@
 ﻿using Lab2.Domain.Entities;
 using Lab2.Infrastructure.Configurations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.Infrastructure;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<IdentityUser>
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Product> Products { get; set; }

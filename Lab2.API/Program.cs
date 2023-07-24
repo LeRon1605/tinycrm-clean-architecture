@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServices()
                 .AddDatabase(builder.Configuration, builder.Environment)
+                .AddIdentity()
                 .AddRepositories();
 
 builder.Services.AddControllers();
