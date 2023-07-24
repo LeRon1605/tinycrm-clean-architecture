@@ -1,5 +1,4 @@
 ﻿using Lab2.API.Dtos;
-using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +18,6 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet]
-    [SortQueryConstraint(Fields = "Name, Email")]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllContactsAsync([FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {

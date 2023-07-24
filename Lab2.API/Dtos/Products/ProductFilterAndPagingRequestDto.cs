@@ -1,4 +1,5 @@
 ﻿using Lab2.API.Dtos.Shared;
+using Lab2.API.Validations;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
 using System.Linq.Expressions;
@@ -9,6 +10,9 @@ public class ProductFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<Pro
 {
     public string Name { get; set; } = string.Empty;
     public ProductType? Type { get; set; }
+
+    [SortConstraint(Fields = $"{nameof(Product.Code)}, {nameof(Product.Name)}, {nameof(Product.Price)}")]
+    public override string Sorting { get; set; } = string.Empty;
 
     public Expression<Func<Product, bool>> ToExpression()
     {

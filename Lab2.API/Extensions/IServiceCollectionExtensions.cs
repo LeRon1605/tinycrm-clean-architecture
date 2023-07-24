@@ -31,7 +31,7 @@ public static class IServiceCollectionExtensions
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<ExceptionHandler>();
+        services.AddScoped<IExceptionHandler, ExceptionHandler>();
 
         services.AddScoped<IAccountService, AccountService>()
                 .AddScoped<IContactService, ContactService>()

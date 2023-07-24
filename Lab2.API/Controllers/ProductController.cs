@@ -1,5 +1,4 @@
 ﻿using Lab2.API.Dtos;
-using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +16,6 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    [SortQueryConstraint(Fields = "Code, Name, Price")]
     [ProducesResponseType(typeof(PagedResultDto<ProductDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllProductsAsync([FromQuery] ProductFilterAndPagingRequestDto productFilterAndPagingRequestDto)

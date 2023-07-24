@@ -1,5 +1,4 @@
 ﻿using Lab2.API.Dtos;
-using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +23,6 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
-    [SortQueryConstraint(Fields = "Name, Email")]
     [ProducesResponseType(typeof(PagedResultDto<AccountDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAccountsAsync([FromQuery] AccountFilterAndPagingRequestDto accountFilterAndPagingRequestDto)
     {
@@ -71,7 +69,6 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("{id}/contacts")]
-    [SortQueryConstraint(Fields = "Name, Email")]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetContactsOfAccountAsync(int id, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
@@ -81,7 +78,6 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("{id}/leads")]
-    [SortQueryConstraint(Fields = "Title, EstimatedRevenue")]
     [ProducesResponseType(typeof(IEnumerable<LeadDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetLeadsOfAccountAsync(int id, [FromQuery] LeadFilterAndPagingRequestDto filterParam)

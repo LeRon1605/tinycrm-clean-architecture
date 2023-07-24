@@ -20,7 +20,7 @@ public static class IApplicationBuilderExtension
                 if (exception != null)
                 {
                     using var scope = app.ApplicationServices.CreateScope();
-                    var exceptionHandler = scope.ServiceProvider.GetRequiredService<ExceptionHandler>();
+                    var exceptionHandler = scope.ServiceProvider.GetRequiredService<IExceptionHandler>();
 
                     await exceptionHandler.HandleAsync(context, exception);
                 }

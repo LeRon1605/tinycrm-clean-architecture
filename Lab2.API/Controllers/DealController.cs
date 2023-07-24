@@ -1,6 +1,5 @@
 ﻿using Lab2.API.Dtos;
 using Lab2.API.Dtos.Deals;
-using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +19,6 @@ public class DealController : ControllerBase
     }
 
     [HttpGet]
-    [SortQueryConstraint(Fields = "Title")]
     [ProducesResponseType(typeof(PagedResultDto<DealDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllDealsAsync([FromQuery] DealFilterAndPagingRequestDto dealFilterAndPagingRequestDto)
     {
@@ -58,7 +56,6 @@ public class DealController : ControllerBase
     }
 
     [HttpGet("{id}/lines")]
-    [SortQueryConstraint(Fields = "Code, Name, TotalAmount")]
     [ProducesResponseType(typeof(PagedResultDto<DealLineDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProductsInDealAsync(int id, [FromQuery] DealLineFilterAndPagingRequestDto dealLineFilterAndPagingRequestDto)
     {

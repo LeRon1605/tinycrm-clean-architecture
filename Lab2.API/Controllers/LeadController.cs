@@ -1,5 +1,4 @@
 ﻿using Lab2.API.Dtos;
-using Lab2.API.Filters;
 using Lab2.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +16,6 @@ public class LeadController : ControllerBase
     }
 
     [HttpGet]
-    [SortQueryConstraint(Fields = "Title, Customer")]
     [ProducesResponseType(typeof(PagedResultDto<LeadDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllLeadsAsync([FromQuery] LeadFilterAndPagingRequestDto leadFilterAndPagingRequestDto)
     {
