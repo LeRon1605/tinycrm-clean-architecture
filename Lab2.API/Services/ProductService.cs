@@ -36,7 +36,7 @@ public class ProductService : BaseService<Product, ProductDto, ProductCreateDto,
         var isProductCodeExisting = await _repository.AnyAsync(x => x.Code == code);
         if (isProductCodeExisting)
         {
-            throw new EntityConflictException("Product", "code", code);
+            throw new ProductCodeAlreadyExist(code);
         }
 
         return true;

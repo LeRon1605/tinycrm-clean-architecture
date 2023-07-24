@@ -3,7 +3,7 @@ using Lab2.API.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServices()
-                .AddDatabase(builder.Configuration)
+                .AddDatabase(builder.Configuration, builder.Environment)
                 .AddRepositories();
 
 builder.Services.AddControllers();

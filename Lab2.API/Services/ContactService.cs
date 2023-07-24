@@ -54,7 +54,7 @@ public class ContactService : BaseService<Contact, ContactDto, ContactCreateDto,
             var isAccountExisting = await _accountRepository.AnyAsync(x => x.Id == accountId);
             if (!isAccountExisting)
             {
-                throw new EntityNotFoundException("Account", accountId.Value);
+                throw new EntityNotFoundException(nameof(Account), accountId.Value);
             }
         }
 

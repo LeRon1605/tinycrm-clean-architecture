@@ -41,7 +41,7 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
         var contact = await _contactRepository.FindAsync(x => x.Id == contactId, includeProps: nameof(Contact.Account), tracking: false);
         if (contact == null)
         {
-            throw new EntityNotFoundException("Contact", contactId);
+            throw new EntityNotFoundException(nameof(Contact), contactId);
         }
 
         return _mapper.Map<AccountDto>(contact.Account);
@@ -54,12 +54,12 @@ public class AccountService : BaseService<Account, AccountDto, AccountCreateDto,
         {
             if (account.Email == email)
             {
-                throw new EntityConflictException("Account", "email", email);
+                throw new AccountAlreadyExistException(nameof(Account.Email), email);
             }
 
             if (account.Phone == phone)
             {
-                throw new EntityConflictException("Account", "phone", phone);
+                throw new AccountAlreadyExistException(nameof(Account.Phone), phone);
             }
         }
 

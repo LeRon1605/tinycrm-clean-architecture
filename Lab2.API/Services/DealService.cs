@@ -26,7 +26,7 @@ public class DealService : BaseService<Deal, DealDto, DealCreateDto, DealUpdateD
         // Only allow delete deal on open status
         if (deal.Status != DealStatus.Open)
         {
-            throw new BadRequestException($"Can not delete deal which is on won or lost status!");
+            throw new InvalidRemoveDealException(deal.Id);
         }
 
         return Task.FromResult(true);

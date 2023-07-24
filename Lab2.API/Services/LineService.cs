@@ -73,7 +73,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
         var isDealExisting = await _dealRepository.AnyAsync(x => x.Id == dealId);
         if (!isDealExisting)
         {
-            throw new EntityNotFoundException("Deal", dealId);
+            throw new EntityNotFoundException(nameof(Deal), dealId);
         }
 
         return true;
@@ -84,7 +84,7 @@ public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto,
         var isProductExisting = await _productRepository.AnyAsync(x => x.Id == productId);
         if (!isProductExisting)
         {
-            throw new EntityNotFoundException("Product", productId);
+            throw new EntityNotFoundException(nameof(Product), productId);
         }
 
         return true;

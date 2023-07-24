@@ -64,7 +64,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         // Can not delete lead which is on qualified or disqualified status
         if (lead.Status == LeadStatus.Disqualified || lead.Status == LeadStatus.Qualified)
         {
-            throw new BadRequestException($"Can not delete lead which is on qualified or disqualified status!");
+            throw new InvalidRemoveLeadException(lead.Id);
         }
 
         return Task.FromResult(true);
@@ -137,13 +137,13 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         var lead = await _repository.FindAsync(x => x.Id == id);
         if (lead == null)
         {
-            throw new EntityNotFoundException("Lead", id);
+            throw new EntityNotFoundException(nameof(Lead), id);
         }
 
         // Check if lead has already qualified or disqualified yet
         if (lead.Status == LeadStatus.Qualified || lead.Status == LeadStatus.Disqualified)
         {
-            throw new BadRequestException($"Lead with id '{lead.Id}' has already been {lead.Status}!");
+            throw new InvalidQualifyOrDisqualifyLeadException(id, lead.Status);
         }
 
         return lead;
@@ -154,7 +154,7 @@ public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateD
         var isCustomerExisting = await _accountRepository.AnyAsync(x => x.Id == accountId);
         if (!isCustomerExisting)
         {
-            throw new EntityNotFoundException("Account", accountId);
+            throw new EntityNotFoundException(nameof(Account), accountId);
         }
 
         return true;
