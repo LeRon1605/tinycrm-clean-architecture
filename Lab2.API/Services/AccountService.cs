@@ -7,7 +7,7 @@ using Lab2.Domain.Repositories;
 
 namespace Lab2.API.Services;
 
-public class AccountService : BaseService<Account, AccountDto, AccountCreateDto, AccountUpdateDto>, IAccountService
+public class AccountService : BaseService<Account, int, AccountDto, AccountCreateDto, AccountUpdateDto>, IAccountService
 {
     private readonly IContactRepository _contactRepository;
 

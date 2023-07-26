@@ -4,12 +4,12 @@ using Lab2.API.Exceptions;
 using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
-using Lab2.Domain.Repositories;
 using Lab2.Domain.Enums;
+using Lab2.Domain.Repositories;
 
 namespace Lab2.API.Services;
 
-public class LeadService : BaseService<Lead, LeadDto, LeadCreateDto, LeadUpdateDto>, ILeadService
+public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUpdateDto>, ILeadService
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IDealRepository _dealRepository;

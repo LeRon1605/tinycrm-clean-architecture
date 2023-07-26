@@ -4,12 +4,12 @@ using Lab2.API.Dtos.Deals;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
-using Lab2.Domain.Repositories;
 using Lab2.Domain.Enums;
+using Lab2.Domain.Repositories;
 
 namespace Lab2.API.Services;
 
-public class DealService : BaseService<Deal, DealDto, DealCreateDto, DealUpdateDto>, IDealService
+public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUpdateDto>, IDealService
 {
     private readonly IDealRepository _dealRepository;
 

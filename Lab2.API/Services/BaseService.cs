@@ -6,16 +6,16 @@ using System.Linq.Expressions;
 
 namespace Lab2.API.Services;
 
-public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> where TEntity : Entity
+public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TEntityDto> where TEntity : IEntity<TKey>
 {
-    protected IRepository<TEntity> _repository;
+    protected IRepository<TEntity, TKey> _repository;
     protected IMapper _mapper;
     protected IUnitOfWork _unitOfWork;
     protected string _includePropsOnGet;
 
     public BaseService(
         IMapper mapper,
-        IRepository<TEntity> repository,
+        IRepository<TEntity, TKey> repository,
         IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
@@ -24,7 +24,7 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
         _includePropsOnGet = string.Empty;
     }
 
-    public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity> filterParam)
+    public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
     {
         return GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
                              take: filterParam.Size,
@@ -50,24 +50,24 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
         };
     }
 
-    public virtual async Task<TEntityDto> GetAsync(int id)
+    public virtual async Task<TEntityDto> GetAsync(TKey id)
     {
-        TEntity? entity = await _repository.FindAsync(x => x.Id == id, includeProps: _includePropsOnGet, tracking: false);
+        TEntity? entity = await _repository.FindAsync(x => x.Id.Equals(id), includeProps: _includePropsOnGet, tracking: false);
         if (entity == null)
         {
-            throw new EntityNotFoundException(typeof(TEntity).Name, id);
+            throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
         }
 
         return _mapper.Map<TEntityDto>(entity);
     }
 
-    public virtual async Task DeleteAsync(int id)
+    public virtual async Task DeleteAsync(TKey id)
     {
         // Find entity by Id
         TEntity? entity = await _repository.FindByIdAsync(id);
         if (entity == null)
         {
-            throw new EntityNotFoundException(typeof(TEntity).Name, id);
+            throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
         }
 
         // Perform business check before delete
@@ -87,11 +87,11 @@ public class BaseService<TEntity, TEntityDto> : IService<TEntity, TEntityDto> wh
     }
 }
 
-public class BaseService<TEntity, TEntityDto, TEntityCreateDto> : BaseService<TEntity, TEntityDto>, IService<TEntity, TEntityDto, TEntityCreateDto> where TEntity : Entity
+public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto> : BaseService<TEntity, TKey, TEntityDto>, IService<TEntity, TKey, TEntityDto, TEntityCreateDto> where TEntity : IEntity<TKey>
 {
     public BaseService(
         IMapper mapper,
-        IRepository<TEntity> repository,
+        IRepository<TEntity, TKey> repository,
         IUnitOfWork unitOfWork) : base(mapper, repository, unitOfWork)
     {
     }
@@ -123,22 +123,22 @@ public class BaseService<TEntity, TEntityDto, TEntityCreateDto> : BaseService<TE
     }
 }
 
-public class BaseService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto> : BaseService<TEntity, TEntityDto, TEntityCreateDto>, IService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto> where TEntity : Entity
+public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto, TEntityUpdateDto> : BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto>, IService<TEntity, TKey, TEntityDto, TEntityCreateDto, TEntityUpdateDto> where TEntity : IEntity<TKey>
 {
     public BaseService(
         IMapper mapper,
-        IRepository<TEntity> repository,
+        IRepository<TEntity, TKey> repository,
         IUnitOfWork unitOfWork) : base(mapper, repository, unitOfWork)
     {
     }
 
-    public virtual async Task<TEntityDto> UpdateAsync(int id, TEntityUpdateDto entityUpdateDto)
+    public virtual async Task<TEntityDto> UpdateAsync(TKey id, TEntityUpdateDto entityUpdateDto)
     {
         // Fetch entity from db
         var entity = await _repository.FindByIdAsync(id);
         if (entity == null)
         {
-            throw new EntityNotFoundException(typeof(TEntity).Name, id);
+            throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
         }
 
         // Perform business check before update

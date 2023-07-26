@@ -8,7 +8,7 @@ public class DealLineEntityConfiguration : IEntityTypeConfiguration<DealLine>
 {
     public void Configure(EntityTypeBuilder<DealLine> builder)
     {
-        builder.ToTable(tb => 
+        builder.ToTable(tb =>
         {
             tb.HasTrigger("UpdateTotalSale");
         });

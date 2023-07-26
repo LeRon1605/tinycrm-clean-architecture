@@ -8,7 +8,7 @@ using Lab2.Domain.Repositories;
 
 namespace Lab2.API.Services;
 
-public class LineService : BaseService<DealLine, DealLineDto, DealLineCreateDto, DealLineUpdateDto>, ILineService
+public class LineService : BaseService<DealLine, int, DealLineDto, DealLineCreateDto, DealLineUpdateDto>, ILineService
 {
     private readonly IDealRepository _dealRepository;
     private readonly IProductRepository _productRepository;

@@ -1,19 +1,19 @@
 ﻿using Lab2.Domain.Entities;
 using Lab2.Infrastructure.Configurations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.Infrastructure;
 
-public class AppDbContext : IdentityDbContext<IdentityUser>
+public class AppDbContext : IdentityDbContext<User>
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Contact> Contacts { get; set; }
     public DbSet<Deal> Deals { get; set; }
     public DbSet<DealLine> DealLines { get; set; }
-    public DbSet<Lead> Lead { get; set; }
+    public DbSet<Lead> Leads { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

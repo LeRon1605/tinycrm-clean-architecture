@@ -3,7 +3,7 @@ using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface IContactService : IService<Contact, ContactDto, ContactCreateDto, ContactUpdateDto>
+public interface IContactService : IService<Contact, int, ContactDto, ContactCreateDto, ContactUpdateDto>
 {
     Task<PagedResultDto<ContactDto>> GetContactsOfAccountAsync(int accountId, ContactFilterAndPagingRequestDto accountFilterAndPagingRequestDto);
 }

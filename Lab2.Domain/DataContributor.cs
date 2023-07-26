@@ -1,7 +1,8 @@
 ﻿using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
-using Lab2.Domain.Repositories;
 using Lab2.Domain.Enums;
+using Lab2.Domain.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 namespace Lab2.Domain;
@@ -13,6 +14,7 @@ public class DataContributor
     private readonly IProductRepository _productRepository;
     private readonly ILeadRepository _leadRepository;
     private readonly IDealRepository _dealRepository;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
 
@@ -28,6 +30,7 @@ public class DataContributor
         IProductRepository productRepository,
         ILeadRepository leadRepository,
         IDealRepository dealRepository,
+        RoleManager<IdentityRole> roleManager,
         IUnitOfWork unitOfWork,
         ILogger<DataContributor> logger)
     {
@@ -36,6 +39,7 @@ public class DataContributor
         _productRepository = productRepository;
         _leadRepository = leadRepository;
         _dealRepository = dealRepository;
+        _roleManager = roleManager;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -61,6 +65,15 @@ public class DataContributor
             await _unitOfWork.CommitAsync();
 
             _logger.LogInformation("Seed data successfully!");
+        }
+
+        if (!_roleManager.Roles.Any())
+        {
+            var userRole = new IdentityRole("User");
+            var adminRole = new IdentityRole("Admin");
+
+            await _roleManager.CreateAsync(userRole);
+            await _roleManager.CreateAsync(adminRole);
         }
     }
 

@@ -16,15 +16,15 @@ namespace Lab2.Infrastructure.Migrations
 				AFTER INSERT, UPDATE, DELETE
 				AS
 				BEGIN
-					DECLARE @CustomerId INT = (SELECT TOP 1 CUSTOMERID FROM 
-														(SELECT * FROM INSERTED 
-															UNION 
+					DECLARE @CustomerId INT = (SELECT TOP 1 CUSTOMERID FROM
+														(SELECT * FROM INSERTED
+															UNION
 														 SELECT * FROM DELETED) AS DATA
 												   INNER JOIN DEALS
 												   ON DATA.DealId = DEALS.ID
 												   INNER JOIN LEADS
 												   ON DEALS.LEADID = LEADS.ID);
-		
+
 					UPDATE ACCOUNTS
 					SET TOTALSALES = (SELECT SUM(DEALLINES.PricePerUnit * DealLines.Quantity) FROM LEADS
 										INNER JOIN DEALS
@@ -40,7 +40,7 @@ namespace Lab2.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-			migrationBuilder.Sql("DROP TRIGGER [dbo].[UpdateTotalSale]");
+            migrationBuilder.Sql("DROP TRIGGER [dbo].[UpdateTotalSale]");
         }
     }
 }

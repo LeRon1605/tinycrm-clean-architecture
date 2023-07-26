@@ -7,7 +7,7 @@ using Lab2.Domain.Repositories;
 
 namespace Lab2.API.Services;
 
-public class ProductService : BaseService<Product, ProductDto, ProductCreateDto, ProductUpdateDto>, IProductService
+public class ProductService : BaseService<Product, int, ProductDto, ProductCreateDto, ProductUpdateDto>, IProductService
 {
     public ProductService(
         IProductRepository productRepository,

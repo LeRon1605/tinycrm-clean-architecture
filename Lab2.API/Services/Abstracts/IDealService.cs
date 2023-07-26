@@ -4,7 +4,7 @@ using Lab2.Domain.Entities;
 
 namespace Lab2.API.Services;
 
-public interface IDealService : IService<Deal, DealDto, DealCreateDto, DealUpdateDto>
+public interface IDealService : IService<Deal, int, DealDto, DealCreateDto, DealUpdateDto>
 {
     Task<DealStatisticDto> GetStatisticAsync();
 }

@@ -3,25 +3,21 @@ using Lab2.Domain.Base;
 
 namespace Lab2.API.Services;
 
-public interface IService<TEntity> where TEntity : Entity
+public interface IService<TEntity, TKey, TEntityDto> where TEntity : IEntity<TKey>
 {
+    Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam);
+
+    Task<TEntityDto> GetAsync(TKey id);
+
+    Task DeleteAsync(TKey id);
 }
 
-public interface IService<TEntity, TEntityDto> : IService<TEntity> where TEntity : Entity
-{
-    Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity> filterParam);
-
-    Task<TEntityDto> GetAsync(int id);
-
-    Task DeleteAsync(int id);
-}
-
-public interface IService<TEntity, TEntityDto, TEntityCreateDto> : IService<TEntity, TEntityDto> where TEntity : Entity
+public interface IService<TEntity, TKey, TEntityDto, TEntityCreateDto> : IService<TEntity, TKey, TEntityDto> where TEntity : IEntity<TKey>
 {
     Task<TEntityDto> CreateAsync(TEntityCreateDto entityCreateDto);
 }
 
-public interface IService<TEntity, TEntityDto, TEntityCreateDto, TEntityUpdateDto> : IService<TEntity, TEntityDto, TEntityCreateDto> where TEntity : Entity
+public interface IService<TEntity, TKey, TEntityDto, TEntityCreateDto, TEntityUpdateDto> : IService<TEntity, TKey, TEntityDto, TEntityCreateDto> where TEntity : IEntity<TKey>
 {
-    Task<TEntityDto> UpdateAsync(int id, TEntityUpdateDto entityUpdateDto);
+    Task<TEntityDto> UpdateAsync(TKey id, TEntityUpdateDto entityUpdateDto);
 }

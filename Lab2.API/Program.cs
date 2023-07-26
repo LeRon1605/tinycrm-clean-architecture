@@ -5,7 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServices()
                 .AddDatabase(builder.Configuration, builder.Environment)
                 .AddIdentity()
-                .AddRepositories();
+                .AddRepositories()
+                .AddAuthentication(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

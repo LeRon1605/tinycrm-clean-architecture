@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Lab2.Infrastructure.Base;
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
+public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {
     private readonly DbContextFactory _dbContextFactory;
     private DbSet<TEntity> _dbSet;
@@ -40,12 +40,14 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
             }
         }
 
+        queryable = queryable.Where(expression);
+
         if (!string.IsNullOrWhiteSpace(sorting))
         {
             queryable = queryable.OrderBy(sorting);
         }
 
-        return queryable.Where(expression).Skip(skip).Take(take).ToListAsync();
+        return queryable.Skip(skip).Take(take).ToListAsync();
     }
 
     public virtual async Task InsertAsync(TEntity entity)
@@ -115,5 +117,12 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : Entity
         }
 
         return queryable.AverageAsync(selector);
+    }
+}
+
+public class Repository<TEntity> : Repository<TEntity, int>, IRepository<TEntity> where TEntity : class, IEntity<int>
+{
+    public Repository(DbContextFactory dbContextFactory) : base(dbContextFactory)
+    {
     }
 }
