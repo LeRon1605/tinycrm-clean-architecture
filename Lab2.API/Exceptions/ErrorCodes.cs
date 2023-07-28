@@ -4,12 +4,10 @@ public static class ErrorCodes
 {
     // Entity
     public const string EntityNotFound = "ENTITY_NOT_FOUND";
-
     public const string EntityConflict = "ENTITY_CONFLICT";
 
     // Account
     public const string AccountPhoneAlreadyExists = "ACCOUNT_PHONE_ALREADY_EXISTS";
-
     public const string AccountEmailAlreadyExists = "ACCOUNT_EMAIL_ALREADY_EXISTS";
 
     // Product
@@ -17,7 +15,6 @@ public static class ErrorCodes
 
     // Lead
     public const string LeadInvalidQualifyOrDisqualify = "LEAD_INVALID_QUALIFY_OR_DISQUALIFY";
-
     public const string LeadInvalidRemove = "LEAD_INVALID_REMOVE";
 
     // Deal
@@ -25,8 +22,7 @@ public static class ErrorCodes
 
     // Auth
     public const string AccountLockedOut = "AUTH_LOCKED_OUT";
-
-    public const string IncorrectAccountInfo = "AUTH_INCORRECT_ACCOUNT_INFO";
+    public const string InvalidCredential = "AUTH_INCORRECT_ACCOUNT_INFO";
     public const string NotImplementTwoFactor = "AUTH_NOT_IMPLEMENT_2F";
 
     // User

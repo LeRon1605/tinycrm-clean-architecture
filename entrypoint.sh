@@ -20,8 +20,13 @@ docker run --user root \
 # Build api image
 docker build -t tiny_crm -f Lab2.API/Dockerfile .
 
+# Migrate db
+cd Lab2.API
+dotnet ef database update -- --environment Docker
+
 # Run api 
 docker run -e "ConnectionStrings__Default=Server=db;Database=TinyCRM;UID=sa;PWD=Leron@1605;TrustServerCertificate=True" \
+           -e "ASPNETCORE_ENVIRONMENT=Development" \
            -p 5000:443 \
            -p 5001:80 \
            --network tiny-crm --network-alias api \

@@ -41,10 +41,10 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         var insertRoleResult = await _userManager.AddToRoleAsync(user, AppRole.User);
         if (insertRoleResult.Succeeded)
         {
-            return _mapper.Map<UserDto>(user);
+            throw new IdentityException(insertRoleResult.Errors.First());
         }
 
-        throw new IdentityException(insertRoleResult.Errors.First());
+        return _mapper.Map<UserDto>(user);
     }
 
     public async Task<UserDto> UpdateAsync(string id, UserUpdateDto entityUpdateDto)
@@ -69,7 +69,7 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
             return _mapper.Map<UserDto>(user);
         }
 
-        throw new IdentityException(identityResult.Errors.First(x => !x.Code.Contains(nameof(IdentityUser.UserName))));
+        throw new IdentityException(identityResult.Errors.First());
     }
 
     private async Task<bool> IsValidOnEditUser(User user)

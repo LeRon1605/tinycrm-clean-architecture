@@ -31,7 +31,7 @@ public class AuthService : IAuthService
         var user = await _userRepository.FindAsync(x => x.UserName == loginDto.UserNameOrEmail.ToUpper() || x.Email == loginDto.UserNameOrEmail.ToUpper());
         if (user == null)
         {
-            throw new NotFoundException("Account with provided information does not exist!", ErrorCodes.IncorrectAccountInfo);
+            throw new InvalidCredentialException();
         }
 
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, true);
@@ -51,19 +51,19 @@ public class AuthService : IAuthService
 
         if (signInResult.IsLockedOut)
         {
-            throw new BadRequestException("This account has been locked out!", ErrorCodes.AccountLockedOut);
+            throw new AccountLockedOutException();
         }
 
-        throw new BadRequestException("Account with provided information does not exist!", ErrorCodes.IncorrectAccountInfo);
+        throw new InvalidCredentialException();
     }
 
     private async Task<IEnumerable<Claim>> GetUserAuthenticateClaimsAsync(User user)
     {
         var claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Email, user.Email)
+            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new (ClaimTypes.Name, user.UserName),
+            new (ClaimTypes.Email, user.Email)
         };
 
         var roles = await _userManager.GetRolesAsync(user);

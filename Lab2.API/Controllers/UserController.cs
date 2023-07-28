@@ -38,6 +38,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
