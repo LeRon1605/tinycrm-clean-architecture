@@ -1,5 +1,7 @@
-﻿using Lab2.API.Dtos;
+﻿using Lab2.API.Authorization;
+using Lab2.API.Dtos;
 using Lab2.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
@@ -36,6 +38,7 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(ContactDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateContactAsync(ContactCreateDto contactCreateDto)
@@ -45,6 +48,7 @@ public class ContactController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(ContactDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateContactAsync(int id, ContactUpdateDto contactUpdateDto)
@@ -54,6 +58,7 @@ public class ContactController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteContactAsync(int id)

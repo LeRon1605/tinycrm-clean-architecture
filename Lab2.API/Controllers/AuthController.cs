@@ -1,5 +1,6 @@
 ﻿using Lab2.API.Dtos;
 using Lab2.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
@@ -15,6 +16,7 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto loginDto)
     {

@@ -14,6 +14,7 @@ public class DataContributor
     private readonly IProductRepository _productRepository;
     private readonly ILeadRepository _leadRepository;
     private readonly IDealRepository _dealRepository;
+    private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger _logger;
@@ -30,6 +31,7 @@ public class DataContributor
         IProductRepository productRepository,
         ILeadRepository leadRepository,
         IDealRepository dealRepository,
+        UserManager<User> userManager,
         RoleManager<IdentityRole> roleManager,
         IUnitOfWork unitOfWork,
         ILogger<DataContributor> logger)
@@ -39,6 +41,7 @@ public class DataContributor
         _productRepository = productRepository;
         _leadRepository = leadRepository;
         _dealRepository = dealRepository;
+        _userManager = userManager;
         _roleManager = roleManager;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -46,34 +49,53 @@ public class DataContributor
 
     public async Task SeedAsync()
     {
-        if (
-            !(await _leadRepository.AnyAsync()) &&
-            !(await _dealRepository.AnyAsync()) &&
-            !(await _accountRepository.AnyAsync()) &&
-            !(await _contactRepository.AnyAsync()) &&
-            !(await _productRepository.AnyAsync())
-        )
+        try
         {
-            _logger.LogInformation("Begin seeding data...");
+            if (
+                !(await _leadRepository.AnyAsync()) &&
+                !(await _dealRepository.AnyAsync()) &&
+                !(await _accountRepository.AnyAsync()) &&
+                !(await _contactRepository.AnyAsync()) &&
+                !(await _productRepository.AnyAsync())
+            )
+            {
+                _logger.LogInformation("Begin seeding data...");
 
-            _accounts = await SeedAccountAsync();
-            _contacts = await SeedContactAsync();
-            _products = await SeedProductAsync();
-            _leads = await SeedLeadAsync();
-            _deals = await SeedDealAsync();
+                _accounts = await SeedAccountAsync();
+                _contacts = await SeedContactAsync();
+                _products = await SeedProductAsync();
+                _leads = await SeedLeadAsync();
+                _deals = await SeedDealAsync();
 
-            await _unitOfWork.CommitAsync();
+                await _unitOfWork.CommitAsync();
 
-            _logger.LogInformation("Seed data successfully!");
+                _logger.LogInformation("Seed data successfully!");
+            }
+
+            if (
+                !_roleManager.Roles.Any() &&
+                !_userManager.Users.Any()
+            )
+            {
+                var userRole = new IdentityRole("User");
+                var adminRole = new IdentityRole("Admin");
+                var user = new User()
+                {
+                    UserName = "admin",
+                    Email = "admin@gmail.com",
+                    FullName = "admin"
+                };
+
+                await _roleManager.CreateAsync(userRole);
+                await _roleManager.CreateAsync(adminRole);
+
+                await _userManager.CreateAsync(user, "admin123");
+                await _userManager.AddToRoleAsync(user, "Admin");
+            }
         }
-
-        if (!_roleManager.Roles.Any())
+        catch (Exception ex)
         {
-            var userRole = new IdentityRole("User");
-            var adminRole = new IdentityRole("Admin");
-
-            await _roleManager.CreateAsync(userRole);
-            await _roleManager.CreateAsync(adminRole);
+            _logger.LogWarning("Seeding data failed!", ex);
         }
     }
 
@@ -81,7 +103,7 @@ public class DataContributor
     {
         var accounts = new List<Account>();
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             accounts.Add(new Account()
             {
@@ -102,7 +124,7 @@ public class DataContributor
         var contacts = new List<Contact>();
         var random = new Random();
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             contacts.Add(new Contact()
             {
@@ -122,7 +144,7 @@ public class DataContributor
         var products = new List<Product>();
         var random = new Random();
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             products.Add(new Product()
             {
@@ -143,7 +165,7 @@ public class DataContributor
         var leads = new List<Lead>();
         var random = new Random();
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             switch (i % 3)
             {
@@ -199,11 +221,11 @@ public class DataContributor
         var noneOpenLead = _leads.Where(x => x.Status != LeadStatus.Open);
         var random = new Random();
 
-        for (int i = 1; i <= 10; i++)
+        for (var i = 1; i <= 10; i++)
         {
             var dealLines = new List<DealLine>();
 
-            for (int j = 1; j <= 5; j++)
+            for (var j = 1; j <= 5; j++)
             {
                 dealLines.Add(new DealLine()
                 {

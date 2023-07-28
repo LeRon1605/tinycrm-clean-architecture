@@ -6,11 +6,11 @@ builder.Services.AddServices()
                 .AddDatabase(builder.Configuration, builder.Environment)
                 .AddIdentity()
                 .AddRepositories()
-                .AddAuthentication(builder.Configuration);
+                .AddApplicationAuthentication(builder.Configuration)
+                .AddApplicationAuthorization()
+                .AddSwagger();
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<RouteOptions>(options =>
 {
@@ -25,8 +25,6 @@ app.UseExceptionHandling();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
 
 app.UseRouting();
 

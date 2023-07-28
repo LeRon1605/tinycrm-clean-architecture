@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Lab2.API.Authorization;
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.API.Services;
@@ -10,14 +12,20 @@ namespace Lab2.API.Services;
 public class UserService : BaseService<User, string, UserDto>, IUserService
 {
     private readonly UserManager<User> _userManager;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly ICurrentUser _currentUser;
 
     public UserService(
+        IAuthorizationService authorizationService,
         UserManager<User> userManager,
+        ICurrentUser currentUser,
         IMapper mapper,
         IRepository<User, string> repository,
         IUnitOfWork unitOfWork) : base(mapper, repository, unitOfWork)
     {
+        _authorizationService = authorizationService;
         _userManager = userManager;
+        _currentUser = currentUser;
     }
 
     public async Task<UserDto> CreateAsync(UserCreateDto userCreateDto)
@@ -25,22 +33,18 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         var user = _mapper.Map<User>(userCreateDto);
         var createUserResult = await _userManager.CreateAsync(user, userCreateDto.Password);
 
-        if (createUserResult.Succeeded)
+        if (!createUserResult.Succeeded)
         {
-            var insertRoleResult = await _userManager.AddToRoleAsync(user, "User");
-            if (insertRoleResult.Succeeded)
-            {
-                return _mapper.Map<UserDto>(user);
-            }
-            else
-            {
-                throw new IdentityException(insertRoleResult.Errors.First(x => !x.Code.Contains(nameof(IdentityUser.UserName))));
-            }
+            throw new IdentityException(createUserResult.Errors.First());
         }
-        else
+
+        var insertRoleResult = await _userManager.AddToRoleAsync(user, AppRole.User);
+        if (insertRoleResult.Succeeded)
         {
-            throw new IdentityException(createUserResult.Errors.First(x => !x.Code.Contains(nameof(IdentityUser.UserName))));
+            return _mapper.Map<UserDto>(user);
         }
+
+        throw new IdentityException(insertRoleResult.Errors.First());
     }
 
     public async Task<UserDto> UpdateAsync(string id, UserUpdateDto entityUpdateDto)
@@ -50,6 +54,8 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         {
             throw new EntityNotFoundException(nameof(User), id);
         }
+
+        await IsValidOnEditUser(user);
 
         _mapper.Map(entityUpdateDto, user);
         if (!string.IsNullOrWhiteSpace((entityUpdateDto.Password)))
@@ -62,9 +68,19 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         {
             return _mapper.Map<UserDto>(user);
         }
-        else
+
+        throw new IdentityException(identityResult.Errors.First(x => !x.Code.Contains(nameof(IdentityUser.UserName))));
+    }
+
+    private async Task<bool> IsValidOnEditUser(User user)
+    {
+        var result = await _authorizationService.AuthorizeAsync(_currentUser.ClaimPrincipal, user, AppPolicy.EditProfile);
+
+        if (!result.Succeeded)
         {
-            throw new IdentityException(identityResult.Errors.First(x => !x.Code.Contains(nameof(IdentityUser.UserName))));
+            throw new ForbiddenException("You don't have permission to edit user!", ErrorCodes.ProfileForbidEdit);
         }
+
+        return true;
     }
 }

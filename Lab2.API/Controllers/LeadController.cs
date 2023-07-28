@@ -1,5 +1,7 @@
-﻿using Lab2.API.Dtos;
+﻿using Lab2.API.Authorization;
+using Lab2.API.Dtos;
 using Lab2.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
@@ -34,6 +36,7 @@ public class LeadController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateLeadAsync(LeadCreateDto leadCreateDto)
@@ -43,6 +46,7 @@ public class LeadController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateLeadAsync(int id, LeadUpdateDto leadUpdateDto)
@@ -52,6 +56,7 @@ public class LeadController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -62,6 +67,7 @@ public class LeadController : ControllerBase
     }
 
     [HttpPost("{id}/qualify")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(DealDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -72,6 +78,7 @@ public class LeadController : ControllerBase
     }
 
     [HttpPost("{id}/disqualify")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(LeadDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]

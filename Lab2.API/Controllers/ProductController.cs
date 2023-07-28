@@ -1,5 +1,7 @@
-﻿using Lab2.API.Dtos;
+﻿using Lab2.API.Authorization;
+using Lab2.API.Dtos;
 using Lab2.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
@@ -35,6 +37,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateProductAsync(ProductCreateDto productCreateDto)
@@ -44,6 +47,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto)
@@ -53,6 +57,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteProductAsync(int id)

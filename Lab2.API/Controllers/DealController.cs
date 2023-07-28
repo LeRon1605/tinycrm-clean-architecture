@@ -1,6 +1,8 @@
-﻿using Lab2.API.Dtos;
+﻿using Lab2.API.Authorization;
+using Lab2.API.Dtos;
 using Lab2.API.Dtos.Deals;
 using Lab2.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lab2.API.Controllers;
@@ -37,6 +39,7 @@ public class DealController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(typeof(DealDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateDealAsync(int id, DealUpdateDto dealUpdateDto)
@@ -46,6 +49,7 @@ public class DealController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = AppRole.Admin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

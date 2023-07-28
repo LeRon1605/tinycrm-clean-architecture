@@ -9,8 +9,7 @@ public class UserMapper : Profile
     public UserMapper()
     {
         CreateMap<User, UserDto>();
-        CreateMap<UserCreateDto, User>()
-            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
+        CreateMap<UserCreateDto, User>();
         CreateMap<UserUpdateDto, User>();
     }
 }
