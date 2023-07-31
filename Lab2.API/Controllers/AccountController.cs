@@ -7,21 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lab2.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/accounts")]
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    private readonly IContactService _contactService;
-    private readonly ILeadService _leadService;
 
     public AccountController(
-        IAccountService accountService,
-        IContactService contactService,
-        ILeadService leadService)
+        IAccountService accountService)
     {
         _accountService = accountService;
-        _contactService = contactService;
-        _leadService = leadService;
     }
 
     [HttpGet]
@@ -79,7 +74,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetContactsOfAccountAsync(int id, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {
-        var contactDtos = await _contactService.GetContactsOfAccountAsync(id, contactFilterAndPagingRequestDto);
+        var contactDtos = await _accountService.GetContactsAsync(id, contactFilterAndPagingRequestDto);
         return Ok(contactDtos);
     }
 
@@ -88,7 +83,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetLeadsOfAccountAsync(int id, [FromQuery] LeadFilterAndPagingRequestDto filterParam)
     {
-        var leadDtos = await _leadService.GetLeadsOfAccountAsync(id, filterParam);
+        var leadDtos = await _accountService.GetLeadsAsync(id, filterParam);
         return Ok(leadDtos);
     }
 }

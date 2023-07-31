@@ -138,10 +138,6 @@ public static class IServiceCollectionExtensions
     {
         services.AddAuthorization(options =>
         {
-            options.FallbackPolicy = new AuthorizationPolicyBuilder()
-                                            .RequireAuthenticatedUser()
-                                            .Build();
-
             options.AddPolicy(AppPolicy.EditProfile, policyBuilder =>
             {
                 policyBuilder.AddRequirements(new EditProfileRequirement());

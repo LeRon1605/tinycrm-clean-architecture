@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Lab2.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/contacts")]
 public class ContactController : ControllerBase
 {
