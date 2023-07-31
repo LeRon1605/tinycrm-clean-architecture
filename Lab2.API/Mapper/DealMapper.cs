@@ -10,6 +10,7 @@ public class DealMapper : Profile
     {
         CreateMap<Deal, DealDto>()
             .ForMember(dest => dest.ActualRevenue, opt => opt.MapFrom(src => src.Lines.Sum(x => x.Quantity * x.PricePerUnit)));
+        CreateMap<PagedResultDto<Deal>, PagedResultDto<DealDto>>();
         CreateMap<DealCreateDto, Deal>();
         CreateMap<DealUpdateDto, Deal>();
 

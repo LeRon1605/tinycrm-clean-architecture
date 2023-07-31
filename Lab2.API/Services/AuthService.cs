@@ -28,7 +28,7 @@ public class AuthService : IAuthService
 
     public async Task<AuthCredentialDto> SignInAsync(LoginDto loginDto)
     {
-        var user = await _userRepository.FindAsync(x => x.UserName == loginDto.UserNameOrEmail.ToUpper() || x.Email == loginDto.UserNameOrEmail.ToUpper());
+        var user = await _userRepository.FindByUserNameOrEmailAsync(loginDto.UserNameOrEmail, loginDto.UserNameOrEmail);
         if (user == null)
         {
             throw new InvalidCredentialException();

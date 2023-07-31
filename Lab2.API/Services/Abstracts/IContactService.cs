@@ -5,5 +5,5 @@ namespace Lab2.API.Services;
 
 public interface IContactService : IService<Contact, int, ContactDto, ContactCreateDto, ContactUpdateDto>
 {
-    Task<PagedResultDto<ContactDto>> GetContactsOfAccountAsync(int accountId, ContactFilterAndPagingRequestDto accountFilterAndPagingRequestDto);
+    Task<AccountDto> GetAccountAsync(int id);
 }

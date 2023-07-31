@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
-using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
@@ -68,16 +67,6 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
         }
 
         return Task.FromResult(true);
-    }
-
-    public async Task<PagedResultDto<LeadDto>> GetLeadsOfAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam)
-    {
-        await CheckAccountExistingAsync(accountId);
-
-        return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
-                                   take: filterParam.Size,
-                                   expression: filterParam.ToExpression().JoinWith(x => x.CustomerId == accountId),
-                                   sorting: filterParam.BuildSortingParam());
     }
 
     public async Task<LeadStatisticDto> GetStatisticAsync()

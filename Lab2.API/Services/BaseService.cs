@@ -3,6 +3,9 @@ using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using System.Linq.Expressions;
+using Lab2.API.Extensions;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using System;
 
 namespace Lab2.API.Services;
 
@@ -24,30 +27,14 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
         _includePropsOnGet = string.Empty;
     }
 
-    public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
+    public virtual async Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
     {
-        return GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
-                             take: filterParam.Size,
-                             expression: filterParam.ToExpression(),
-                             sorting: filterParam.BuildSortingParam());
-    }
-
-    protected async Task<PagedResultDto<TEntityDto>> GetPagedAsync(int skip, int take, Expression<Func<TEntity, bool>> expression, string sorting)
-    {
-        var data = await _repository.GetPagedListAsync(
-                                                skip: skip,
-                                                take: take,
-                                                expression,
-                                                sorting,
-                                                tracking: false,
-                                                includeProps: _includePropsOnGet);
-        var total = await _repository.GetCountAsync(expression);
-
-        return new PagedResultDto<TEntityDto>()
-        {
-            Data = _mapper.Map<IEnumerable<TEntityDto>>(data),
-            TotalPages = (int)Math.Ceiling(total * 1.0 / take)
-        };
+        var pagedResult = await _repository.GetPagedResultAsync(skip: (filterParam.Page - 1) * filterParam.Size, 
+                                                                take: filterParam.Size, filterParam.ToExpression(), 
+                                                                filterParam.BuildSortingParam(), 
+                                                                tracking: false, 
+                                                                _includePropsOnGet);
+        return _mapper.Map<PagedResultDto<TEntityDto>>(pagedResult);
     }
 
     public virtual async Task<TEntityDto> GetAsync(TKey id)
@@ -84,6 +71,15 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
     protected virtual Task<bool> IsValidOnDeleteAsync(TEntity entity)
     {
         return Task.FromResult(true);
+    }
+
+    public async Task CheckExistingAsync(TKey id)
+    {
+        var isExisting = await _repository.AnyAsync(x => x.Id.Equals(id));
+        if (!isExisting) 
+        {
+            throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
+        }
     }
 }
 

@@ -9,6 +9,7 @@ public class LeadMapper : Profile
     public LeadMapper()
     {
         CreateMap<Lead, LeadDto>();
+        CreateMap<PagedResultDto<Lead>, PagedResultDto<LeadDto>>();
         CreateMap<LeadCreateDto, Lead>();
         CreateMap<LeadUpdateDto, Lead>();
     }

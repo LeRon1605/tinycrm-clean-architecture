@@ -2,6 +2,7 @@
 using Lab2.API.Dtos;
 using Lab2.API.Dtos.Deals;
 using Lab2.API.Exceptions;
+using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
@@ -12,13 +13,16 @@ namespace Lab2.API.Services;
 public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUpdateDto>, IDealService
 {
     private readonly IDealRepository _dealRepository;
+    private readonly IDealLineRepository _dealLineRepository;
 
     public DealService(
         IDealRepository dealRepository,
+        IDealLineRepository dealLineRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper) : base(mapper, dealRepository, unitOfWork)
     {
         _dealRepository = dealRepository;
+        _dealLineRepository = dealLineRepository;
     }
 
     protected override Task<bool> IsValidOnDeleteAsync(Deal deal)
@@ -56,5 +60,22 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
             AverageRevenue = await _dealRepository.GetAverageRevenueAsync(),
             TotalRevenue = await _dealRepository.GetTotalRevenueAsync(),
         };
+    }
+
+    public async Task<PagedResultDto<DealLineDto>> GetProductsAsync(int id, DealLineFilterAndPagingRequestDto filterParam)
+    {
+        // 1. Check account existing
+        await CheckExistingAsync(id);
+
+        // 2. Get contacts 
+        var pagedResult = await _dealLineRepository.GetPagedResultAsync(
+                                                    skip: (filterParam.Page - 1) * filterParam.Size,
+                                                    take: filterParam.Size,
+                                                    filterParam.ToExpression().JoinWith(x => x.DealId == id),
+                                                    filterParam.BuildSortingParam(),
+                                                    tracking: false,
+                                                    includeProps: nameof(DealLine.Product));
+
+        return _mapper.Map<PagedResultDto<DealLineDto>>(pagedResult);
     }
 }

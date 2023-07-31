@@ -57,17 +57,6 @@ public class LineService : BaseService<DealLine, int, DealLineDto, DealLineCreat
         return line;
     }
 
-    public async Task<PagedResultDto<DealLineDto>> GetProductsInDealAsync(int dealId, DealLineFilterAndPagingRequestDto filterParam)
-    {
-        // Check if deal exist
-        await CheckDealExistingAsync(dealId);
-
-        return await GetPagedAsync(skip: (filterParam.Page - 1) * filterParam.Size,
-                                   take: filterParam.Size,
-                                   expression: filterParam.ToExpression().JoinWith(x => x.DealId == dealId),
-                                   sorting: filterParam.BuildSortingParam());
-    }
-
     private async Task<bool> CheckDealExistingAsync(int dealId)
     {
         var isDealExisting = await _dealRepository.AnyAsync(x => x.Id == dealId);

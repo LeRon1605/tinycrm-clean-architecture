@@ -5,6 +5,8 @@ namespace Lab2.API.Services;
 
 public interface IService<TEntity, TKey, TEntityDto> where TEntity : IEntity<TKey>
 {
+    Task CheckExistingAsync(TKey id);
+
     Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam);
 
     Task<TEntityDto> GetAsync(TKey id);

@@ -5,5 +5,4 @@ namespace Lab2.API.Services;
 
 public interface ILineService : IService<DealLine, int, DealLineDto, DealLineCreateDto, DealLineUpdateDto>
 {
-    Task<PagedResultDto<DealLineDto>> GetProductsInDealAsync(int dealId, DealLineFilterAndPagingRequestDto filterParam);
 }

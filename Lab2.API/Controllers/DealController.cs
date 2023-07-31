@@ -13,12 +13,10 @@ namespace Lab2.API.Controllers;
 public class DealController : ControllerBase
 {
     private readonly IDealService _dealService;
-    private readonly ILineService _lineService;
 
-    public DealController(IDealService dealService, ILineService lineService)
+    public DealController(IDealService dealService)
     {
         _dealService = dealService;
-        _lineService = lineService;
     }
 
     [HttpGet]
@@ -64,7 +62,7 @@ public class DealController : ControllerBase
     [ProducesResponseType(typeof(PagedResultDto<DealLineDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProductsInDealAsync(int id, [FromQuery] DealLineFilterAndPagingRequestDto dealLineFilterAndPagingRequestDto)
     {
-        var lineDtos = await _lineService.GetProductsInDealAsync(id, dealLineFilterAndPagingRequestDto);
+        var lineDtos = await _dealService.GetProductsAsync(id, dealLineFilterAndPagingRequestDto);
         return Ok(lineDtos);
     }
 

@@ -11,6 +11,7 @@ public class AccountMapper : Profile
         CreateMap<Account, BasicAccountDto>();
 
         CreateMap<Account, AccountDto>();
+        CreateMap<PagedResultDto<Account>, PagedResultDto<AccountDto>>();
         CreateMap<AccountCreateDto, Account>();
         CreateMap<AccountUpdateDto, Account>();
     }

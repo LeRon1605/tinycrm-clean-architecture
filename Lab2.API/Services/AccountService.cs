@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
+using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
@@ -10,14 +11,17 @@ namespace Lab2.API.Services;
 public class AccountService : BaseService<Account, int, AccountDto, AccountCreateDto, AccountUpdateDto>, IAccountService
 {
     private readonly IContactRepository _contactRepository;
+    private readonly ILeadRepository _leadRepository;
 
     public AccountService(
         IAccountRepository accountRepository,
         IContactRepository contactRepository,
+        ILeadRepository leadRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper) : base(mapper, accountRepository, unitOfWork)
     {
         _contactRepository = contactRepository;
+        _leadRepository = leadRepository;
     }
 
     protected override async Task<bool> IsValidOnInsertAsync(AccountCreateDto accountCreateDto)
@@ -33,18 +37,6 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
         }
 
         return true;
-    }
-
-    public async Task<AccountDto> GetAccountOfContactAsync(int contactId)
-    {
-        // Load contact with account
-        var contact = await _contactRepository.FindAsync(x => x.Id == contactId, includeProps: nameof(Contact.Account), tracking: false);
-        if (contact == null)
-        {
-            throw new EntityNotFoundException(nameof(Contact), contactId);
-        }
-
-        return _mapper.Map<AccountDto>(contact.Account);
     }
 
     private async Task<bool> CheckValidAccountAsync(string email, string phone, int? id = null)
@@ -64,5 +56,33 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
         }
 
         return true;
+    }
+
+    public async Task<PagedResultDto<ContactDto>> GetContactsAsync(int id, ContactFilterAndPagingRequestDto filterParam)
+    {
+        // 1. Check account existing
+        await CheckExistingAsync(id);
+
+        // 2. Get contacts 
+        var pagedResult = await _contactRepository.GetPagedResultAsync(skip: (filterParam.Page - 1) * filterParam.Size,
+                                                                        take: filterParam.Size,
+                                                                        expression: filterParam.ToExpression().JoinWith(x => x.AccountId == id),
+                                                                        filterParam.BuildSortingParam(),
+                                                                        tracking: false);
+        return _mapper.Map<PagedResultDto<ContactDto>>(pagedResult);
+    }
+
+    public async Task<PagedResultDto<LeadDto>> GetLeadsAsync(int id, LeadFilterAndPagingRequestDto filterParam)
+    {
+        // 1. Check account existing
+        await CheckExistingAsync(id);
+
+        // 2. Get leads 
+        var pagedResult = await _leadRepository.GetPagedResultAsync(skip: (filterParam.Page - 1) * filterParam.Size,
+                                                                    take: filterParam.Size,
+                                                                    expression: filterParam.ToExpression().JoinWith(x => x.CustomerId == id),
+                                                                    filterParam.BuildSortingParam(),
+                                                                    tracking: false);
+        return _mapper.Map<PagedResultDto<LeadDto>>(pagedResult);
     }
 }
