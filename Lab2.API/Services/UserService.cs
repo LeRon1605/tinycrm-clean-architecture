@@ -31,19 +31,28 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
     public async Task<UserDto> CreateAsync(UserCreateDto userCreateDto)
     {
         var user = _mapper.Map<User>(userCreateDto);
-        var createUserResult = await _userManager.CreateAsync(user, userCreateDto.Password);
 
+        await _unitOfWork.BeginTransactionAsync();
+
+        var createUserResult = await _userManager.CreateAsync(user, userCreateDto.Password);
         if (!createUserResult.Succeeded)
         {
+            await _unitOfWork.RollbackTransactionAsync();
             throw new IdentityException(createUserResult.Errors.First());
         }
 
-        var insertRoleResult = await _userManager.AddToRoleAsync(user, AppRole.User);
-        if (insertRoleResult.Succeeded)
+        try
         {
-            throw new IdentityException(insertRoleResult.Errors.First());
+            await _userManager.AddToRoleAsync(user, AppRole.User);
+        }
+        catch
+        {
+            await _unitOfWork.RollbackTransactionAsync();
+            throw new EntityNotFoundException("Role", nameof(IdentityRole.Name), AppRole.User);
         }
 
+        await _unitOfWork.CommitTransactionAsync();
+        
         return _mapper.Map<UserDto>(user);
     }
 
