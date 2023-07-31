@@ -9,11 +9,14 @@ namespace Lab2.API.Services;
 
 public class ProductService : BaseService<Product, int, ProductDto, ProductCreateDto, ProductUpdateDto>, IProductService
 {
+    private readonly IProductRepository _productRepository;
+
     public ProductService(
         IProductRepository productRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper) : base(mapper, productRepository, unitOfWork)
     {
+        _productRepository = productRepository;
     }
 
     protected override async Task<bool> IsValidOnInsertAsync(ProductCreateDto productCreateDto)
@@ -33,7 +36,7 @@ public class ProductService : BaseService<Product, int, ProductDto, ProductCreat
 
     private async Task<bool> CheckDuplicateProductCode(string code)
     {
-        var isProductCodeExisting = await _repository.AnyAsync(x => x.Code == code);
+        var isProductCodeExisting = await _productRepository.IsCodeExistingAsync(code);
         if (isProductCodeExisting)
         {
             throw new ProductCodeAlreadyExist(code);

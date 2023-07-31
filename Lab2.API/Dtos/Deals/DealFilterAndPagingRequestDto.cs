@@ -2,7 +2,7 @@
 using Lab2.API.Validations;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
-using System.Linq.Expressions;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Dtos;
 
@@ -14,8 +14,8 @@ public class DealFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<Deal>
     [SortConstraint(Fields = $"{nameof(Deal.Title)}")]
     public override string Sorting { get; set; } = string.Empty;
 
-    public Expression<Func<Deal, bool>> ToExpression()
+    public IPagingAndSortingSpecification<Deal, int> ToSpecification()
     {
-        return x => x.Title.Contains(Title) && (Status == null || x.Status == Status);
+        return new DealFilterSpecification(Page, Size, Title, Status, Sorting);
     }
 }

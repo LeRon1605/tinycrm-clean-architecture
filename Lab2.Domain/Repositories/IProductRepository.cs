@@ -5,4 +5,5 @@ namespace Lab2.Domain.Repositories;
 
 public interface IProductRepository : IRepository<Product>
 {
+    Task<bool> IsCodeExistingAsync(string code);
 }

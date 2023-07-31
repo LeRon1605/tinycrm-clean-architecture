@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
-using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
@@ -59,7 +58,7 @@ public class LineService : BaseService<DealLine, int, DealLineDto, DealLineCreat
 
     private async Task<bool> CheckDealExistingAsync(int dealId)
     {
-        var isDealExisting = await _dealRepository.AnyAsync(x => x.Id == dealId);
+        var isDealExisting = await _dealRepository.IsExistingAsync(dealId);
         if (!isDealExisting)
         {
             throw new EntityNotFoundException(nameof(Deal), dealId);
@@ -70,7 +69,7 @@ public class LineService : BaseService<DealLine, int, DealLineDto, DealLineCreat
 
     private async Task<bool> CheckProductExistingAsync(int productId)
     {
-        var isProductExisting = await _productRepository.AnyAsync(x => x.Id == productId);
+        var isProductExisting = await _productRepository.IsExistingAsync(productId);
         if (!isProductExisting)
         {
             throw new EntityNotFoundException(nameof(Product), productId);

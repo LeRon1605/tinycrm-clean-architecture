@@ -1,7 +1,7 @@
 ﻿using Lab2.API.Dtos.Shared;
 using Lab2.API.Validations;
 using Lab2.Domain.Entities;
-using System.Linq.Expressions;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Dtos;
 
@@ -12,8 +12,8 @@ public class AccountFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<Acc
     [SortConstraint(Fields = $"{nameof(Account.Name)} , {nameof(Account.Email)}")]
     public override string Sorting { get; set; } = string.Empty;
 
-    public Expression<Func<Account, bool>> ToExpression()
+    public IPagingAndSortingSpecification<Account, int> ToSpecification()
     {
-        return x => x.Name.Contains(Name);
+        return new AccountFilterSpecification(Page, Size,Name, Sorting);
     }
 }

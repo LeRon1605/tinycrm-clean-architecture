@@ -2,11 +2,11 @@
 using Lab2.API.Dtos;
 using Lab2.API.Dtos.Deals;
 using Lab2.API.Exceptions;
-using Lab2.API.Extensions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
 using Lab2.Domain.Repositories;
+using Lab2.Domain.Specifications.Deals;
 
 namespace Lab2.API.Services;
 
@@ -55,8 +55,8 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
     {
         return new DealStatisticDto()
         {
-            OpenDeal = await _dealRepository.GetCountAsync(x => x.Status == DealStatus.Open),
-            WonDeal = await _dealRepository.GetCountAsync(x => x.Status == DealStatus.Won),
+            OpenDeal = await _dealRepository.GetCountOpenDealAsync(),
+            WonDeal = await _dealRepository.GetCountWonDealAsync(),
             AverageRevenue = await _dealRepository.GetAverageRevenueAsync(),
             TotalRevenue = await _dealRepository.GetTotalRevenueAsync(),
         };
@@ -64,18 +64,19 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
 
     public async Task<PagedResultDto<DealLineDto>> GetProductsAsync(int id, DealLineFilterAndPagingRequestDto filterParam)
     {
-        // 1. Check account existing
+        // 1. Check deal existing
         await CheckExistingAsync(id);
 
-        // 2. Get contacts 
-        var pagedResult = await _dealLineRepository.GetPagedResultAsync(
-                                                    skip: (filterParam.Page - 1) * filterParam.Size,
-                                                    take: filterParam.Size,
-                                                    filterParam.ToExpression().JoinWith(x => x.DealId == id),
-                                                    filterParam.BuildSortingParam(),
-                                                    tracking: false,
-                                                    includeProps: nameof(DealLine.Product));
+        // 2. Get deal line 
+        var getPagedDealLineForDealSpecification = filterParam.ToSpecification().And(new GetDealLineForDealSpecification(id));
 
-        return _mapper.Map<PagedResultDto<DealLineDto>>(pagedResult);
+        var pagedData = await _dealLineRepository.GetPagedListAsync(getPagedDealLineForDealSpecification);
+        var total = await _dealLineRepository.GetCountAsync(getPagedDealLineForDealSpecification);
+
+        return new PagedResultDto<DealLineDto>()
+        {
+            Data = _mapper.Map<IEnumerable<DealLineDto>>(pagedData),
+            TotalPages = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
+        };
     }
 }

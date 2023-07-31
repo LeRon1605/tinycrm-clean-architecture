@@ -16,6 +16,7 @@ public class DealMapper : Profile
 
         CreateMap<DealLine, DealLineDto>()
             .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Quantity * src.PricePerUnit));
+        CreateMap<PagedResultDto<DealLine>, PagedResultDto<DealLineDto>>();
         CreateMap<DealLineCreateDto, DealLine>();
     }
 }

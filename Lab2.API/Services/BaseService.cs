@@ -2,10 +2,7 @@
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
-using System.Linq.Expressions;
-using Lab2.API.Extensions;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using System;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;
 
@@ -29,17 +26,20 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
 
     public virtual async Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
     {
-        var pagedResult = await _repository.GetPagedResultAsync(skip: (filterParam.Page - 1) * filterParam.Size, 
-                                                                take: filterParam.Size, filterParam.ToExpression(), 
-                                                                filterParam.BuildSortingParam(), 
-                                                                tracking: false, 
-                                                                _includePropsOnGet);
-        return _mapper.Map<PagedResultDto<TEntityDto>>(pagedResult);
+        var specification = filterParam.ToSpecification();
+        var data = await _repository.GetPagedListAsync(specification);
+        var total = await _repository.GetCountAsync(specification);
+
+        return new PagedResultDto<TEntityDto>()
+        {
+            Data = _mapper.Map<IEnumerable<TEntityDto>>(data),
+            TotalPages = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
+        };
     }
 
     public virtual async Task<TEntityDto> GetAsync(TKey id)
     {
-        TEntity? entity = await _repository.FindAsync(x => x.Id.Equals(id), includeProps: _includePropsOnGet, tracking: false);
+        TEntity? entity = await _repository.FindByIdAsync(id, includeProps: _includePropsOnGet, tracking: false);
         if (entity == null)
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -75,7 +75,7 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
 
     public async Task CheckExistingAsync(TKey id)
     {
-        var isExisting = await _repository.AnyAsync(x => x.Id.Equals(id));
+        var isExisting = await _repository.IsExistingAsync(id);
         if (!isExisting) 
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -101,7 +101,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto> : BaseServ
             var entity = _mapper.Map<TEntity>(entityCreateDto);
 
             // Insert entity to db
-            _repository.Insert(entity);
+            await _repository.InsertAsync(entity);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<TEntityDto>(entity);

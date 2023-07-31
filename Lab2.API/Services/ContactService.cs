@@ -39,7 +39,7 @@ public class ContactService : BaseService<Contact, int, ContactDto, ContactCreat
     {
         if (accountId != null)
         {
-            var isAccountExisting = await _accountRepository.AnyAsync(x => x.Id == accountId);
+            var isAccountExisting = await _accountRepository.IsExistingAsync(accountId.Value);
             if (!isAccountExisting)
             {
                 throw new EntityNotFoundException(nameof(Account), accountId.Value);
@@ -51,7 +51,7 @@ public class ContactService : BaseService<Contact, int, ContactDto, ContactCreat
 
     public async Task<AccountDto> GetAccountAsync(int id)
     {
-        var contact = await _repository.FindAsync(x => x.Id == id, includeProps: nameof(Contact.Account), tracking: false);
+        var contact = await _repository.FindByIdAsync(id, includeProps: nameof(Contact.Account), tracking: false);
         if (contact == null)
         {
             throw new EntityNotFoundException(nameof(Contact), id);

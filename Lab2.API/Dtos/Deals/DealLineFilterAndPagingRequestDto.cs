@@ -1,7 +1,7 @@
 ﻿using Lab2.API.Dtos.Shared;
 using Lab2.API.Validations;
 using Lab2.Domain.Entities;
-using System.Linq.Expressions;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Dtos;
 
@@ -12,16 +12,8 @@ public class DealLineFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<De
     [SortConstraint(Fields = $"{nameof(Product.Code)}, {nameof(Product.Name)}, TotalAmount")]
     public override string Sorting { get; set; } = string.Empty;
 
-    public Expression<Func<DealLine, bool>> ToExpression()
+    public IPagingAndSortingSpecification<DealLine, int> ToSpecification()
     {
-        return x => x.Product.Name.Contains(Name);
-    }
-
-    public override string BuildSortingParam()
-    {
-        Sorting = Sorting.Replace("Code", "Product.Code");
-        Sorting = Sorting.Replace("Name", "Product.Name");
-        Sorting = Sorting.Replace("TotalAmount", "Quantity * PricePerUnit");
-        return Sorting;
+        return new DealLineFilterSpecification(Page, Size, Name, Sorting);
     }
 }

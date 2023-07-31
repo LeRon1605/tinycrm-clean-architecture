@@ -1,7 +1,7 @@
 ﻿using Lab2.Domain.Base;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.Infrastructure.Base;
 
@@ -30,24 +30,24 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
 
     public virtual Task<List<TEntity>> GetPagedListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression, string? sorting = null, bool tracking = true, string? includeProps = null)
     {
-        var queryable = tracking ? DbSet.AsQueryable() : DbSet.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(includeProps))
-        {
-            foreach (var prop in includeProps.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                queryable = queryable.Include(prop);
-            }
-        }
-
-        queryable = queryable.Where(expression);
-
-        if (!string.IsNullOrWhiteSpace(sorting))
-        {
-            queryable = queryable.OrderBy(sorting);
-        }
+        var queryable = new AppQueryableBuilder<TEntity, TKey>(DbSet, tracking)
+                                        .IncludeProp(includeProps)
+                                        .ApplyFilter(expression)
+                                        .ApplySorting(sorting)
+                                        .Build(); 
 
         return queryable.Skip(skip).Take(take).ToListAsync();
+    }
+
+    public Task<List<TEntity>> GetPagedListAsync(IPagingAndSortingSpecification<TEntity, TKey> specification)
+    {
+        return SpecificationEvaluator<TEntity, TKey>.GetQuery(DbSet.AsQueryable(), specification).ToListAsync();
+    }
+
+    public Task<List<TEntity>> GetPagedListAsync(int skip, int take, ISpecification<TEntity, TKey> specification, string? sorting = null, bool tracking = true,
+        string? includeProps = null)
+    {
+        return GetPagedListAsync(skip, take, specification.ToExpression(), sorting, tracking, includeProps);
     }
 
     public virtual async Task InsertAsync(TEntity entity)
@@ -60,22 +60,30 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
         DbSet.Update(entity);
     }
 
+    public Task<bool> IsExistingAsync(TKey id)
+    {
+        return DbSet.AnyAsync(x => x.Id.Equals(id));
+    }
+
     public virtual void Insert(TEntity entity)
     {
         DbSet.Add(entity);
     }
 
+    public Task<TEntity?> FindByIdAsync(object id, string includeProps, bool tracking)
+    {
+        var queryable = new AppQueryableBuilder<TEntity, TKey>(DbSet, tracking)
+                                        .IncludeProp(includeProps)
+                                        .Build();
+
+        return queryable.FirstOrDefaultAsync(x => x.Id.Equals(id));
+    }
+
     public virtual Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, string? includeProps = null)
     {
-        var queryable = tracking ? DbSet.AsQueryable() : DbSet.AsNoTracking();
-
-        if (!string.IsNullOrWhiteSpace(includeProps))
-        {
-            foreach (var prop in includeProps.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                queryable = queryable.Include(prop);
-            }
-        }
+        var queryable = new AppQueryableBuilder<TEntity, TKey>(DbSet, tracking)
+                                        .IncludeProp(includeProps)
+                                        .Build();
 
         return queryable.FirstOrDefaultAsync(expression);
     }
@@ -96,6 +104,11 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
             return DbSet.CountAsync(expression);
         }
         return DbSet.CountAsync();
+    }
+
+    public Task<int> GetCountAsync(ISpecification<TEntity, TKey> specification)
+    {
+        return GetCountAsync(specification.ToExpression());
     }
 
     public virtual Task InsertRangeAsync(IEnumerable<TEntity> entities)

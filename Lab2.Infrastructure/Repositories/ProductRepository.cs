@@ -9,4 +9,9 @@ public class ProductRepository : Repository<Product>, IProductRepository
     public ProductRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {
     }
+
+    public Task<bool> IsCodeExistingAsync(string code)
+    {
+        return AnyAsync(x => x.Code == code);
+    }
 }
