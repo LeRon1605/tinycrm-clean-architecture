@@ -12,10 +12,12 @@ namespace Lab2.API.Controllers;
 public class LeadController : ControllerBase
 {
     private readonly ILeadService _leadService;
+    private readonly IAccountService _accountService;
 
-    public LeadController(ILeadService leadService)
+    public LeadController(ILeadService leadService, IAccountService accountService)
     {
         _leadService = leadService;
+        _accountService = accountService;
     }
 
     [HttpGet]
@@ -65,6 +67,15 @@ public class LeadController : ControllerBase
     {
         await _leadService.DeleteAsync(id);
         return NoContent();
+    }
+
+    [HttpGet("account/{accountId}")]
+    [ProducesResponseType(typeof(IEnumerable<LeadDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetLeadsOfAccountAsync(int accountId, [FromQuery] LeadFilterAndPagingRequestDto filterParam)
+    {
+        var leadDtos = await _accountService.GetLeadsAsync(accountId, filterParam);
+        return Ok(leadDtos);
     }
 
     [HttpPost("{id}/qualify")]

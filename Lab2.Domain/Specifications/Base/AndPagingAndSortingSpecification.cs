@@ -1,5 +1,4 @@
 ﻿using Lab2.Domain.Base;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Lab2.Domain.Specifications.Base;
@@ -11,7 +10,7 @@ public class AndPagingAndSortingSpecification<TEntity, TKey> : PagingAndSortingS
 
     private readonly Specification<TEntity, TKey> _right;
 
-    public AndPagingAndSortingSpecification(PagingAndSortingSpecification<TEntity, TKey> left, Specification<TEntity, TKey> right, bool isTracking = true) : base(left.Page, left.Take, left.Sorting, isTracking)
+    public AndPagingAndSortingSpecification(PagingAndSortingSpecification<TEntity, TKey> left, Specification<TEntity, TKey> right, bool isTracking = true) : base(left)
     {
         _left = left;
         _right = right;

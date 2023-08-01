@@ -12,10 +12,12 @@ namespace Lab2.API.Controllers;
 public class LineController : ControllerBase
 {
     private readonly ILineService _lineService;
+    private readonly IDealService _dealService;
 
-    public LineController(ILineService lineService)
+    public LineController(ILineService lineService, IDealService dealService)
     {
         _lineService = lineService;
+        _dealService = dealService;
     }
 
     [HttpPost]
@@ -56,5 +58,13 @@ public class LineController : ControllerBase
     {
         await _lineService.DeleteAsync(id);
         return Ok();
+    }
+
+    [HttpGet("deal/{dealId}")]
+    [ProducesResponseType(typeof(PagedResultDto<DealLineDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProductsInDealAsync(int dealId, [FromQuery] DealLineFilterAndPagingRequestDto dealLineFilterAndPagingRequestDto)
+    {
+        var lineDtos = await _dealService.GetProductsAsync(dealId, dealLineFilterAndPagingRequestDto);
+        return Ok(lineDtos);
     }
 }

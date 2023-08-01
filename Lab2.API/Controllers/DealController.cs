@@ -58,14 +58,6 @@ public class DealController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{id}/lines")]
-    [ProducesResponseType(typeof(PagedResultDto<DealLineDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProductsInDealAsync(int id, [FromQuery] DealLineFilterAndPagingRequestDto dealLineFilterAndPagingRequestDto)
-    {
-        var lineDtos = await _dealService.GetProductsAsync(id, dealLineFilterAndPagingRequestDto);
-        return Ok(lineDtos);
-    }
-
     [HttpGet("statistic")]
     [ProducesResponseType(typeof(DealStatisticDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDealStatisticAsync()

@@ -12,10 +12,12 @@ namespace Lab2.API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
+    private readonly IContactService _contactService;
 
-    public AccountController(IAccountService accountService)
+    public AccountController(IAccountService accountService, IContactService contactService)
     {
         _accountService = accountService;
+        _contactService = contactService;
     }
 
     [HttpGet]
@@ -68,21 +70,12 @@ public class AccountController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("{id}/contacts")]
-    [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
+    [HttpGet("contact/{contactId}")]
+    [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetContactsOfAccountAsync(int id, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
+    public async Task<IActionResult> GetAccountOfContactAsync(int contactId)
     {
-        var contactDtos = await _accountService.GetContactsAsync(id, contactFilterAndPagingRequestDto);
-        return Ok(contactDtos);
-    }
-
-    [HttpGet("{id}/leads")]
-    [ProducesResponseType(typeof(IEnumerable<LeadDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetLeadsOfAccountAsync(int id, [FromQuery] LeadFilterAndPagingRequestDto filterParam)
-    {
-        var leadDtos = await _accountService.GetLeadsAsync(id, filterParam);
-        return Ok(leadDtos);
+        var accountDto = await _contactService.GetAccountAsync(contactId);
+        return Ok(accountDto);
     }
 }

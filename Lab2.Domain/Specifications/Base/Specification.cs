@@ -5,9 +5,9 @@ namespace Lab2.Domain.Specifications;
 
 public abstract class Specification<TEntity, TKey> : ISpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {
-    public bool IsTracking { get; }
-    public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; }
-    public List<string> IncludeStrings { get; }
+    public bool IsTracking { get; set; }
+    public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; }
+    public List<string> IncludeStrings { get; set; }
 
     protected Specification(bool isTracking = true)
     {
