@@ -4,7 +4,6 @@ using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.API.Services;
@@ -12,18 +11,15 @@ namespace Lab2.API.Services;
 public class UserService : BaseService<User, string, UserDto>, IUserService
 {
     private readonly UserManager<User> _userManager;
-    private readonly IAuthorizationService _authorizationService;
     private readonly ICurrentUser _currentUser;
 
     public UserService(
-        IAuthorizationService authorizationService,
         UserManager<User> userManager,
         ICurrentUser currentUser,
         IMapper mapper,
         IRepository<User, string> repository,
         IUnitOfWork unitOfWork) : base(mapper, repository, unitOfWork)
     {
-        _authorizationService = authorizationService;
         _userManager = userManager;
         _currentUser = currentUser;
     }
@@ -83,11 +79,9 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
 
     private async Task<bool> IsValidOnEditUser(User user)
     {
-        var result = await _authorizationService.AuthorizeAsync(_currentUser.ClaimPrincipal, user, AppPolicy.EditProfile);
-
-        if (!result.Succeeded)
+        if (!_currentUser.IsInRole(AppRole.Admin) && _currentUser.Id != user.Id)
         {
-            throw new ForbiddenException("You don't have permission to edit user!", ErrorCodes.ProfileForbidEdit);
+            throw new ForbiddenException("You don't have permission to edit this user!", ErrorCodes.ProfileForbidEdit);
         }
 
         return true;
