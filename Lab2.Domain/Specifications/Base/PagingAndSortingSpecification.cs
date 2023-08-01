@@ -22,7 +22,7 @@ public abstract class PagingAndSortingSpecification<TEntity, TKey> : Specificati
     {
         Page = specification.Page;
         Take = specification.Take;
-        Skip = specification.Skip;  
+        Skip = specification.Skip;
         Sorting = specification.Sorting;
         IncludeExpressions = specification.IncludeExpressions;
         IncludeStrings = specification.IncludeStrings;

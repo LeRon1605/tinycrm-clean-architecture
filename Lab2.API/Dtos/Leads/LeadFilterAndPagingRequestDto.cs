@@ -2,7 +2,6 @@
 using Lab2.API.Validations;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
-using System.Linq.Expressions;
 using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Dtos;

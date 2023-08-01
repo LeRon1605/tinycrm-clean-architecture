@@ -5,7 +5,6 @@ namespace Lab2.Domain.Specifications;
 
 public class AndSpecification<TEntity, TKey> : Specification<TEntity, TKey>, ISpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {
-
     private readonly Specification<TEntity, TKey> _left;
 
     private readonly Specification<TEntity, TKey> _right;
@@ -28,6 +27,5 @@ public class AndSpecification<TEntity, TKey> : Specification<TEntity, TKey>, ISp
         );
 
         return Expression.Lambda<Func<TEntity, bool>>(body, parameter);
-
     }
 }

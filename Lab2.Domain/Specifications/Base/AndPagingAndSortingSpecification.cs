@@ -5,7 +5,6 @@ namespace Lab2.Domain.Specifications.Base;
 
 public class AndPagingAndSortingSpecification<TEntity, TKey> : PagingAndSortingSpecification<TEntity, TKey>, IPagingAndSortingSpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {
-
     private readonly Specification<TEntity, TKey> _left;
 
     private readonly Specification<TEntity, TKey> _right;
@@ -28,6 +27,5 @@ public class AndPagingAndSortingSpecification<TEntity, TKey> : PagingAndSortingS
         );
 
         return Expression.Lambda<Func<TEntity, bool>>(body, parameter);
-
     }
 }

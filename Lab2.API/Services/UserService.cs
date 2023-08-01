@@ -48,7 +48,7 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         }
 
         await _unitOfWork.CommitTransactionAsync();
-        
+
         return _mapper.Map<UserDto>(user);
     }
 
@@ -60,7 +60,7 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
             throw new EntityNotFoundException(nameof(User), id);
         }
 
-        await IsValidOnEditUser(user);
+        IsValidOnEditUser(user);
 
         _mapper.Map(entityUpdateDto, user);
         if (!string.IsNullOrWhiteSpace((entityUpdateDto.Password)))
@@ -77,7 +77,7 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
         throw new IdentityException(identityResult.Errors.First());
     }
 
-    private async Task<bool> IsValidOnEditUser(User user)
+    private bool IsValidOnEditUser(User user)
     {
         if (!_currentUser.IsInRole(AppRole.Admin) && _currentUser.Id != user.Id)
         {

@@ -1,5 +1,5 @@
-﻿using System.Linq.Expressions;
-using Lab2.Domain.Entities;
+﻿using Lab2.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace Lab2.Domain.Specifications;
 

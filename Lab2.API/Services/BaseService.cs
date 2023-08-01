@@ -2,7 +2,6 @@
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
-using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;
 
@@ -76,7 +75,7 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
     public async Task CheckExistingAsync(TKey id)
     {
         var isExisting = await _repository.IsExistingAsync(id);
-        if (!isExisting) 
+        if (!isExisting)
         {
             throw new EntityNotFoundException(typeof(TEntity).Name, id.ToString());
         }

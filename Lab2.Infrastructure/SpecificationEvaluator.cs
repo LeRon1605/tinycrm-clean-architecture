@@ -1,6 +1,6 @@
 ﻿using Lab2.Domain.Base;
-using Microsoft.EntityFrameworkCore;
 using Lab2.Domain.Specifications;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Dynamic.Core;
 
 namespace Lab2.Infrastructure;
@@ -13,8 +13,8 @@ public static class SpecificationEvaluator<TEntity, TKey> where TEntity : class,
 
         if (specification.IncludeExpressions.Any())
         {
-            queryable = specification.IncludeExpressions.Aggregate(queryable, 
-                                                            (current, include) 
+            queryable = specification.IncludeExpressions.Aggregate(queryable,
+                                                            (current, include)
                                                                 => current.Include(include));
         }
 

@@ -1,7 +1,7 @@
-﻿using System.Security.Claims;
-using Lab2.API.Authorization.Requirements;
+﻿using Lab2.API.Authorization.Requirements;
 using Lab2.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Lab2.API.Authorization.Handlers;
 

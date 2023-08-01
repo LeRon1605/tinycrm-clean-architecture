@@ -71,7 +71,7 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
         // 1. Check account existing
         await CheckExistingAsync(id);
 
-        // 2. Get contacts 
+        // 2. Get contacts
         var getPagedContactForAccountSpecification = filterParam.ToSpecification().And(new GetContactForAccountSpecification(id));
 
         var pagedData = await _contactRepository.GetPagedListAsync(getPagedContactForAccountSpecification);
@@ -89,7 +89,7 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
         // 1. Check account existing
         await CheckExistingAsync(id);
 
-        // 2. Get leads 
+        // 2. Get leads
         var getPagedLeadForAccountSpecification = filterParam.ToSpecification().And(new GetLeadForAccountSpecification(id));
 
         var pagedData = await _leadRepository.GetPagedListAsync(getPagedLeadForAccountSpecification);

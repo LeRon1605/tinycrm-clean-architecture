@@ -14,6 +14,6 @@ public class AccountFilterAndPagingRequestDto : PagingRequestDto, IFilterDto<Acc
 
     public IPagingAndSortingSpecification<Account, int> ToSpecification()
     {
-        return new AccountFilterSpecification(Page, Size,Name, Sorting);
+        return new AccountFilterSpecification(Page, Size, Name, Sorting);
     }
 }

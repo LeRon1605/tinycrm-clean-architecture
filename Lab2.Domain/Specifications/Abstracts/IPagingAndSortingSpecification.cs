@@ -7,6 +7,8 @@ public interface IPagingAndSortingSpecification<TEntity, TKey> : ISpecification<
     int Take { get; set; }
     int Skip { get; set; }
     string Sorting { get; set; }
+
     string BuildSorting();
+
     PagingAndSortingSpecification<TEntity, TKey> And(Specification<TEntity, TKey> specification);
 }

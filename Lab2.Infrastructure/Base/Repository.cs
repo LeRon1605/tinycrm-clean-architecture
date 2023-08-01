@@ -1,7 +1,7 @@
 ﻿using Lab2.Domain.Base;
+using Lab2.Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Lab2.Domain.Specifications;
 
 namespace Lab2.Infrastructure.Base;
 
@@ -34,7 +34,7 @@ public class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntit
                                         .IncludeProp(includeProps)
                                         .ApplyFilter(expression)
                                         .ApplySorting(sorting)
-                                        .Build(); 
+                                        .Build();
 
         return queryable.Skip(skip).Take(take).ToListAsync();
     }

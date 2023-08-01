@@ -67,7 +67,7 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
         // 1. Check deal existing
         await CheckExistingAsync(id);
 
-        // 2. Get deal line 
+        // 2. Get deal line
         var getPagedDealLineForDealSpecification = filterParam.ToSpecification().And(new GetDealLineForDealSpecification(id));
 
         var pagedData = await _dealLineRepository.GetPagedListAsync(getPagedDealLineForDealSpecification);
