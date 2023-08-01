@@ -49,7 +49,6 @@ public static class IServiceCollectionExtensions
                 .AddScoped<ILeadService, LeadService>()
                 .AddScoped<IProductService, ProductService>()
                 .AddScoped<IDealService, DealService>()
-                .AddScoped<ILineService, LineService>()
                 .AddScoped<IAuthService, AuthService>()
                 .AddScoped<IUserService, UserService>()
                 .AddScoped<ITokenProvider, TokenProvider>();

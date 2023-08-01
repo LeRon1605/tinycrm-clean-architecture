@@ -65,4 +65,42 @@ public class DealController : ControllerBase
         var dealStatisticDto = await _dealService.GetStatisticAsync();
         return Ok(dealStatisticDto);
     }
+
+    [HttpGet("{id}/lines")]
+    [ProducesResponseType(typeof(PagedResultDto<DealLineDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLinesAsync(int id, [FromQuery] DealLineFilterAndPagingRequestDto dealLineFilterAndPagingRequestDto)
+    {
+        var dealLineDtos = await _dealService.GetLinesAsync(id, dealLineFilterAndPagingRequestDto);
+        return Ok(dealLineDtos);
+    }
+
+    [HttpPost("{id}/lines")]
+    [Authorize(Roles = AppRole.Admin)]
+    [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CreateLineAsync(int id, DealLineCreateDto dealLineCreateDto)
+    {
+        var dealLineDto = await _dealService.AddLineAsync(id, dealLineCreateDto);
+        return Ok(dealLineDto);
+    }
+
+    [HttpDelete("{id}/lines/{dealLineId}")]
+    [Authorize(Roles = AppRole.Admin)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> RemoveLineAsync(int id,int dealLineId)
+    {
+        await _dealService.RemoveLineAsync(id, dealLineId);
+        return NoContent();
+    }
+
+    [HttpPut("{id}/lines/{dealLineId}")]
+    [Authorize(Roles = AppRole.Admin)]
+    [ProducesResponseType(typeof(DealLineDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateLineAsync(int id, int dealLineId, DealLineUpdateDto dealLineUpdateDto)
+    {
+        var dealLineDto = await _dealService.UpdateLineAsync(id,dealLineId, dealLineUpdateDto);
+        return Ok(dealLineDto);
+    }
 }

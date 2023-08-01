@@ -18,7 +18,8 @@ public static class ErrorCodes
     public const string LeadInvalidRemove = "401";
 
     // Deal
-    public const string DealInvalidRemove = "500";
+    public const string LineNotBelongToDeal = "500";
+    public const string DealProcessed = "501";
 
     // Auth
     public const string AccountLockedOut = "600";
