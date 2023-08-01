@@ -4,6 +4,7 @@ using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
+using Lab2.Domain.Specifications.Deals;
 
 namespace Lab2.API.Services;
 
@@ -76,5 +77,15 @@ public class LineService : BaseService<DealLine, int, DealLineDto, DealLineCreat
         }
 
         return true;
+    }
+
+    public async Task<PagedResultDto<DealLineDto>> GetByDealAsync(int dealId, DealLineFilterAndPagingRequestDto filterParam)
+    {
+        // 1. Check deal existing
+        await CheckDealExistingAsync(dealId);
+
+        // 2. Get deal line
+        var getPagedDealLineForDealSpecification = filterParam.ToSpecification().And(new GetDealLineForDealSpecification(dealId));
+        return await GetPagedAsync(getPagedDealLineForDealSpecification);
     }
 }

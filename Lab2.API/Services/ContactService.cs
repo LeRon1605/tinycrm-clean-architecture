@@ -4,6 +4,8 @@ using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
+using Lab2.Domain.Specifications;
+using Lab2.Infrastructure.Repositories;
 
 namespace Lab2.API.Services;
 
@@ -49,14 +51,13 @@ public class ContactService : BaseService<Contact, int, ContactDto, ContactCreat
         return true;
     }
 
-    public async Task<AccountDto> GetAccountAsync(int id)
+    public async Task<PagedResultDto<ContactDto>> GetByAccountAsync(int accountId, ContactFilterAndPagingRequestDto filterParam)
     {
-        var contact = await _repository.FindByIdAsync(id, includeProps: nameof(Contact.Account), tracking: false);
-        if (contact == null)
-        {
-            throw new EntityNotFoundException(nameof(Contact), id);
-        }
+        // 1. Check account existing
+        await CheckAccountExistingAsync(accountId);
 
-        return _mapper.Map<AccountDto>(contact.Account);
+        // 2. Get contacts
+        var getPagedContactForAccountSpecification = filterParam.ToSpecification().And(new GetContactForAccountSpecification(accountId));
+        return await GetPagedAsync(getPagedContactForAccountSpecification);
     }
 }

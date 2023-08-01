@@ -10,4 +10,6 @@ public interface ILeadService : IService<Lead, int, LeadDto, LeadCreateDto, Lead
     Task<LeadDto> DisqualifyAsync(int id, DisqualifiedLeadCreateDto disqualifiedLeadCreateDto);
 
     Task<LeadStatisticDto> GetStatisticAsync();
+
+    Task<PagedResultDto<LeadDto>> GetByAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam);
 }

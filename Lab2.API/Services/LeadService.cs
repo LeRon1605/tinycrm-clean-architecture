@@ -5,6 +5,7 @@ using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Enums;
 using Lab2.Domain.Repositories;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;
 
@@ -35,7 +36,7 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
 
     protected override async Task<bool> IsValidOnUpdateAsync(Lead lead, LeadUpdateDto leadUpdateDto)
     {
-        if (lead.Status != LeadStatus.Qualified || lead.Status != LeadStatus.Disqualified && lead.CustomerId != leadUpdateDto.CustomerId)
+        if (!LeadSpecification.ProcessedLeadSpecification.IsSatisfiedBy(lead) && lead.CustomerId != leadUpdateDto.CustomerId)
         {
             return await CheckAccountExistingAsync(leadUpdateDto.CustomerId);
         }
@@ -49,7 +50,7 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
         lead.Description = leadUpdateDto.Description;
         lead.Source = leadUpdateDto.Source;
 
-        if (lead.Status != LeadStatus.Qualified && lead.Status != LeadStatus.Disqualified)
+        if (!LeadSpecification.ProcessedLeadSpecification.IsSatisfiedBy(lead))
         {
             lead.Title = leadUpdateDto.Title;
             lead.Status = leadUpdateDto.Status;
@@ -63,7 +64,7 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
     protected override Task<bool> IsValidOnDeleteAsync(Lead lead)
     {
         // Can not delete lead which is on qualified or disqualified status
-        if (lead.Status == LeadStatus.Disqualified || lead.Status == LeadStatus.Qualified)
+        if (LeadSpecification.ProcessedLeadSpecification.IsSatisfiedBy(lead))
         {
             throw new InvalidRemoveLeadException(lead.Id);
         }
@@ -80,6 +81,14 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
             QualifiedLead = await _leadRepository.GetCountQualifiedAsync(),
             AverageEstimatedRevenue = await _leadRepository.GetAverageEstimatedRevenueAsync()
         };
+    }
+
+    public async Task<PagedResultDto<LeadDto>> GetByAccountAsync(int accountId, LeadFilterAndPagingRequestDto filterParam)
+    {
+        await CheckAccountExistingAsync(accountId);
+
+        var getPagedLeadForAccountSpecification = filterParam.ToSpecification().And(new GetLeadForAccountSpecification(accountId));
+        return await GetPagedAsync(getPagedLeadForAccountSpecification);
     }
 
     public async Task<DealDto> QualifyAsync(int id)
@@ -132,7 +141,7 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
         }
 
         // Check if lead has already qualified or disqualified yet
-        if (lead.Status == LeadStatus.Qualified || lead.Status == LeadStatus.Disqualified)
+        if (!LeadSpecification.ProcessedLeadSpecification.IsSatisfiedBy(lead))
         {
             throw new InvalidQualifyOrDisqualifyLeadException(id, lead.Status);
         }

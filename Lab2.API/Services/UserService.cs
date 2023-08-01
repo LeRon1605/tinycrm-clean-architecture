@@ -36,7 +36,7 @@ public class UserService : BaseService<User, string, UserDto>, IUserService
             await _unitOfWork.RollbackTransactionAsync();
             throw new IdentityException(createUserResult.Errors.First());
         }
-
+        
         try
         {
             await _userManager.AddToRoleAsync(user, AppRole.User);

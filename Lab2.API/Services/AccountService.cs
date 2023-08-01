@@ -12,18 +12,15 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
 {
     private readonly IAccountRepository _accountRepository;
     private readonly IContactRepository _contactRepository;
-    private readonly ILeadRepository _leadRepository;
 
     public AccountService(
         IAccountRepository accountRepository,
         IContactRepository contactRepository,
-        ILeadRepository leadRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper) : base(mapper, accountRepository, unitOfWork)
     {
         _accountRepository = accountRepository;
         _contactRepository = contactRepository;
-        _leadRepository = leadRepository;
     }
 
     protected override async Task<bool> IsValidOnInsertAsync(AccountCreateDto accountCreateDto)
@@ -66,39 +63,14 @@ public class AccountService : BaseService<Account, int, AccountDto, AccountCreat
         return true;
     }
 
-    public async Task<PagedResultDto<ContactDto>> GetContactsAsync(int id, ContactFilterAndPagingRequestDto filterParam)
+    public async Task<AccountDto> GetByContactAsync(int id)
     {
-        // 1. Check account existing
-        await CheckExistingAsync(id);
-
-        // 2. Get contacts
-        var getPagedContactForAccountSpecification = filterParam.ToSpecification().And(new GetContactForAccountSpecification(id));
-
-        var pagedData = await _contactRepository.GetPagedListAsync(getPagedContactForAccountSpecification);
-        var total = await _contactRepository.GetCountAsync(getPagedContactForAccountSpecification);
-
-        return new PagedResultDto<ContactDto>()
+        var contact = await _contactRepository.FindByIdAsync(id, includeProps: nameof(Contact.Account), tracking: false);
+        if (contact == null)
         {
-            Data = _mapper.Map<IEnumerable<ContactDto>>(pagedData),
-            TotalPages = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
-        };
-    }
+            throw new EntityNotFoundException(nameof(Contact), id);
+        }
 
-    public async Task<PagedResultDto<LeadDto>> GetLeadsAsync(int id, LeadFilterAndPagingRequestDto filterParam)
-    {
-        // 1. Check account existing
-        await CheckExistingAsync(id);
-
-        // 2. Get leads
-        var getPagedLeadForAccountSpecification = filterParam.ToSpecification().And(new GetLeadForAccountSpecification(id));
-
-        var pagedData = await _leadRepository.GetPagedListAsync(getPagedLeadForAccountSpecification);
-        var total = await _leadRepository.GetCountAsync(getPagedLeadForAccountSpecification);
-
-        return new PagedResultDto<LeadDto>()
-        {
-            Data = _mapper.Map<IEnumerable<LeadDto>>(pagedData),
-            TotalPages = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
-        };
+        return _mapper.Map<AccountDto>(contact.Account);
     }
 }

@@ -12,12 +12,10 @@ namespace Lab2.API.Controllers;
 public class ContactController : ControllerBase
 {
     private readonly IContactService _contactService;
-    private readonly IAccountService _accountService;
 
-    public ContactController(IContactService contactService, IAccountService accountService)
+    public ContactController(IContactService contactService)
     {
         _contactService = contactService;
-        _accountService = accountService;
     }
 
     [HttpGet]
@@ -73,7 +71,7 @@ public class ContactController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetContactsOfAccountAsync(int accountId, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {
-        var contactDtos = await _accountService.GetContactsAsync(accountId, contactFilterAndPagingRequestDto);
+        var contactDtos = await _contactService.GetByAccountAsync(accountId, contactFilterAndPagingRequestDto);
         return Ok(contactDtos);
     }
 }

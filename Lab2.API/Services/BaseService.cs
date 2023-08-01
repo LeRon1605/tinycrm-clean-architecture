@@ -2,6 +2,7 @@
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
+using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;
 
@@ -23,16 +24,20 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
         _includePropsOnGet = string.Empty;
     }
 
-    public virtual async Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
+    public virtual Task<PagedResultDto<TEntityDto>> GetPagedAsync(IFilterDto<TEntity, TKey> filterParam)
     {
-        var specification = filterParam.ToSpecification();
+        return GetPagedAsync(filterParam.ToSpecification());
+    }
+
+    protected async Task<PagedResultDto<TEntityDto>> GetPagedAsync(IPagingAndSortingSpecification<TEntity, TKey> specification)
+    {
         var data = await _repository.GetPagedListAsync(specification);
         var total = await _repository.GetCountAsync(specification);
 
         return new PagedResultDto<TEntityDto>()
         {
             Data = _mapper.Map<IEnumerable<TEntityDto>>(data),
-            TotalPages = (int)Math.Ceiling(total * 1.0 / filterParam.Size)
+            TotalPages = (int)Math.Ceiling(total * 1.0 / specification.Take)
         };
     }
 

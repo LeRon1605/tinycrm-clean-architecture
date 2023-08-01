@@ -5,7 +5,5 @@ namespace Lab2.API.Services;
 
 public interface IAccountService : IService<Account, int, AccountDto, AccountCreateDto, AccountUpdateDto>
 {
-    Task<PagedResultDto<ContactDto>> GetContactsAsync(int id, ContactFilterAndPagingRequestDto accountFilterAndPagingRequestDto);
-
-    Task<PagedResultDto<LeadDto>> GetLeadsAsync(int id, LeadFilterAndPagingRequestDto filterParam);
+    Task<AccountDto> GetByContactAsync(int id);
 }
