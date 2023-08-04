@@ -1,9 +1,9 @@
-﻿using Lab2.Domain.Base;
-using Lab2.Domain.Entities;
+﻿using Lab2.Domain.Entities;
+using Lab2.Domain.Repositories.Interfaces;
 
 namespace Lab2.Domain.Repositories;
 
-public interface ILeadRepository : IRepository<Lead>
+public interface ILeadRepository : IRepository<Lead, int>
 {
     Task<int> GetCountOpenLeadAsync();
 

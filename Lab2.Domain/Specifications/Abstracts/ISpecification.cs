@@ -13,7 +13,7 @@ public interface ISpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 
     bool IsSatisfiedBy(TEntity entity);
 
-    Specification<TEntity, TKey> And(Specification<TEntity, TKey> specification);
+    ISpecification<TEntity, TKey> And(ISpecification<TEntity, TKey> specification);
 
     Expression<Func<TEntity, bool>> ToExpression();
 }

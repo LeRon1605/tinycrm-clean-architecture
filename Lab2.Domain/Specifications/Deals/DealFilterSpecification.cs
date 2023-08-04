@@ -9,7 +9,7 @@ public class DealFilterSpecification : PagingAndSortingSpecification<Deal, int>,
     private readonly string _title;
     private readonly DealStatus? _status;
 
-    public DealFilterSpecification(int page, int size, string title, DealStatus? status, string sorting) : base(page, size, sorting, false)
+    public DealFilterSpecification(int page, int size, string title, DealStatus? status, string sorting) : base(page, size, sorting)
     {
         _title = title;
         _status = status;

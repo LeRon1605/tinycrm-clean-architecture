@@ -7,7 +7,7 @@ public class UserFilterSpecification : PagingAndSortingSpecification<User, strin
 {
     private readonly string _name;
 
-    public UserFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting, false)
+    public UserFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting)
     {
         _name = name;
     }

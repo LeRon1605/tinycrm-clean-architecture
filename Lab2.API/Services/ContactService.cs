@@ -57,7 +57,7 @@ public class ContactService : BaseService<Contact, int, ContactDto, ContactCreat
         await CheckAccountExistingAsync(accountId);
 
         // 2. Get contacts
-        var getPagedContactForAccountSpecification = filterParam.ToSpecification().And(new GetContactForAccountSpecification(accountId));
+        var getPagedContactForAccountSpecification = filterParam.ToSpecification().And(new ContactForAccountSpecification(accountId));
         return await GetPagedAsync(getPagedContactForAccountSpecification);
     }
 }

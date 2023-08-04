@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lab2.Infrastructure.Repositories;
 
-public class DealRepository : Repository<Deal>, IDealRepository
+public class DealRepository : Repository<Deal, int>, IDealRepository
 {
     public DealRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {

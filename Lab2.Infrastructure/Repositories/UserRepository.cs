@@ -10,7 +10,7 @@ public class UserRepository : Repository<User, string>, IUserRepository
     {
     }
 
-    public Task<User> FindByUserNameOrEmailAsync(string username, string email)
+    public Task<User?> FindByUserNameOrEmailAsync(string username, string email)
     {
         return FindAsync(u => u.UserName == username.ToUpper() || u.Email == email.ToUpper());
     }

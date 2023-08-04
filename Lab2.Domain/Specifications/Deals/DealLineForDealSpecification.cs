@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace Lab2.Domain.Specifications.Deals;
 
-public class GetDealLineForDealSpecification : Specification<DealLine, int>, ISpecification<DealLine, int>
+public class DealLineForDealSpecification : Specification<DealLine, int>, ISpecification<DealLine, int>
 {
     private readonly int _dealId;
 
-    public GetDealLineForDealSpecification(int dealId) : base(false)
+    public DealLineForDealSpecification(int dealId)
     {
         _dealId = dealId;
     }

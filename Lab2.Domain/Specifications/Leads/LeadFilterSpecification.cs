@@ -9,7 +9,7 @@ public class LeadFilterSpecification : PagingAndSortingSpecification<Lead, int>,
     private readonly string _title;
     private readonly LeadStatus? _status;
 
-    public LeadFilterSpecification(int page, int size, string title, LeadStatus? status, string sorting) : base(page, size, sorting, false)
+    public LeadFilterSpecification(int page, int size, string title, LeadStatus? status, string sorting) : base(page, size, sorting)
     {
         _title = title;
         _status = status;

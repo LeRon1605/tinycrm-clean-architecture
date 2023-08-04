@@ -7,7 +7,7 @@ public class DealLineFilterSpecification : PagingAndSortingSpecification<DealLin
 {
     private readonly string _name;
 
-    public DealLineFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting, false)
+    public DealLineFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting)
     {
         _name = name;
 

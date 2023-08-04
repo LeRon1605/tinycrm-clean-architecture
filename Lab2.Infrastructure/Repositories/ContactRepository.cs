@@ -4,7 +4,7 @@ using Lab2.Infrastructure.Base;
 
 namespace Lab2.Infrastructure.Repositories;
 
-public class ContactRepository : Repository<Contact>, IContactRepository
+public class ContactRepository : Repository<Contact, int>, IContactRepository
 {
     public ContactRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {

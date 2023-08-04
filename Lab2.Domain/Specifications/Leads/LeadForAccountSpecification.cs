@@ -3,11 +3,11 @@ using System.Linq.Expressions;
 
 namespace Lab2.Domain.Specifications;
 
-public class GetLeadForAccountSpecification : Specification<Lead, int>, ISpecification<Lead, int>
+public class LeadForAccountSpecification : Specification<Lead, int>, ISpecification<Lead, int>
 {
     private readonly int _accountId;
 
-    public GetLeadForAccountSpecification(int accountId) : base(false)
+    public LeadForAccountSpecification(int accountId)
     {
         _accountId = accountId;
     }

@@ -4,7 +4,6 @@ using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
-using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;
 

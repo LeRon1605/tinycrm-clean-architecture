@@ -5,11 +5,11 @@ namespace Lab2.Domain.Specifications;
 
 public class AndSpecification<TEntity, TKey> : Specification<TEntity, TKey>, ISpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {
-    private readonly Specification<TEntity, TKey> _left;
+    private readonly ISpecification<TEntity, TKey> _left;
 
-    private readonly Specification<TEntity, TKey> _right;
+    private readonly ISpecification<TEntity, TKey> _right;
 
-    public AndSpecification(Specification<TEntity, TKey> left, Specification<TEntity, TKey> right, bool isTracking = true) : base(isTracking)
+    public AndSpecification(ISpecification<TEntity, TKey> left, ISpecification<TEntity, TKey> right) : base(left)
     {
         _left = left;
         _right = right;

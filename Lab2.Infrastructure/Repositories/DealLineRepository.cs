@@ -4,7 +4,7 @@ using Lab2.Infrastructure.Base;
 
 namespace Lab2.Infrastructure.Repositories;
 
-public class DealLineRepository : Repository<DealLine>, IDealLineRepository
+public class DealLineRepository : Repository<DealLine, int>, IDealLineRepository
 {
     public DealLineRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {

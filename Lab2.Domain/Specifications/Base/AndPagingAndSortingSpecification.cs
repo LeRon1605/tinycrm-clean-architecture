@@ -5,11 +5,11 @@ namespace Lab2.Domain.Specifications.Base;
 
 public class AndPagingAndSortingSpecification<TEntity, TKey> : PagingAndSortingSpecification<TEntity, TKey>, IPagingAndSortingSpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {
-    private readonly Specification<TEntity, TKey> _left;
+    private readonly IPagingAndSortingSpecification<TEntity, TKey> _left;
 
-    private readonly Specification<TEntity, TKey> _right;
+    private readonly ISpecification<TEntity, TKey> _right;
 
-    public AndPagingAndSortingSpecification(PagingAndSortingSpecification<TEntity, TKey> left, Specification<TEntity, TKey> right, bool isTracking = true) : base(left)
+    public AndPagingAndSortingSpecification(IPagingAndSortingSpecification<TEntity, TKey> left, ISpecification<TEntity, TKey> right) : base(left)
     {
         _left = left;
         _right = right;

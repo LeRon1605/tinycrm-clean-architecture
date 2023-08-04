@@ -7,7 +7,7 @@ namespace Lab2.Domain.Specifications;
 public class LostDealSpecification : Specification<Deal, int>, ISpecification<Deal, int>
 {
     private readonly int? _dealId;
-    public LostDealSpecification(int? dealId = null) : base(false)
+    public LostDealSpecification(int? dealId = null)
     {
         _dealId = dealId;
     }

@@ -2,6 +2,7 @@
 using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
+using Lab2.Domain.Repositories.Interfaces;
 using Lab2.Domain.Specifications;
 
 namespace Lab2.API.Services;

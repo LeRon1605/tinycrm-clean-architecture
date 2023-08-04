@@ -29,6 +29,12 @@ public class AppQueryableBuilder<TEntity, TKey> where TEntity : class, IEntity<T
         return this;
     }
 
+    public AppQueryableBuilder<TEntity, TKey> IncludeProp(Expression<Func<TEntity, object>> includeProps)
+    {
+        _queryable = _queryable.Include(includeProps);
+        return this;
+    }
+
     public AppQueryableBuilder<TEntity, TKey> IncludeProp(string? includeProps)
     {
         if (!string.IsNullOrWhiteSpace(includeProps))

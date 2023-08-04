@@ -87,7 +87,7 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
     {
         await CheckAccountExistingAsync(accountId);
 
-        var getPagedLeadForAccountSpecification = filterParam.ToSpecification().And(new GetLeadForAccountSpecification(accountId));
+        var getPagedLeadForAccountSpecification = filterParam.ToSpecification().And(new LeadForAccountSpecification(accountId));
         return await GetPagedAsync(getPagedLeadForAccountSpecification);
     }
 

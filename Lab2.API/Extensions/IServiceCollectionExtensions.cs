@@ -9,6 +9,7 @@ using Lab2.Domain;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
 using Lab2.Domain.Repositories;
+using Lab2.Domain.Repositories.Interfaces;
 using Lab2.Infrastructure;
 using Lab2.Infrastructure.Base;
 using Lab2.Infrastructure.Repositories;
@@ -60,7 +61,9 @@ public static class IServiceCollectionExtensions
     {
         services.AddScoped<DataContributor>();
 
-        services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
+        services.AddScoped(typeof(IReadOnlyRepository<,>), typeof(ReadOnlyRepository<,>))
+                .AddScoped(typeof(ISpecificationRepository<,>), typeof(SpecificationRepository<,>))
+                .AddScoped(typeof(IRepository<,>), typeof(Repository<,>))
                 .AddScoped<IProductRepository, ProductRepository>()
                 .AddScoped<IAccountRepository, AccountRepository>()
                 .AddScoped<IContactRepository, ContactRepository>()

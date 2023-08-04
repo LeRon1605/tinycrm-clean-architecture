@@ -7,7 +7,7 @@ namespace Lab2.Domain.Specifications.Deals;
 public class ProcessedDealSpecification : Specification<Deal, int>, ISpecification<Deal, int>
 {
     private readonly int? _dealId;
-    public ProcessedDealSpecification(int? dealId = null) : base(false)
+    public ProcessedDealSpecification(int? dealId = null)
     {
         _dealId = dealId;
     }

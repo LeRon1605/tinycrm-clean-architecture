@@ -9,11 +9,18 @@ public abstract class Specification<TEntity, TKey> : ISpecification<TEntity, TKe
     public List<Expression<Func<TEntity, object>>> IncludeExpressions { get; set; }
     public List<string> IncludeStrings { get; set; }
 
-    protected Specification(bool isTracking = true)
+    protected Specification(bool isTracking = false)
     {
         IsTracking = isTracking;
         IncludeExpressions = new List<Expression<Func<TEntity, object>>>();
         IncludeStrings = new List<string>();
+    }
+
+    protected Specification(ISpecification<TEntity, TKey> specification)
+    {
+        IsTracking = specification.IsTracking;
+        IncludeExpressions = specification.IncludeExpressions;
+        IncludeStrings = specification.IncludeStrings;
     }
 
     public bool IsSatisfiedBy(TEntity entity)
@@ -21,7 +28,7 @@ public abstract class Specification<TEntity, TKey> : ISpecification<TEntity, TKe
         return ToExpression().Compile().Invoke(entity);
     }
 
-    public Specification<TEntity, TKey> And(Specification<TEntity, TKey> specification)
+    public ISpecification<TEntity, TKey> And(ISpecification<TEntity, TKey> specification)
     {
         return new AndSpecification<TEntity, TKey>(this, specification);
     }

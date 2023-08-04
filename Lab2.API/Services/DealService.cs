@@ -158,7 +158,7 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
     {
         await CheckExistingAsync(id);
 
-        var getPagedLineForDealSpecification = filterParam.ToSpecification().And(new GetDealLineForDealSpecification(id));
+        var getPagedLineForDealSpecification = filterParam.ToSpecification().And(new DealLineForDealSpecification(id));
         var data = await _dealLineRepository.GetPagedListAsync(getPagedLineForDealSpecification);
         var total = await _dealLineRepository.GetCountAsync(getPagedLineForDealSpecification);
 

@@ -4,6 +4,7 @@ using Lab2.API.Dtos;
 using Lab2.API.Exceptions;
 using Lab2.Domain.Base;
 using Lab2.Domain.Entities;
+using Lab2.Domain.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.API.Services;

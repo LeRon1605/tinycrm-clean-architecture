@@ -7,7 +7,7 @@ public class ContactFilterSpecification : PagingAndSortingSpecification<Contact,
 {
     private readonly string _name;
 
-    public ContactFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting, false)
+    public ContactFilterSpecification(int page, int size, string name, string sorting) : base(page, size, sorting)
     {
         _name = name;
     }

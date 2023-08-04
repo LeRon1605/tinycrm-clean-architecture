@@ -10,5 +10,5 @@ public interface IPagingAndSortingSpecification<TEntity, TKey> : ISpecification<
 
     string BuildSorting();
 
-    PagingAndSortingSpecification<TEntity, TKey> And(Specification<TEntity, TKey> specification);
+    new IPagingAndSortingSpecification<TEntity, TKey> And(ISpecification<TEntity, TKey> specification);
 }

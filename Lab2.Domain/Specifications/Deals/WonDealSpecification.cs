@@ -7,7 +7,7 @@ namespace Lab2.Domain.Specifications;
 public class WonDealSpecification : Specification<Deal, int>, ISpecification<Deal, int>
 {
     private readonly int? _dealId;
-    public WonDealSpecification(int? dealId = null) : base(false)
+    public WonDealSpecification(int? dealId = null)
     {
         _dealId = dealId;
     }
