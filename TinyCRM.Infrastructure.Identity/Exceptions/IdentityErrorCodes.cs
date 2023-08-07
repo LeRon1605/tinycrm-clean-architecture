@@ -2,6 +2,6 @@
 
 public static class IdentityErrorCodes
 {
-    public const string InvalidCredential = "Auth:101";
-    public const string AccountLockedOut = "Auth:102";
+    public const string InvalidCredential = "Identity:101";
+    public const string AccountLockedOut = "Identity:102";
 }

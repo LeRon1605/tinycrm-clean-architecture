@@ -2,11 +2,11 @@
 
 namespace TinyCRM.Application.Common.Identity;
 
-public interface IUserManager
+public interface IApplicationUserManager
 {
     Task<(IEnumerable<UserDto>, int)> GetPagedAsync(UserFilterAndPagingRequestDto userFilterAndPagingRequestDto);
 
-    Task<UserDto> CreateAsync(UserCreateDto userCreateDto, string password);
+    Task<UserDto> CreateAsync(UserCreateDto userCreateDto);
 
     Task AddToRoleAsync(string id, string name);
 

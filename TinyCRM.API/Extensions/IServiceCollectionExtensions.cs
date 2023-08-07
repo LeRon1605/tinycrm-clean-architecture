@@ -10,6 +10,7 @@ using TinyCRM.API.Services;
 using TinyCRM.Application.Common.Identity;
 using TinyCRM.Application.Common.Seeders;
 using TinyCRM.Application.Common.UnitOfWorks;
+using TinyCRM.Application.Dtos.Shared;
 using TinyCRM.Application.Mapper;
 using TinyCRM.Application.Repositories;
 using TinyCRM.Application.Repositories.Base;
@@ -18,8 +19,6 @@ using TinyCRM.Application.Services.Abstracts;
 using TinyCRM.Infrastructure.Identity;
 using TinyCRM.Infrastructure.Identity.Mapper;
 using TinyCRM.Infrastructure.Identity.Services;
-using TinyCRM.Infrastructure.Jwt;
-using TinyCRM.Infrastructure.Jwt.Settings;
 using TinyCRM.Infrastructure.Persistent;
 using TinyCRM.Infrastructure.Persistent.Repositories;
 using TinyCRM.Infrastructure.Persistent.Repositories.Base;
@@ -80,7 +79,7 @@ public static class IServiceCollectionExtensions
     {
         services.AddScoped<IDataSeeder, IdentityDataSeeder>();
 
-        services.AddScoped<IUserManager, IdentityUserManager>()
+        services.AddScoped<IApplicationUserManager, IdentityUserManager>()
                 .AddScoped<IUserService, UserService>()
                 .AddScoped<ISignInManager, IdentitySignInManager>();
 

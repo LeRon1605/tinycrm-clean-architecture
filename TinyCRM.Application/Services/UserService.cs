@@ -12,12 +12,12 @@ namespace TinyCRM.Application.Services;
 public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IUserManager _userManager;
+    private readonly IApplicationUserManager _userManager;
     private readonly ICurrentUser _currentUser;
 
     public UserService(
         IUnitOfWork unitOfWork,
-        IUserManager userManager,
+        IApplicationUserManager userManager,
         ICurrentUser currentUser)
     {
         _unitOfWork = unitOfWork;
@@ -52,7 +52,7 @@ public class UserService : IUserService
 
         try
         {
-            var user = await _userManager.CreateAsync(userCreateDto, userCreateDto.Password);
+            var user = await _userManager.CreateAsync(userCreateDto);
 
             await _userManager.AddToRoleAsync(user.Id, AppRole.User);
 

@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\TinyCRM.Application\TinyCRM.Application.csproj" />
     <ProjectReference Include="..\TinyCRM.Infrastructure.Identity\TinyCRM.Infrastructure.Identity.csproj" />
-    <ProjectReference Include="..\TinyCRM.Infrastructure.Jwt\TinyCRM.Infrastructure.Jwt.csproj" />
     <ProjectReference Include="..\TinyCRM.Infrastructure.Persistent\TinyCRM.Infrastructure.Persistent.csproj" />
   </ItemGroup>
 

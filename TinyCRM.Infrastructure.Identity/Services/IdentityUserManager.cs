@@ -8,7 +8,7 @@ using TinyCRM.Infrastructure.Identity.Specifications;
 
 namespace TinyCRM.Infrastructure.Identity.Services;
 
-public class IdentityUserManager : IUserManager
+public class IdentityUserManager : IApplicationUserManager
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
@@ -37,17 +37,17 @@ public class IdentityUserManager : IUserManager
         return (_mapper.Map<IEnumerable<UserDto>>(data), total);
     }
 
-    public async Task<UserDto> CreateAsync(UserCreateDto userCreateDto, string password)
+    public async Task<UserDto> CreateAsync(UserCreateDto userCreateDto)
     {
-        var identityUser = _mapper.Map<ApplicationUser>(userCreateDto);
-        var result = await _userManager.CreateAsync(identityUser, userCreateDto.Password);
+        var user = _mapper.Map<ApplicationUser>(userCreateDto);
+        var result = await _userManager.CreateAsync(user, userCreateDto.Password);
         if (!result.Succeeded)
         {
             var error = result.Errors.First();
             throw new ResourceInvalidOperationException(error.Description, error.Code);
         }
 
-        return _mapper.Map<UserDto>(identityUser);
+        return _mapper.Map<UserDto>(user);
     }
 
     public async Task AddToRoleAsync(string id, string name)
@@ -80,27 +80,27 @@ public class IdentityUserManager : IUserManager
 
     public async Task<UserDto> UpdateAsync(string id, UserUpdateDto userUpdateDto)
     {
-        var identityUser = await _userManager.FindByIdAsync(id);
-        if (identityUser == null)
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
         {
             throw new ResourceNotFoundException("User", id);
         }
 
-        _mapper.Map(userUpdateDto, identityUser);
+        _mapper.Map(userUpdateDto, user);
 
         if (!string.IsNullOrWhiteSpace(userUpdateDto.Password))
         {
-            identityUser.PasswordHash = _userManager.PasswordHasher.HashPassword(identityUser, userUpdateDto.Password);
+            user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, userUpdateDto.Password);
         }
 
-        var result = await _userManager.UpdateAsync(identityUser);
+        var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)
         {
             var error = result.Errors.First();
             throw new ResourceInvalidOperationException(error.Description, error.Code);
         }
 
-        return _mapper.Map<UserDto>(identityUser);
+        return _mapper.Map<UserDto>(user);
     }
 
     public async Task DeleteAsync(string id)
