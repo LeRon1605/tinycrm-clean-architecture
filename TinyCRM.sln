@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCRM.Infrastructure.Iden
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyCRM.API", "TinyCRM.API\TinyCRM.API.csproj", "{44BE3919-3392-40D3-BCFE-802ABB1E7619}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCRM.Infrastructure.RedisCache", "..\TinyCRM.Infrastructure.RedisCache\TinyCRM.Infrastructure.RedisCache.csproj", "{242E7F81-2396-4BAA-80A4-4A904B455095}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCRM.Infrastructure.RedisCache", "TinyCRM.Infrastructure.RedisCache\TinyCRM.Infrastructure.RedisCache.csproj", "{242E7F81-2396-4BAA-80A4-4A904B455095}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

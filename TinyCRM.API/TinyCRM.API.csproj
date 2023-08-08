@@ -17,10 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TinyCRM.Infrastructure.RedisCache\TinyCRM.Infrastructure.RedisCache.csproj" />
     <ProjectReference Include="..\TinyCRM.Application\TinyCRM.Application.csproj" />
     <ProjectReference Include="..\TinyCRM.Infrastructure.Identity\TinyCRM.Infrastructure.Identity.csproj" />
     <ProjectReference Include="..\TinyCRM.Infrastructure.Persistent\TinyCRM.Infrastructure.Persistent.csproj" />
+    <ProjectReference Include="..\TinyCRM.Infrastructure.RedisCache\TinyCRM.Infrastructure.RedisCache.csproj" />
   </ItemGroup>
 
 </Project>
