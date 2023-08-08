@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-
-namespace TinyCRM.Application.Mapper;
+﻿namespace TinyCRM.Application.Mapper;
 
 public class TinyCrmMapper : Profile
 {

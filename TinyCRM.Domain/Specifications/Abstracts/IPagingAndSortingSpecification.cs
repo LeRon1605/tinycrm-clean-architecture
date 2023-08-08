@@ -1,6 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-
-namespace TinyCRM.Domain.Specifications.Abstracts;
+﻿namespace TinyCRM.Domain.Specifications.Abstracts;
 
 public interface IPagingAndSortingSpecification<TEntity, TKey> : ISpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {

@@ -1,5 +1,4 @@
-﻿using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Validations;
+﻿using TinyCRM.Application.Validations;
 
 namespace TinyCRM.Application.Dtos.Users;
 

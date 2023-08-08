@@ -1,6 +1,4 @@
-﻿using TinyCRM.Domain.Exceptions.Resource;
-
-namespace TinyCRM.Infrastructure.Identity.Exceptions;
+﻿namespace TinyCRM.Infrastructure.Identity.Exceptions;
 
 public class InvalidCredentialException : ResourceNotFoundException
 {

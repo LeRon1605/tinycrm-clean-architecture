@@ -1,5 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-using TinyCRM.Domain.Specifications.Abstracts;
+﻿using TinyCRM.Domain.Specifications.Abstracts;
 
 namespace TinyCRM.Application.Repositories.Base;
 
@@ -12,4 +11,6 @@ public interface ISpecificationRepository<TEntity, TKey> where TEntity : IEntity
     Task<TEntity?> FindAsync(ISpecification<TEntity, TKey> specification);
 
     Task<int> GetCountAsync(ISpecification<TEntity, TKey> specification);
+
+    Task<bool> AnyAsync(ISpecification<TEntity, TKey> specification);
 }

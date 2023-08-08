@@ -1,6 +1,4 @@
-﻿using TinyCRM.Application.Repositories;
-using TinyCRM.Domain.Entities;
-using TinyCRM.Domain.Specifications.Leads;
+﻿using TinyCRM.Domain.Specifications.Leads;
 using TinyCRM.Infrastructure.Persistent.Repositories.Base;
 
 namespace TinyCRM.Infrastructure.Persistent.Repositories;

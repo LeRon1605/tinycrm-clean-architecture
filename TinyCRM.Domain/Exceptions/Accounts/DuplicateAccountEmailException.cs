@@ -1,5 +1,4 @@
 ﻿using TinyCRM.Domain.Entities;
-using TinyCRM.Domain.Exceptions.Resource;
 
 namespace TinyCRM.Domain.Exceptions.Accounts;
 

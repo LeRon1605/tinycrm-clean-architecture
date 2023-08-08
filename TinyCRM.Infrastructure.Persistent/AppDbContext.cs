@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using TinyCRM.Domain.Entities;
-using TinyCRM.Infrastructure.Identity;
+﻿using TinyCRM.Infrastructure.Identity;
 
 namespace TinyCRM.Infrastructure.Persistent;
 
-public class AppDbContext : IdentityDbContext<ApplicationUser>
+public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
 {
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -13,6 +10,8 @@ public class AppDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Deal> Deals { get; set; }
     public DbSet<DealLine> DealLines { get; set; }
     public DbSet<Lead> Leads { get; set; }
+    public DbSet<PermissionContent> Permissions { get; set; }
+    public DbSet<PermissionGrant> PermissionGrants { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {

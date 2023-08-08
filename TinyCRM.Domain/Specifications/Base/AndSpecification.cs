@@ -1,6 +1,4 @@
 ﻿using System.Linq.Expressions;
-using TinyCRM.Domain.Entities.Base;
-using TinyCRM.Domain.Specifications.Abstracts;
 
 namespace TinyCRM.Domain.Specifications.Base;
 

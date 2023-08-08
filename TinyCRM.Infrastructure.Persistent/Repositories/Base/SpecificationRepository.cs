@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TinyCRM.Application.Repositories.Base;
+﻿using TinyCRM.Application.Repositories.Base;
 using TinyCRM.Domain.Entities.Base;
 using TinyCRM.Domain.Specifications.Abstracts;
 
@@ -9,10 +8,12 @@ public class SpecificationRepository<TEntity, TKey> : ISpecificationRepository<T
 {
     private readonly Lazy<DbSet<TEntity>> _dbSet;
     protected DbSet<TEntity> DbSet => _dbSet.Value;
+    protected DbContextFactory _dbContextFactory { get; }
 
     public SpecificationRepository(DbContextFactory dbContextFactory)
     {
         _dbSet = new Lazy<DbSet<TEntity>>(dbContextFactory.DbContext.Set<TEntity>());
+        _dbContextFactory = dbContextFactory;
     }
 
     public async Task<IList<TEntity>> GetPagedListAsync(IPagingAndSortingSpecification<TEntity, TKey> specification)
@@ -34,5 +35,10 @@ public class SpecificationRepository<TEntity, TKey> : ISpecificationRepository<T
     public Task<int> GetCountAsync(ISpecification<TEntity, TKey> specification)
     {
         return DbSet.CountAsync(specification.ToExpression());
+    }
+
+    public Task<bool> AnyAsync(ISpecification<TEntity, TKey> specification)
+    {
+        return DbSet.AnyAsync(specification.ToExpression());
     }
 }

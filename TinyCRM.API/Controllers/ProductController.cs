@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TinyCRM.Application.Dtos.Products;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Common.Constants;
+﻿using TinyCRM.Application.Dtos.Products;
 
 namespace TinyCRM.API.Controllers;
 
@@ -20,46 +15,48 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = Permissions.Products.View)]
     [ProducesResponseType(typeof(PagedResultDto<ProductDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAllProductsAsync([FromQuery] ProductFilterAndPagingRequestDto productFilterAndPagingRequestDto)
     {
-        var productDtos = await _productService.GetPagedAsync(productFilterAndPagingRequestDto);
-        return Ok(productDtos);
+        var products = await _productService.GetPagedAsync(productFilterAndPagingRequestDto);
+        return Ok(products);
     }
 
     [HttpGet("{id}")]
     [ActionName(nameof(GetDetailAsync))]
+    [Authorize(Policy = Permissions.Products.View)]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetailAsync(int id)
     {
-        var productDto = await _productService.GetAsync(id);
-        return Ok(productDto);
+        var product = await _productService.GetAsync(id);
+        return Ok(product);
     }
 
     [HttpPost]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Products.Create)]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateProductAsync(ProductCreateDto productCreateDto)
     {
-        var productDto = await _productService.CreateAsync(productCreateDto);
-        return CreatedAtAction(nameof(GetDetailAsync), new { id = productDto.Id }, productDto);
+        var product = await _productService.CreateAsync(productCreateDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = product.Id }, product);
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Products.Edit)]
     [ProducesResponseType(typeof(ProductDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateProductAsync(int id, ProductUpdateDto productUpdateDto)
     {
-        var productDto = await _productService.UpdateAsync(id, productUpdateDto);
-        return Ok(productDto);
+        var product = await _productService.UpdateAsync(id, productUpdateDto);
+        return Ok(product);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Products.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteProductAsync(int id)

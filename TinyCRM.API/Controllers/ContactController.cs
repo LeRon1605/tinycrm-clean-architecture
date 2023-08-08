@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TinyCRM.Application.Dtos.Contacts;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Common.Constants;
+﻿using TinyCRM.Application.Dtos.Contacts;
 
 namespace TinyCRM.API.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/contacts")]
 public class ContactController : ControllerBase
 {
@@ -20,45 +14,47 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = Permissions.Contacts.View)]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllContactsAsync([FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {
-        var contactDtos = await _contactService.GetPagedAsync(contactFilterAndPagingRequestDto);
-        return Ok(contactDtos);
+        var contacts = await _contactService.GetPagedAsync(contactFilterAndPagingRequestDto);
+        return Ok(contacts);
     }
 
     [HttpGet("{id}")]
+    [Authorize(Policy = Permissions.Contacts.View)]
     [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(ContactDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetailAsync(int id)
     {
-        var contactDto = await _contactService.GetAsync(id);
-        return Ok(contactDto);
+        var contact = await _contactService.GetAsync(id);
+        return Ok(contact);
     }
 
     [HttpPost]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Contacts.Create)]
     [ProducesResponseType(typeof(ContactDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> CreateContactAsync(ContactCreateDto contactCreateDto)
     {
-        var contactDto = await _contactService.CreateAsync(contactCreateDto);
-        return CreatedAtAction(nameof(GetDetailAsync), new { id = contactDto.Id }, contactDto);
+        var contact = await _contactService.CreateAsync(contactCreateDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = contact.Id }, contact);
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Contacts.Edit)]
     [ProducesResponseType(typeof(ContactDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateContactAsync(int id, ContactUpdateDto contactUpdateDto)
     {
-        var contactDto = await _contactService.UpdateAsync(id, contactUpdateDto);
-        return Ok(contactDto);
+        var contact = await _contactService.UpdateAsync(id, contactUpdateDto);
+        return Ok(contact);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Contacts.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteContactAsync(int id)
@@ -68,11 +64,12 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet("account/{accountId}")]
+    [Authorize(Policy = Permissions.Accounts.View)]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetContactsOfAccountAsync(int accountId, [FromQuery] ContactFilterAndPagingRequestDto contactFilterAndPagingRequestDto)
     {
-        var contactDtos = await _contactService.GetByAccountAsync(accountId, contactFilterAndPagingRequestDto);
-        return Ok(contactDtos);
+        var contacts = await _contactService.GetByAccountAsync(accountId, contactFilterAndPagingRequestDto);
+        return Ok(contacts);
     }
 }

@@ -28,6 +28,14 @@ public static class ErrorCodes
     // User
     public const string ProfileForbidEdit = "Profile:800";
 
+    // Role
+    public const string BasicRoleAccessDenied = "Role:900";
+
+    // Permission
+    public const string PermissionAlreadyGranted = "Permission:1000";
+
+    public const string PermissionNotGranted = "Permission:1001";
+
     // System
     public const string SystemError = "500";
 }

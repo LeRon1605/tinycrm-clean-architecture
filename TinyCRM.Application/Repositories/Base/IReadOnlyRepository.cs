@@ -1,10 +1,11 @@
 ﻿using System.Linq.Expressions;
-using TinyCRM.Domain.Entities.Base;
 
 namespace TinyCRM.Application.Repositories.Base;
 
 public interface IReadOnlyRepository<TEntity, TKey> : ISpecificationRepository<TEntity, TKey> where TEntity : IEntity<TKey>
 {
+    Task<IList<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>>? expression = null);
+
     Task<IList<TEntity>> GetPagedListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression, string? sorting = null, bool tracking = true, string? includeProps = null);
 
     Task<TEntity?> FindByIdAsync(object id, string? includeProps = null, bool tracking = true);

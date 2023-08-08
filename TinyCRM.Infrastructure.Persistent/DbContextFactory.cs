@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TinyCRM.Infrastructure.Persistent;
+﻿namespace TinyCRM.Infrastructure.Persistent;
 
 public class DbContextFactory : IDisposable
 {

@@ -1,5 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-using TinyCRM.Domain.Specifications.Abstracts;
+﻿using TinyCRM.Domain.Specifications.Abstracts;
 
 namespace TinyCRM.Application.Dtos.Shared;
 

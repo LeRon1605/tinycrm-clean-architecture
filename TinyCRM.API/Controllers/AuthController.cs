@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using TinyCRM.Application.Dtos.Auth;
-using TinyCRM.Application.Services.Abstracts;
+﻿using TinyCRM.Application.Dtos.Auth;
 
 namespace TinyCRM.API.Controllers;
 
@@ -18,7 +16,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto loginDto)
     {
-        var authCredentialDto = await _authService.SignInAsync(loginDto);
-        return Ok(authCredentialDto);
+        var authCredential = await _authService.SignInAsync(loginDto);
+        return Ok(authCredential);
     }
 }

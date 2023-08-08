@@ -1,5 +1,4 @@
 ﻿using TinyCRM.Domain.Common.Enums;
-using TinyCRM.Domain.Entities.Base;
 
 namespace TinyCRM.Domain.Entities;
 

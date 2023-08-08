@@ -1,5 +1,3 @@
-using TinyCRM.Domain.Entities.Base;
-
 namespace TinyCRM.Domain.Entities;
 
 public class Account : Entity<int>

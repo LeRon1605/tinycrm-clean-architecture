@@ -1,7 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-using TinyCRM.Domain.Specifications.Abstracts;
-
-namespace TinyCRM.Domain.Specifications.Base;
+﻿namespace TinyCRM.Domain.Specifications.Base;
 
 public abstract class PagingAndSortingSpecification<TEntity, TKey> : Specification<TEntity, TKey>, IPagingAndSortingSpecification<TEntity, TKey> where TEntity : IEntity<TKey>
 {

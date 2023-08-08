@@ -1,11 +1,7 @@
-﻿using TinyCRM.Application.Common.Identity;
-using TinyCRM.Application.Common.UnitOfWorks;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Dtos.Users;
-using TinyCRM.Application.Services.Abstracts;
+﻿using TinyCRM.Application.Dtos.Users;
+using TinyCRM.Application.UnitOfWorks;
 using TinyCRM.Domain.Common.Constants;
 using TinyCRM.Domain.Exceptions;
-using TinyCRM.Domain.Exceptions.Resource;
 
 namespace TinyCRM.Application.Services;
 
@@ -14,15 +10,18 @@ public class UserService : IUserService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IApplicationUserManager _userManager;
     private readonly ICurrentUser _currentUser;
+    private readonly IPermissionGrantRepository _permissionGrantRepository;
 
     public UserService(
         IUnitOfWork unitOfWork,
         IApplicationUserManager userManager,
-        ICurrentUser currentUser)
+        ICurrentUser currentUser,
+        IPermissionGrantRepository permissionGrantRepository)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
         _currentUser = currentUser;
+        _permissionGrantRepository = permissionGrantRepository;
     }
 
     public async Task<PagedResultDto<UserDto>> GetPagedAsync(UserFilterAndPagingRequestDto filterParam)
@@ -83,6 +82,8 @@ public class UserService : IUserService
     public async Task DeleteAsync(string id)
     {
         await _userManager.DeleteAsync(id);
+        await _permissionGrantRepository.RemoveByUserAsync(id);
+        await _unitOfWork.CommitAsync();
     }
 
     private bool IsValidOnEditUser(UserDto user)

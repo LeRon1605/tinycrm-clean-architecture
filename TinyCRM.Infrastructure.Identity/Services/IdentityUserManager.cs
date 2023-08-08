@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using TinyCRM.Application.Common.Identity;
 using TinyCRM.Application.Dtos.Users;
 using TinyCRM.Application.Repositories.Base;
-using TinyCRM.Domain.Exceptions.Resource;
 using TinyCRM.Infrastructure.Identity.Specifications;
 
 namespace TinyCRM.Infrastructure.Identity.Services;
@@ -11,13 +8,13 @@ namespace TinyCRM.Infrastructure.Identity.Services;
 public class IdentityUserManager : IApplicationUserManager
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly IReadOnlyRepository<ApplicationUser, string> _userRepository;
     private readonly IMapper _mapper;
 
     public IdentityUserManager(
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+        RoleManager<ApplicationRole> roleManager,
         IReadOnlyRepository<ApplicationUser, string> userRepository,
         IMapper mapper)
     {
@@ -117,5 +114,10 @@ public class IdentityUserManager : IApplicationUserManager
             var error = result.Errors.First();
             throw new ResourceInvalidOperationException(error.Description, error.Code);
         }
+    }
+
+    public Task<bool> IsExistAsync(string id)
+    {
+        return _userRepository.IsExistingAsync(id);
     }
 }

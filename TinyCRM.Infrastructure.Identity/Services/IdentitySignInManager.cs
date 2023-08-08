@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using TinyCRM.Application.Common.Identity;
+﻿using System.Security.Claims;
 using TinyCRM.Application.Repositories.Base;
 using TinyCRM.Infrastructure.Identity.Exceptions;
 
@@ -8,14 +6,14 @@ namespace TinyCRM.Infrastructure.Identity.Services;
 
 public class IdentitySignInManager : ISignInManager
 {
-    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IReadOnlyRepository<ApplicationUser, string> _userRepository;
     private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
     public IdentitySignInManager(
-        UserManager<ApplicationUser> userManager,
         IReadOnlyRepository<ApplicationUser, string> userRepository,
-        SignInManager<ApplicationUser> signInManager)
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager)
     {
         _userManager = userManager;
         _userRepository = userRepository;
@@ -48,24 +46,16 @@ public class IdentitySignInManager : ISignInManager
     {
         var claims = new List<Claim>()
         {
-            new (ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new (ClaimTypes.NameIdentifier, user.Id),
             new (ClaimTypes.Name, user.UserName),
             new (ClaimTypes.Email, user.Email)
         };
 
         var roles = await _userManager.GetRolesAsync(user);
+
         foreach (var role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
-        }
-
-        if (_userManager.SupportsUserClaim)
-        {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            if (userClaims != null)
-            {
-                claims.AddRange(userClaims);
-            }
         }
 
         return claims;

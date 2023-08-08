@@ -1,11 +1,5 @@
-﻿using AutoMapper;
-using TinyCRM.Application.Common.UnitOfWorks;
-using TinyCRM.Application.Dtos.Contacts;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Repositories;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Entities;
-using TinyCRM.Domain.Exceptions.Resource;
+﻿using TinyCRM.Application.Dtos.Contacts;
+using TinyCRM.Application.UnitOfWorks;
 using TinyCRM.Domain.Specifications.Contacts;
 
 namespace TinyCRM.Application.Services;

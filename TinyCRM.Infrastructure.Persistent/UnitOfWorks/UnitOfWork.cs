@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using TinyCRM.Application.Common.UnitOfWorks;
+using TinyCRM.Application.UnitOfWorks;
 
 namespace TinyCRM.Infrastructure.Persistent.UnitOfWorks;
 

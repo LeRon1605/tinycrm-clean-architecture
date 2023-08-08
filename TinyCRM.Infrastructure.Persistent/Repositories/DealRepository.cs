@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TinyCRM.Application.Repositories;
-using TinyCRM.Domain.Entities;
-using TinyCRM.Domain.Specifications.Deals;
+﻿using TinyCRM.Domain.Specifications.Deals;
 using TinyCRM.Infrastructure.Persistent.Repositories.Base;
 
 namespace TinyCRM.Infrastructure.Persistent.Repositories;

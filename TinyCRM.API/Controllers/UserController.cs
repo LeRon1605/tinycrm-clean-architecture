@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Dtos.Users;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Common.Constants;
+﻿using TinyCRM.Application.Dtos.Users;
 
 namespace TinyCRM.API.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/users")]
 public class UserController : ControllerBase
 {
@@ -20,49 +14,50 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Users.View)]
     [ProducesResponseType(typeof(PagedResultDto<UserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllUsersAsync([FromQuery] UserFilterAndPagingRequestDto userFilterAndPagingRequestDto)
     {
-        var userDtos = await _userService.GetPagedAsync(userFilterAndPagingRequestDto);
-        return Ok(userDtos);
+        var users = await _userService.GetPagedAsync(userFilterAndPagingRequestDto);
+        return Ok(users);
     }
 
     [HttpPost]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Users.Create)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateUserAsync(UserCreateDto userCreateDto)
     {
-        var userDto = await _userService.CreateAsync(userCreateDto);
-        return CreatedAtAction(nameof(GetDetailAsync), new { id = userDto.Id }, userDto);
+        var user = await _userService.CreateAsync(userCreateDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = user.Id }, user);
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Users.View)]
     [ActionName(nameof(GetDetailAsync))]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetailAsync(string id)
     {
-        var userDto = await _userService.GetAsync(id);
-        return Ok(userDto);
+        var user = await _userService.GetAsync(id);
+        return Ok(user);
     }
 
     [HttpPut("{id}")]
+    [Authorize(Policy = Permissions.Users.Edit)]
     [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateUserAsync(string id, UserUpdateDto userUpdateDto)
     {
-        var userDto = await _userService.UpdateAsync(id, userUpdateDto);
-        return Ok(userDto);
+        var user = await _userService.UpdateAsync(id, userUpdateDto);
+        return Ok(user);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Users.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUserAsync(string id)

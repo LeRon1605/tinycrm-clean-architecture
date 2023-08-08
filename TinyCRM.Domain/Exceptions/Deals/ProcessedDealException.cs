@@ -1,5 +1,4 @@
 ﻿using TinyCRM.Domain.Common.Enums;
-using TinyCRM.Domain.Exceptions.Resource;
 
 namespace TinyCRM.Domain.Exceptions.Deals;
 

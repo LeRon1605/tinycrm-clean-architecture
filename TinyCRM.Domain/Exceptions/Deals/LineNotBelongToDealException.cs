@@ -1,6 +1,4 @@
-﻿using TinyCRM.Domain.Exceptions.Resource;
-
-namespace TinyCRM.Domain.Exceptions.Deals;
+﻿namespace TinyCRM.Domain.Exceptions.Deals;
 
 public class LineNotBelongToDealException : ResourceAccessDeniedException
 {

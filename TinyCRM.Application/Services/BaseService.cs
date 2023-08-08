@@ -1,28 +1,22 @@
-﻿using AutoMapper;
-using TinyCRM.Application.Common.UnitOfWorks;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Repositories.Base;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Entities.Base;
-using TinyCRM.Domain.Exceptions.Resource;
+﻿using TinyCRM.Application.UnitOfWorks;
 using TinyCRM.Domain.Specifications.Abstracts;
 
 namespace TinyCRM.Application.Services;
 
 public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TEntityDto> where TEntity : IEntity<TKey>
 {
-    protected IRepository<TEntity, TKey> _repository;
+    protected IRepository<TEntity, TKey> GrantRepository;
     protected IMapper _mapper;
     protected IUnitOfWork _unitOfWork;
     protected string _includePropsOnGet;
 
     public BaseService(
         IMapper mapper,
-        IRepository<TEntity, TKey> repository,
+        IRepository<TEntity, TKey> grantRepository,
         IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
-        _repository = repository;
+        GrantRepository = grantRepository;
         _unitOfWork = unitOfWork;
         _includePropsOnGet = string.Empty;
     }
@@ -34,8 +28,8 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
 
     protected async Task<PagedResultDto<TEntityDto>> GetPagedAsync(IPagingAndSortingSpecification<TEntity, TKey> specification)
     {
-        var data = await _repository.GetPagedListAsync(specification);
-        var total = await _repository.GetCountAsync(specification);
+        var data = await GrantRepository.GetPagedListAsync(specification);
+        var total = await GrantRepository.GetCountAsync(specification);
 
         return new PagedResultDto<TEntityDto>()
         {
@@ -46,7 +40,7 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
 
     public virtual async Task<TEntityDto> GetAsync(TKey id)
     {
-        TEntity? entity = await _repository.FindByIdAsync(id, includeProps: _includePropsOnGet, tracking: false);
+        TEntity? entity = await GrantRepository.FindByIdAsync(id, includeProps: _includePropsOnGet, tracking: false);
         if (entity == null)
         {
             throw new ResourceNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -57,7 +51,7 @@ public class BaseService<TEntity, TKey, TEntityDto> : IService<TEntity, TKey, TE
 
     protected async Task CheckExistingAsync(TKey id)
     {
-        var isExisting = await _repository.IsExistingAsync(id);
+        var isExisting = await GrantRepository.IsExistingAsync(id);
         if (!isExisting)
         {
             throw new ResourceNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -77,7 +71,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto> : BaseServ
     public virtual async Task DeleteAsync(TKey id)
     {
         // Find entity by Id
-        TEntity? entity = await _repository.FindByIdAsync(id);
+        TEntity? entity = await GrantRepository.FindByIdAsync(id);
         if (entity == null)
         {
             throw new ResourceNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -86,7 +80,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto> : BaseServ
         // Perform business check before delete
         if (await IsValidOnDeleteAsync(entity))
         {
-            _repository.Delete(entity);
+            GrantRepository.Delete(entity);
             await _unitOfWork.CommitAsync();
         }
     }
@@ -108,7 +102,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto> : BaseServ
             var entity = _mapper.Map<TEntity>(entityCreateDto);
 
             // Insert entity to db
-            await _repository.InsertAsync(entity);
+            await GrantRepository.InsertAsync(entity);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<TEntityDto>(entity);
@@ -138,7 +132,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto, TEntityUpd
     public virtual async Task<TEntityDto> UpdateAsync(TKey id, TEntityUpdateDto entityUpdateDto)
     {
         // Fetch entity from db
-        var entity = await _repository.FindByIdAsync(id);
+        var entity = await GrantRepository.FindByIdAsync(id);
         if (entity == null)
         {
             throw new ResourceNotFoundException(typeof(TEntity).Name, id.ToString());
@@ -151,7 +145,7 @@ public class BaseService<TEntity, TKey, TEntityDto, TEntityCreateDto, TEntityUpd
             entity = UpdateEntity(entity, entityUpdateDto);
 
             // Update to db
-            _repository.Update(entity);
+            GrantRepository.Update(entity);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<TEntityDto>(entity);

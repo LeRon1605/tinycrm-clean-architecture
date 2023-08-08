@@ -1,6 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-
-namespace TinyCRM.Domain.Entities;
+﻿namespace TinyCRM.Domain.Entities;
 
 public class DealLine : Entity<int>
 {

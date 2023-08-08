@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using TinyCRM.Application.Common.Seeders;
+﻿using Microsoft.Extensions.Logging;
+using TinyCRM.Application.Seeders.Interfaces;
 using TinyCRM.Domain.Common.Constants;
 
 namespace TinyCRM.Infrastructure.Identity;
@@ -8,12 +7,12 @@ namespace TinyCRM.Infrastructure.Identity;
 public class IdentityDataSeeder : IDataSeeder
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly RoleManager<ApplicationRole> _roleManager;
     private readonly ILogger _logger;
 
     public IdentityDataSeeder(
         UserManager<ApplicationUser> userManager,
-        RoleManager<IdentityRole> roleManager,
+        RoleManager<ApplicationRole> roleManager,
         ILogger<IdentityDataSeeder> logger)
     {
         _userManager = userManager;
@@ -32,20 +31,10 @@ public class IdentityDataSeeder : IDataSeeder
             {
                 _logger.LogInformation("Begin seeding identity data...");
 
-                var userRole = new IdentityRole(AppRole.User);
-                var adminRole = new IdentityRole(AppRole.Admin);
-                var user = new ApplicationUser()
-                {
-                    UserName = "admin",
-                    Email = "admin@gmail.com",
-                    FullName = "admin"
-                };
+                await SeedAdminRoleAsync();
+                await SeedUserRoleAsync();
 
-                await _roleManager.CreateAsync(userRole);
-                await _roleManager.CreateAsync(adminRole);
-
-                await _userManager.CreateAsync(user, "admin123");
-                await _userManager.AddToRoleAsync(user, AppRole.Admin);
+                await SeedDefaultAdminAccountAsync();
 
                 _logger.LogInformation("Seed identity data successfully!");
             }
@@ -54,5 +43,38 @@ public class IdentityDataSeeder : IDataSeeder
         {
             _logger.LogWarning("Seeding identity data failed!", ex);
         }
+    }
+
+    private async Task SeedAdminRoleAsync()
+    {
+        var adminRole = new ApplicationRole(AppRole.Admin);
+        var result = await _roleManager.CreateAsync(adminRole);
+        if (!result.Succeeded)
+        {
+            _logger.LogWarning("Seeding admin role failed!");
+        }
+    }
+
+    private async Task SeedUserRoleAsync()
+    {
+        var userRole = new ApplicationRole(AppRole.User);
+        var result = await _roleManager.CreateAsync(userRole);
+        if (!result.Succeeded)
+        {
+            _logger.LogWarning("Seeding user role failed!");
+        }
+    }
+
+    private async Task SeedDefaultAdminAccountAsync()
+    {
+        var user = new ApplicationUser()
+        {
+            UserName = "admin",
+            Email = "admin@gmail.com",
+            FullName = "admin"
+        };
+
+        await _userManager.CreateAsync(user, "admin123");
+        await _userManager.AddToRoleAsync(user, AppRole.Admin);
     }
 }

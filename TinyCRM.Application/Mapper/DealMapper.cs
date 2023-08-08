@@ -1,6 +1,4 @@
 ﻿using TinyCRM.Application.Dtos.Deals;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Domain.Entities;
 
 namespace TinyCRM.Application.Mapper;
 

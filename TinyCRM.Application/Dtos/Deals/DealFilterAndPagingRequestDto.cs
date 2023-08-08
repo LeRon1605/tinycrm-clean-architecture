@@ -1,7 +1,5 @@
-﻿using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Validations;
+﻿using TinyCRM.Application.Validations;
 using TinyCRM.Domain.Common.Enums;
-using TinyCRM.Domain.Entities;
 using TinyCRM.Domain.Specifications.Abstracts;
 using TinyCRM.Domain.Specifications.Deals;
 

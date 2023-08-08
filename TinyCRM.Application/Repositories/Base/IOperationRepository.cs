@@ -1,6 +1,4 @@
-﻿using TinyCRM.Domain.Entities.Base;
-
-namespace TinyCRM.Application.Repositories.Base;
+﻿namespace TinyCRM.Application.Repositories.Base;
 
 public interface IOperationRepository<in TEntity, TKey> where TEntity : IEntity<TKey>
 {

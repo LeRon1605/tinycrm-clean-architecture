@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using TinyCRM.Application.Repositories.Base;
 using TinyCRM.Domain.Entities.Base;
 
@@ -9,6 +8,11 @@ public class ReadOnlyRepository<TEntity, TKey> : SpecificationRepository<TEntity
 {
     public ReadOnlyRepository(DbContextFactory dbContextFactory) : base(dbContextFactory)
     {
+    }
+
+    public async Task<IList<TEntity>> FindAllAsync(Expression<Func<TEntity, bool>>? expression = null)
+    {
+        return expression != null ? await DbSet.Where(expression).ToListAsync() : await DbSet.ToListAsync();
     }
 
     public async Task<IList<TEntity>> GetPagedListAsync(int skip, int take, Expression<Func<TEntity, bool>> expression, string? sorting = null, bool tracking = true, string? includeProps = null)

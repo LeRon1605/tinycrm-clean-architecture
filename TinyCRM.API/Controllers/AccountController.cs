@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TinyCRM.Application.Dtos.Accounts;
-using TinyCRM.Application.Dtos.Shared;
-using TinyCRM.Application.Services.Abstracts;
-using TinyCRM.Domain.Common.Constants;
+﻿using TinyCRM.Application.Dtos.Accounts;
 
 namespace TinyCRM.API.Controllers;
 
 [ApiController]
-[Authorize]
 [Route("api/accounts")]
 public class AccountController : ControllerBase
 {
@@ -20,47 +14,49 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = Permissions.Accounts.View)]
     [ProducesResponseType(typeof(PagedResultDto<AccountDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllAccountsAsync([FromQuery] AccountFilterAndPagingRequestDto accountFilterAndPagingRequestDto)
     {
-        var accountDtos = await _accountService.GetPagedAsync(accountFilterAndPagingRequestDto);
-        return Ok(accountDtos);
+        var accounts = await _accountService.GetPagedAsync(accountFilterAndPagingRequestDto);
+        return Ok(accounts);
     }
 
     [HttpGet("{id}")]
     [ActionName(nameof(GetDetailAsync))]
+    [Authorize(Policy = Permissions.Accounts.View)]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetDetailAsync(int id)
     {
-        var accountDto = await _accountService.GetAsync(id);
-        return Ok(accountDto);
+        var account = await _accountService.GetAsync(id);
+        return Ok(account);
     }
 
     [HttpPost]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Accounts.Create)]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> CreateAccountAsync(AccountCreateDto accountCreateDto)
     {
-        var accountDto = await _accountService.CreateAsync(accountCreateDto);
-        return CreatedAtAction(nameof(GetDetailAsync), new { id = accountDto.Id }, accountDto);
+        var account = await _accountService.CreateAsync(accountCreateDto);
+        return CreatedAtAction(nameof(GetDetailAsync), new { id = account.Id }, account);
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Accounts.Edit)]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<IActionResult> UpdateAccountAsync(int id, AccountUpdateDto accountUpdateDto)
     {
-        var accountDto = await _accountService.UpdateAsync(id, accountUpdateDto);
-        return Ok(accountDto);
+        var account = await _accountService.UpdateAsync(id, accountUpdateDto);
+        return Ok(account);
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = AppRole.Admin)]
+    [Authorize(Policy = Permissions.Accounts.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteAccountAsync(int id)
@@ -70,11 +66,12 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("contact/{contactId}")]
+    [Authorize(Policy = Permissions.Accounts.View)]
     [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAccountOfContactAsync(int contactId)
     {
-        var accountDto = await _accountService.GetByContactAsync(contactId);
-        return Ok(accountDto);
+        var account = await _accountService.GetByContactAsync(contactId);
+        return Ok(account);
     }
 }
