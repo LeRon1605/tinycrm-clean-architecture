@@ -52,10 +52,10 @@ public static class Permissions
         new(Roles.Delete, "Delete roles."),
 
         new(PermissionManagement.View, "View permissions."),
-        new(PermissionManagement.AddToRole, "Add permission to role."),
-        new(PermissionManagement.AddToUser, "Add permission to user."),
-        new(PermissionManagement.RemoveFromRole, "Remove permission from role."),
-        new(PermissionManagement.RemoveFromUser, "Remove permission from user."),
+        new(PermissionManagement.GrantToRole, "Add permission to role."),
+        new(PermissionManagement.GrantToUser, "Add permission to user."),
+        new(PermissionManagement.UnGrantFromRole, "Remove permission from role."),
+        new(PermissionManagement.UnGrantFromUser, "Remove permission from user."),
     };
 
     public static class Products
@@ -144,10 +144,10 @@ public static class Permissions
         public const string Group = $"{Default}.PermissionManagement";
 
         public const string View = $"{Group}.View";
-        public const string AddToRole = $"{Group}.AddToRole";
-        public const string AddToUser = $"{Group}.AddToUser";
-        public const string RemoveFromRole = $"{Group}.RemoveFromRole";
-        public const string RemoveFromUser = $"{Group}.RemoveFromUser";
+        public const string GrantToRole = $"{Group}.GrantToRole";
+        public const string GrantToUser = $"{Group}.GrantToUser";
+        public const string UnGrantFromRole = $"{Group}.UnGrantFromRole";
+        public const string UnGrantFromUser = $"{Group}.UnGrantFromUser";
     }
 
     public static List<string> GeneratePermissionsForModule(string module)

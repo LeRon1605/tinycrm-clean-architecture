@@ -66,7 +66,7 @@ public class LeadController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("account/{accountId}")]
+    [HttpGet("accounts/{accountId}")]
     [Authorize(Policy = Permissions.Leads.View)]
     [ProducesResponseType(typeof(IEnumerable<LeadDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

@@ -29,15 +29,15 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         _permissionGrantRepository = permissionGrantRepository;
     }
 
-    public async Task<IEnumerable<PermissionDto>> GetPermissionsForRoleAsync(string roleName)
+    public async Task<IEnumerable<PermissionDto>> GetForRoleAsync(string role)
     {
-        await CheckRoleExistingAsync(roleName);
+        await CheckRoleExistingAsync(role);
 
-        var permissions = await _permissionRepository.GetGrantedForAsync(new PermissionGrantedForRoleSpecification(roleName));
+        var permissions = await _permissionRepository.GetGrantedForAsync(new PermissionGrantedForRoleSpecification(role));
         return _mapper.Map<IEnumerable<PermissionDto>>(permissions);
     }
 
-    public async Task<IEnumerable<PermissionDto>> GetPermissionsForUserAsync(string userId)
+    public async Task<IEnumerable<PermissionDto>> GetForUserAsync(string userId)
     {
         await CheckUserExistingAsync(userId);
 
@@ -56,26 +56,26 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         return _mapper.Map<IEnumerable<PermissionDto>>(permissions);
     }
 
-    public async Task AddPermissionToRoleAsync(string roleName, AddPermissionDto addPermissionDto)
+    public async Task GrantToRoleAsync(string role, GrantPermissionDto grantPermissionDto)
     {
-        await CheckRoleExistingAsync(roleName);
+        await CheckRoleExistingAsync(role);
 
-        await CheckPermissionExistingAsync(addPermissionDto.PermissionId);
+        await CheckPermissionExistingAsync(grantPermissionDto.PermissionId);
 
         // Check if permission has already been granted to role
-        if (await _permissionGrantRepository.AnyAsync(new PermissionGrantedForRoleSpecification(roleName, addPermissionDto.PermissionId)))
+        if (await _permissionGrantRepository.AnyAsync(new PermissionGrantedForRoleSpecification(role, grantPermissionDto.PermissionId)))
         {
-            throw new PermissionAlreadyGrantedException(addPermissionDto.PermissionId);
+            throw new PermissionAlreadyGrantedException(grantPermissionDto.PermissionId);
         }
 
-        await _permissionGrantRepository.InsertForRoleAsync(roleName, addPermissionDto.PermissionId);
+        await _permissionGrantRepository.InsertForRoleAsync(role, grantPermissionDto.PermissionId);
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
-        await _permissionCacheManager.ClearPermissionForRoleAsync(roleName);
+        await _permissionCacheManager.ClearPermissionForRoleAsync(role);
     }
 
-    public async Task RemovePermissionFromRoleAsync(int id, string role)
+    public async Task UnGrantFromRoleAsync(int id, string role)
     {
         await CheckRoleExistingAsync(role);
 
@@ -94,26 +94,26 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         await _permissionCacheManager.ClearPermissionForRoleAsync(role);
     }
 
-    public async Task AddPermissionToUserAsync(string userId, AddPermissionDto addPermissionDto)
+    public async Task GrantToUserAsync(string userId, GrantPermissionDto grantPermissionDto)
     {
         await CheckUserExistingAsync(userId);
 
-        await CheckPermissionExistingAsync(addPermissionDto.PermissionId);
+        await CheckPermissionExistingAsync(grantPermissionDto.PermissionId);
 
         // Check if permission has already been granted to user
-        if (await _permissionGrantRepository.AnyAsync(new PermissionGrantedForUserSpecification(userId, addPermissionDto.PermissionId)))
+        if (await _permissionGrantRepository.AnyAsync(new PermissionGrantedForUserSpecification(userId, grantPermissionDto.PermissionId)))
         {
-            throw new PermissionAlreadyGrantedException(addPermissionDto.PermissionId);
+            throw new PermissionAlreadyGrantedException(grantPermissionDto.PermissionId);
         }
 
-        await _permissionGrantRepository.InsertForUserAsync(userId, addPermissionDto.PermissionId);
+        await _permissionGrantRepository.InsertForUserAsync(userId, grantPermissionDto.PermissionId);
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
         await _permissionCacheManager.ClearPermissionForUserAsync(userId);
     }
 
-    public async Task RemovePermissionFromUserAsync(int id, string userId)
+    public async Task UnGrantFromUserAsync(int id, string userId)
     {
         await CheckUserExistingAsync(userId);
 

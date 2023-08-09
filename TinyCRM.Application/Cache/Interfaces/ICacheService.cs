@@ -2,7 +2,7 @@
 
 public interface ICacheService
 {
-    Task<T> GetOrAddAsync<T>(string id, Func<Task<T>> callback, TimeSpan expireTime);
+    Task<T> GetOrAddAsync<T>(string id, Func<Task<T>> factory, TimeSpan expireTime);
 
     Task<bool> SetRecordAsync<T>(string id, T data, TimeSpan expireTime);
 

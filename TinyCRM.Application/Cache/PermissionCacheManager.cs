@@ -9,14 +9,14 @@ public class PermissionCacheManager : IPermissionCacheManager
         _cacheService = cacheService;
     }
 
-    public Task<IEnumerable<string>> GetPermissionForRoleAsync(string role)
+    public Task<IEnumerable<string>?> GetPermissionForRoleAsync(string role)
     {
-        return _cacheService.GetRecordAsync<IEnumerable<string>>(KeyGenerator.Generate(CacheTarget.PermissionRole, role));
+        return _cacheService.GetRecordAsync<IEnumerable<string>?>(KeyGenerator.Generate(CacheTarget.PermissionRole, role));
     }
 
-    public Task<IEnumerable<string>> GetPermissionForUserAsync(string userId)
+    public Task<IEnumerable<string>?> GetPermissionForUserAsync(string userId)
     {
-        return _cacheService.GetRecordAsync<IEnumerable<string>>(KeyGenerator.Generate(CacheTarget.PermissionUser, userId));
+        return _cacheService.GetRecordAsync<IEnumerable<string>?>(KeyGenerator.Generate(CacheTarget.PermissionUser, userId));
     }
 
     public Task SetPermissionForUserAsync(string userId, IEnumerable<string> permissions, TimeSpan expireTime)

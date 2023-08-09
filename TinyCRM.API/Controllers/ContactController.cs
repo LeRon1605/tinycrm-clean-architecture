@@ -63,7 +63,7 @@ public class ContactController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("account/{accountId}")]
+    [HttpGet("accounts/{accountId}")]
     [Authorize(Policy = Permissions.Accounts.View)]
     [ProducesResponseType(typeof(PagedResultDto<ContactDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

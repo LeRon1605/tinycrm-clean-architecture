@@ -15,12 +15,12 @@ public class RedisCacheService : ICacheService
         _db = redis.GetDatabase();
     }
 
-    public async Task<T> GetOrAddAsync<T>(string id, Func<Task<T>> callback, TimeSpan expireTime)
+    public async Task<T> GetOrAddAsync<T>(string id, Func<Task<T>> factory, TimeSpan expireTime)
     {
         var data = await GetRecordAsync<T>(id);
         if (data == null)
         {
-            data = await callback.Invoke();
+            data = await factory.Invoke();
             await SetRecordAsync(id, data, expireTime);
         }
 

@@ -36,6 +36,6 @@ public class PermissionGrantRepository : Repository<PermissionGrant, int>, IPerm
 
     public Task RemoveByRoleAsync(string roleName)
     {
-        return DbSet.Where(x => x.Provider == PermissionProvider.Role && x.ProviderKey == roleName).ExecuteDeleteAsync();
+        return DbSet.Where(x => x.Provider == PermissionProvider.Role && x.ProviderKey.ToLower() == roleName.ToLower()).ExecuteDeleteAsync();
     }
 }
