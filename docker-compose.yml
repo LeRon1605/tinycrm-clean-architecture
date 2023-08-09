@@ -1,34 +1,31 @@
 version: '3.4'
 
 services:
-  lab2.api:
-    image: ${DOCKER_REGISTRY-}lab2api
+  tinycrm.api:
+    image: ${DOCKER_REGISTRY-}tinycrmapi
     build:
       context: .
-      dockerfile: Lab2.API/Dockerfile
-    ports:
-      - 5000:443
-      - 5001:80
+      dockerfile: TinyCRM.API/Dockerfile
     environment:
-      - ConnectionStrings__Default=Server=lab2.db;Database=TinyCRM;UID=sa;PWD=Leron@1605;TrustServerCertificate=True
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=Admin
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/tiny-crm.pfx
-    volumes:
-      - ~/.aspnet/https:/https:ro
+      - ConnectionStrings__Default=Server=tinycrm.db;Database=TinyCrm;UID=sa;Password=Leron@1605;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=tiycrm.redis
     depends_on:
-     - lab2.db
-
-  lab2.db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+      - tinycrm.db
+      - tiycrm.redis
+    ports:
+      - "5000:80"
+  tinycrm.db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
     user: root
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Leron@1605
-    ports:
-      - 14433:1433
     volumes:
-      - tiny-crm:/var/opt/mssql/data 
-
+      - tinycrm:/var/opt/mssql/data
+  tiycrm.redis:
+    image: redis
+    ports:
+      - "6379:6379"
 volumes:
-  tiny-crm:
+  tinycrm:
     external: true
