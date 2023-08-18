@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using TinyCRM.Domain.Entities.Base;
 
-namespace TinyCRM.Infrastructure.Persistent;
+namespace TinyCRM.Infrastructure.Persistent.Commons;
 
 public class AppQueryableBuilder<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {

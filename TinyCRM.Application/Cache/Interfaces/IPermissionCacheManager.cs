@@ -2,15 +2,15 @@
 
 public interface IPermissionCacheManager
 {
-    Task<IEnumerable<string>?> GetPermissionForRoleAsync(string role);
+    Task<IEnumerable<string>?> GetForRoleAsync(string role);
 
-    Task<IEnumerable<string>?> GetPermissionForUserAsync(string userId);
+    Task<IEnumerable<string>?> GetForUserAsync(string userId);
 
-    Task SetPermissionForUserAsync(string userId, IEnumerable<string> permissions, TimeSpan expireTime);
+    Task SetForUserAsync(string userId, IEnumerable<string> permissions);
 
-    Task SetPermissionForRoleAsync(string role, IEnumerable<string> permissions, TimeSpan expireTime);
+    Task SetForRoleAsync(string role, IEnumerable<string> permissions);
 
-    Task ClearPermissionForUserAsync(string userId);
+    Task ClearForUserAsync(string userId);
 
-    Task ClearPermissionForRoleAsync(string role);
+    Task ClearForRoleAsync(string role);
 }

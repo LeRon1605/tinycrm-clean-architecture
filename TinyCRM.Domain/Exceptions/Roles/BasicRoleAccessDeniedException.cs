@@ -2,7 +2,7 @@
 
 public class BasicRoleAccessDeniedException : ResourceAccessDeniedException
 {
-    public BasicRoleAccessDeniedException() : base("Can not update or delete role 'Admin'!", ErrorCodes.BasicRoleAccessDenied)
+    public BasicRoleAccessDeniedException() : base("Can not update or delete role 'Admin' or 'User'!", ErrorCodes.BasicRoleAccessDenied)
     {
     }
 }

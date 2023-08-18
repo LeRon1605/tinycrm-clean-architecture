@@ -2,7 +2,7 @@
 using TinyCRM.Domain.Entities.Base;
 using TinyCRM.Domain.Specifications.Abstracts;
 
-namespace TinyCRM.Infrastructure.Persistent;
+namespace TinyCRM.Infrastructure.Persistent.Commons;
 
 public static class SpecificationEvaluator<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {

@@ -22,33 +22,33 @@ public class PermissionController : ControllerBase
         return Ok(permissions);
     }
 
-    [HttpGet("roles/{roleName}")]
+    [HttpGet("roles/{role}")]
     [Authorize(Policy = Permissions.PermissionManagement.View)]
     [ProducesResponseType(typeof(IEnumerable<PermissionDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetAllPermissionsForRoleAsync(string roleName)
+    public async Task<IActionResult> GetAllPermissionsForRoleAsync(string role)
     {
-        return Ok(await _permissionService.GetForRoleAsync(roleName));
+        return Ok(await _permissionService.GetForRoleAsync(role));
     }
 
-    [HttpPost("roles/{roleName}")]
+    [HttpPost("roles/{role}")]
     [Authorize(Policy = Permissions.PermissionManagement.GrantToRole)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> GrantPermissionToRoleAsync(string roleName, GrantPermissionDto grantPermissionDto)
+    public async Task<IActionResult> GrantPermissionToRoleAsync(string role, GrantPermissionDto grantPermissionDto)
     {
-        await _permissionService.GrantToRoleAsync(roleName, grantPermissionDto);
+        await _permissionService.GrantToRoleAsync(role, grantPermissionDto);
         return NoContent();
     }
 
-    [HttpDelete("{id}/roles/{roleName}")]
+    [HttpDelete("{id}/roles/{role}")]
     [Authorize(Policy = Permissions.PermissionManagement.UnGrantFromUser)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UnGrantPermissionsForRoleAsync(int id, string roleName)
+    public async Task<IActionResult> UnGrantPermissionsForRoleAsync(int id, string role)
     {
-        await _permissionService.UnGrantFromRoleAsync(id, roleName);
+        await _permissionService.UnGrantFromRoleAsync(id, role);
         return NoContent();
     }
 

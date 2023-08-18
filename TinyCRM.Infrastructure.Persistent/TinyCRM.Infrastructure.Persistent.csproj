@@ -25,4 +25,5 @@
     <ProjectReference Include="..\TinyCRM.Infrastructure.Identity\TinyCRM.Infrastructure.Identity.csproj" />
   </ItemGroup>
 
+
 </Project>

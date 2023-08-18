@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using TinyCRM.Application.Repositories.Base;
 using TinyCRM.Domain.Entities.Base;
+using TinyCRM.Infrastructure.Persistent.Commons;
 
 namespace TinyCRM.Infrastructure.Persistent.Repositories.Base;
 

@@ -74,9 +74,9 @@ public class LeadService : BaseService<Lead, int, LeadDto, LeadCreateDto, LeadUp
     {
         return new LeadStatisticDto()
         {
-            OpenLead = await _leadRepository.GetCountOpenLeadAsync(),
-            DisqualifiedLead = await _leadRepository.GetCountDisqualifiedAsync(),
-            QualifiedLead = await _leadRepository.GetCountQualifiedAsync(),
+            OpenLead = await _leadRepository.GetCountAsync(LeadSpecification.OpenSpecification),
+            DisqualifiedLead = await _leadRepository.GetCountAsync(LeadSpecification.DisqualifiedSpecification),
+            QualifiedLead = await _leadRepository.GetCountAsync(LeadSpecification.QualifiedSpecification),
             AverageEstimatedRevenue = await _leadRepository.GetAverageEstimatedRevenueAsync()
         };
     }

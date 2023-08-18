@@ -18,14 +18,4 @@ public class DealRepository : Repository<Deal, int>, IDealRepository
     {
         return DbSet.Include(x => x.Lines).SelectMany(x => x.Lines).SumAsync(x => x.Quantity * x.PricePerUnit);
     }
-
-    public Task<int> GetCountOpenDealAsync()
-    {
-        return GetCountAsync(new OpenDealSpecification());
-    }
-
-    public Task<int> GetCountWonDealAsync()
-    {
-        return GetCountAsync(new WonDealSpecification());
-    }
 }

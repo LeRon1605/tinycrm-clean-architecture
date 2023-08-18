@@ -8,7 +8,7 @@ public class IdentityDataSeeder : IDataSeeder
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<ApplicationRole> _roleManager;
-    private readonly ILogger _logger;
+    private readonly ILogger<IdentityDataSeeder> _logger;
 
     public IdentityDataSeeder(
         UserManager<ApplicationUser> userManager,

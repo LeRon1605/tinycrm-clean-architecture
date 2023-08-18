@@ -72,7 +72,7 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
-        await _permissionCacheManager.ClearPermissionForRoleAsync(role);
+        await _permissionCacheManager.ClearForRoleAsync(role);
     }
 
     public async Task UnGrantFromRoleAsync(int id, string role)
@@ -91,7 +91,7 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
-        await _permissionCacheManager.ClearPermissionForRoleAsync(role);
+        await _permissionCacheManager.ClearForRoleAsync(role);
     }
 
     public async Task GrantToUserAsync(string userId, GrantPermissionDto grantPermissionDto)
@@ -110,7 +110,7 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
-        await _permissionCacheManager.ClearPermissionForUserAsync(userId);
+        await _permissionCacheManager.ClearForUserAsync(userId);
     }
 
     public async Task UnGrantFromUserAsync(int id, string userId)
@@ -129,7 +129,7 @@ public class PermissionService : BaseService<PermissionContent, int, PermissionD
         await _unitOfWork.CommitAsync();
 
         // Remove permissions saved in cache
-        await _permissionCacheManager.ClearPermissionForUserAsync(userId);
+        await _permissionCacheManager.ClearForUserAsync(userId);
     }
 
     private async Task CheckRoleExistingAsync(string roleName)

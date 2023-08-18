@@ -9,21 +9,6 @@ public class LeadRepository : Repository<Lead, int>, ILeadRepository
     {
     }
 
-    public Task<int> GetCountOpenLeadAsync()
-    {
-        return GetCountAsync(new OpenLeadSpecification());
-    }
-
-    public Task<int> GetCountDisqualifiedAsync()
-    {
-        return GetCountAsync(new DisqualifiedLeadSpecification());
-    }
-
-    public Task<int> GetCountQualifiedAsync()
-    {
-        return GetCountAsync(new QualifiedLeadSpecification());
-    }
-
     public Task<decimal> GetAverageEstimatedRevenueAsync()
     {
         return GetAverageAsync(x => x.EstimatedRevenue);

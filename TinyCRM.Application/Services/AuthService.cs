@@ -11,22 +11,19 @@ public class AuthService : IAuthService
     private readonly ISignInManager _signInManager;
     private readonly ITokenProvider _tokenProvider;
     private readonly IPermissionRepository _permissionRepository;
-    private readonly JwtSetting _jwtSetting;
 
     public AuthService(
         IPermissionCacheManager permissionCacheManager,
         IRoleManager roleManager,
         ISignInManager signInManager,
         ITokenProvider tokenProvider,
-        IPermissionRepository permissionRepository,
-        IOptions<JwtSetting> jwtSettingOption)
+        IPermissionRepository permissionRepository)
     {
         _permissionCacheManager = permissionCacheManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
         _tokenProvider = tokenProvider;
         _permissionRepository = permissionRepository;
-        _jwtSetting = jwtSettingOption.Value;
     }
 
     public async Task<AuthCredentialDto> SignInAsync(LoginDto loginDto)
@@ -43,25 +40,25 @@ public class AuthService : IAuthService
     {
         var permissions = new List<string>();
 
-        // Get permissions from roles
+        // Get permissions from user roles
         foreach (var role in await _roleManager.GetRolesForUserAsync(userId))
         {
-            var rolePermissions = await _permissionCacheManager.GetPermissionForRoleAsync(role);
+            var rolePermissions = await _permissionCacheManager.GetForRoleAsync(role);
             if (rolePermissions == null)
             {
                 rolePermissions = (await _permissionRepository.GetGrantedForAsync(new PermissionGrantedForRoleSpecification(role))).Select(x => x.Name);
-                await _permissionCacheManager.SetPermissionForRoleAsync(role, rolePermissions, TimeSpan.FromMinutes(_jwtSetting.Expires));
+                await _permissionCacheManager.SetForRoleAsync(role, rolePermissions);
             }
 
             permissions.AddRange(rolePermissions);
         }
 
         // Get permissions from user
-        var userPermissions = await _permissionCacheManager.GetPermissionForUserAsync(userId);
+        var userPermissions = await _permissionCacheManager.GetForUserAsync(userId);
         if (userPermissions == null)
         {
             userPermissions = (await _permissionRepository.GetGrantedForAsync(new PermissionGrantedForUserSpecification(userId))).Select(x => x.Name);
-            await _permissionCacheManager.SetPermissionForUserAsync(userId, userPermissions, TimeSpan.FromMinutes(_jwtSetting.Expires));
+            await _permissionCacheManager.SetForUserAsync(userId, userPermissions);
         }
         permissions.AddRange(userPermissions);
 

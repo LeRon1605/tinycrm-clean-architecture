@@ -53,7 +53,7 @@ public class UserService : IUserService
         {
             var user = await _userManager.CreateAsync(userCreateDto);
 
-            await _userManager.AddToRoleAsync(user.Id, AppRole.User);
+            await _userManager.AddRoleAsync(user.Id, AppRole.User);
 
             await _unitOfWork.CommitTransactionAsync();
 

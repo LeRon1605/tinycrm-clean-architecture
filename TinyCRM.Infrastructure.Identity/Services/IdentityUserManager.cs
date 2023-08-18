@@ -47,7 +47,7 @@ public class IdentityUserManager : IApplicationUserManager
         return _mapper.Map<UserDto>(user);
     }
 
-    public async Task AddToRoleAsync(string id, string name)
+    public async Task AddRoleAsync(string id, string name)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)

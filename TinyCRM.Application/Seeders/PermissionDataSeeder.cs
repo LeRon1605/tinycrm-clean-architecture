@@ -11,7 +11,7 @@ public class PermissionDataSeeder : IDataSeeder
     private readonly IPermissionRepository _permissionRepository;
     private readonly IPermissionGrantRepository _permissionGrantRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger _logger;
+    private readonly ILogger<PermissionDataSeeder> _logger;
 
     public PermissionDataSeeder(
         IPermissionGrantRepository permissionGrantRepository,

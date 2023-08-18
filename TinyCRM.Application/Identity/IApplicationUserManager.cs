@@ -8,7 +8,7 @@ public interface IApplicationUserManager
 
     Task<UserDto> CreateAsync(UserCreateDto userCreateDto);
 
-    Task AddToRoleAsync(string id, string name);
+    Task AddRoleAsync(string id, string name);
 
     Task<UserDto> FindByIdAsync(string id);
 

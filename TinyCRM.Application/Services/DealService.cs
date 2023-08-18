@@ -53,8 +53,8 @@ public class DealService : BaseService<Deal, int, DealDto, DealCreateDto, DealUp
     {
         return new DealStatisticDto()
         {
-            OpenDeal = await _dealRepository.GetCountOpenDealAsync(),
-            WonDeal = await _dealRepository.GetCountWonDealAsync(),
+            OpenDeal = await _dealRepository.GetCountAsync(DealSpecification.OpenSpecification),
+            WonDeal = await _dealRepository.GetCountAsync(DealSpecification.WonSpecification),
             AverageRevenue = await _dealRepository.GetAverageRevenueAsync(),
             TotalRevenue = await _dealRepository.GetTotalRevenueAsync(),
         };
