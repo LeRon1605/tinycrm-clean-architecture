@@ -19,7 +19,7 @@ public class PermissionAuthorizationPolicyProvider : IAuthorizationPolicyProvide
     {
         if (policyName.StartsWith(Permissions.Default, StringComparison.OrdinalIgnoreCase))
         {
-            var policy = new AuthorizationPolicyBuilder();
+            var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser();
             policy.AddRequirements(new PermissionAuthorizationRequirement()
             {
                 Permission = policyName
