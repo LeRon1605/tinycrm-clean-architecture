@@ -220,4 +220,16 @@ public static partial class DependencyInjectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddApplicationCors(this IServiceCollection services)
+    {
+        services.AddCors(o => o.AddPolicy("tiny-crm", builder =>
+        {
+            builder.WithOrigins("*")
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        }));
+
+        return services;
+    }
 }

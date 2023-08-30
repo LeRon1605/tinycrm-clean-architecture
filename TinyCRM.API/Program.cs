@@ -3,6 +3,7 @@ using TinyCRM.API.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddServices()
+                .AddApplicationCors()
                 .AddDatabase(builder.Configuration, builder.Environment)
                 .AddIdentity(builder.Configuration, builder.Environment)
                 .AddRepositories()
@@ -25,6 +26,8 @@ app.UseExceptionHandling();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseCors("tiny-crm");
 
 app.UseRouting();
 
